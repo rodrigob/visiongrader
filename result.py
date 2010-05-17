@@ -35,3 +35,8 @@ class DataSetResult(object):
         self.n_matches += result.n_matches()
         self.n_false_positives = result.n_false_positives()
         self.n_unrecognized += result.n_unrecognized()
+
+    def __str__(self):
+        return "DataSetResult : %d matches, %d false positive, %d missed"%(self.n_matches,
+                                                                           self.n_false_positives,
+                                                                           self.n_unrecognized)

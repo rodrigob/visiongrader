@@ -70,7 +70,7 @@ class BoundingBox(ObjectInfos):
         return self.width * self.height
 
     def overlap(self, other):
-        return (self.x1 < other.x2 and self.x2 > other.x1 and self.y1 < other.y1 and self.y2 > other.y2)
+        return (self.x1 < other.x2 and self.x2 > other.x1 and self.y1 < other.y2 and self.y2 > other.y1)
 
     def overlapping_area(self, other):
         w = min(self.x2, other.x2) - max(self.x1, other.x1)

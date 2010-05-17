@@ -17,6 +17,14 @@ class ImageDataSet(object):
     def get_objs(self):
         #shallow copy
         return copy.copy(self.objs)
+
+    def get_intersecting_objs(self, other):
+        #TODO
+        ret = []
+        for obj in self.objs:
+            if obj.bounding_box().overlap(other.bounding_box()):
+                ret.append(obj)
+        return ret
     
 
 class DataSet(object):

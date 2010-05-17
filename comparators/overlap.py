@@ -13,10 +13,10 @@ def compare_images(toscore, groundtruth):
     #TODO : sort the boxes
     boxes1 = toscore.get_objs()
     boxes2 = groundtruth.get_objs()
-    for box1 in boxes2:
+    for box1 in boxes1:
         matched = False
-        for box2 in boxes2:
-            if match_boxes(box1, box2):
+        for box2 in groundtruth.get_intersecting_objs(box1):
+            if match_boxes(box1, box2) and box2 in boxes2:
                 result.add_match(box1, box2)
                 matched = True
                 boxes2.remove(box2)
@@ -34,4 +34,4 @@ def compare_datasets(toscore, groundtruth):
         print i
         i += 1
         result.add_image_result(compare_images(image_toscore, image_groundtruth))
-        
+    return result

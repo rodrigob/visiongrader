@@ -13,7 +13,6 @@ class ParsersHandler(object):
         for name in parser_names:
             if self.is_a_parser_name(name):
                 name = name[:-3]
-                print name
                 __import__(name)
                 self.parsers[name] = sys.modules[name]
         sys.path.remove(os.path.abspath(parser_dir))
@@ -49,7 +48,7 @@ class ComparatorsHandler(object):
         return self.comparators[name]        
 
 if __name__=="__main__":
-    usage = "usage: %prog -i input -g groundtruth --input_parser inputparser --groundtruth_parser groundtruthparser [OPTIONS]"
+    usage = "usage: %prog -i input -g groundtruth --input_parser inputparser --groundtruth_parser groundtruthparser -c comparator [OPTIONS]"
     optparser = optparse.OptionParser(add_help_option = True, usage = usage, prog = "./main.py")
     optparser.add_option("-i", "--input", dest = "input", default = None, type = "str",
                          help = "Input file to score (required)")
@@ -63,6 +62,8 @@ if __name__=="__main__":
                          help = "Parser directory")
     optparser.add_option("--comparator_dir", dest = "comparator_dir", default = "comparators",
                          type = "str", help = "Comparator directory")
+    optparser.add_option("-c", "--comparator", dest = "comparator", default = None, type = "str",
+                         help = "Comparator to use")
     (options, args) = optparser.parse_args()
 
     if options.input == None or options.groundtruth == None:
@@ -89,5 +90,9 @@ if __name__=="__main__":
     groundtruth = groundtruth_parser.parse(groundtruth_file)
     groundtruth_file.close()
 
-    comparator = comparators.get_comparator("overlap")
+    if options.comparator == None:
+        optparser.print_usage()
+        sys.exit(0)
+    comparator = comparators.get_comparator(options.comparator)
     result = comparator.compare_datasets(toscore, groundtruth)
+    print result
