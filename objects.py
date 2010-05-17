@@ -10,36 +10,12 @@ class BoundingBoxError(StandardError):
         pass
 
 class BoundingBox(ObjectInfos):
-    def __init__(self, x, y, width = None, height = None, x2 = None, y2 = None):
+    def __init__(self, x, y, x2, y2):
         super(BoundingBox, self).__init__()
         self._x = x
         self._y = y
         self._x2 = x2
-        self._y2 = y2 #TODO
-        """
-        if width != None:
-            if x2 != None:
-                print "BoundingBox : both width and x2 are set."
-                raise BoundingBoxError()
-            assert(width >= 0)
-            self._x2 = x + width
-        elif x2 != None:
-            self._x = min(x, x2)
-            self._x2 = max(x, x2)
-        else:
-            raise BoundingBoxError()
-        if height != None:
-            if y2 != None:
-                print "BoundingBox : both height and y2 are set."
-                raise BoundingBorError()
-            assert(height >= 0)
-            self._y2 = y + height
-        elif y2 != None:
-            self._y = min(y, y2)
-            self._y2 = max(y, y2)
-        else:
-            raise BoundingBoxError()
-            """
+        self._y2 = y2
     
     def getX1(self):
         return self._x

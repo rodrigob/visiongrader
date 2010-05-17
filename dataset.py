@@ -1,9 +1,8 @@
 import copy
 
-
 class ImageDataSet(object):
-    def __init__(self, objs = []):
-        self.objs = objs
+    def __init__(self):
+        self.objs = []
 
     def add_obj(self, obj):
         self.objs.append(obj)
