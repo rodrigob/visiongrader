@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 import optparse
 import os
 import os.path
@@ -47,15 +49,39 @@ class ComparatorsHandler(object):
         return self.comparators[name]        
 
 if __name__=="__main__":
-    parser_dir = "parsers"
+    usage = "usage: %prog -i input -g groundtruth --input_parser inputparser --groundtruth_parser groundtruthparser [OPTIONS]"
+    optparser = optparse.OptionParser(add_help_option = True, usage = usage, prog = "./main.py")
+    optparser.add_option("-i", "--input", dest = "input", default = None, type = "str",
+                         help = "Input file to score (required)")
+    optparser.add_option("-g", "--groundtruth", dest = "groundtruth", default = None, type = "str",
+                         help = "Ground truth file (required)")
+    optparser.add_option("--input_parser", dest = "input_parser", default = None, type = "str",
+                         help = "Parser to use for the file to score")
+    optparser.add_option("--groundtruth_parser", dest = "groundtruth_parser", default = None, type = "str",
+                         help = "Parser to use for the ground truth file")
+    optparser.add_option("--parser_dir", dest = "parser_dir", default = "parsers", type = "str",
+                         help = "Parser directory")
+    optparser.add_option("--comparator_dir", dest = "comparator_dir", default = "comparators",
+                         type = "str", help = "Comparator directory")
+    (options, args) = optparser.parse_args()
+
+    if options.input == None or options.groundtruth == None:
+        optparser.print_usage()
+        sys.exit(0)
+    toscore_filename = options.input
+    groundtruth_filename = options.groundtruth
+
+    parser_dir = options.parser_dir
+    comparator_dir = options.comparator_dir
     parsers = ParsersHandler(parser_dir)
-    comparator_dir = "comparators"
     comparators = ComparatorsHandler(comparator_dir)
+
+    if options.input_parser == None or options.groundtruth_parser == None:
+        optparser.print_usage()
+        sys.exit(0)
+    toscore_parser = parsers.get_parser(options.input_parser)
+    groundtruth_parser = parsers.get_parser(options.groundtruth_parser)
     
-    toscore_filename = "data/CMU/groundtruth/test"
-    groundtruth_filename = "data/CMU/groundtruth/test"
-    toscore_parser = parsers.get_parser("cmu")
-    groundtruth_parser = parsers.get_parser("cmu")
     toscore_file = open(toscore_filename, "r")
     toscore = toscore_parser.parse(toscore_file)
     toscore_file.close()
