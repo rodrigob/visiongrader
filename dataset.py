@@ -1,11 +1,17 @@
 import copy
+import slist
 
 class ImageDataSet(object):
     def __init__(self):
         self.objs = []
+        self.xmins = slist()
+        self.xmaxs = slist()
 
     def add_obj(self, obj):
+        box = obj.bounding_box()
         self.objs.append(obj)
+        self.xmins.insert((box.x1, obj))
+        self.xmaxs.insert((box.x2, obj))
 
     def __len__(self):
         return len(self.objs)
