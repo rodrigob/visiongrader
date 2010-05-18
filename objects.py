@@ -5,6 +5,24 @@ class ObjectInfos(object):
     def bounding_box(self):
         pass
 
+    def getX1(self):
+        return self.bounding_box()._x
+
+    def getX2(self):
+        return self.bounding_box()._x2
+
+    def getY1(self):
+        return self.bounding_box()._y
+
+    def getY2(self):
+        return self.bounding_box()._y2
+
+    x1 = property(getX1)
+    x2 = property(getX2)
+    y1 = property(getY1)
+    y2 = property(getY2)
+
+
 class BoundingBoxError(StandardError):
     def __init__(self):
         pass
@@ -35,10 +53,6 @@ class BoundingBox(ObjectInfos):
     def getWidth(self):
         return self._y2 - self._y
 
-    x1 = property(getX1)
-    x2 = property(getX2)
-    y1 = property(getY1)
-    y2 = property(getY2)
     width = property(getWidth)
     height = property(getHeight)
 
