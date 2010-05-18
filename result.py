@@ -6,12 +6,16 @@ class ImageResult(object):
 
     def add_match(self, box1, box2):
         self.matches.append((box1, box2))
+        #print "match", box1, box2
 
     def add_false_positive(self, box):
         self.false_positives.append(box)
+        print "false pos", box
+        print box.bounding_box()
 
     def add_unrecognized(self, box):
         self.unrecognized.append(box)
+        print "missed", box
 
     def n_matches(self):
         return len(self.matches)
@@ -33,7 +37,7 @@ class DataSetResult(object):
     def add_image_result(self, result):
         self.images_results.append(result)
         self.n_matches += result.n_matches()
-        self.n_false_positives = result.n_false_positives()
+        self.n_false_positives += result.n_false_positives()
         self.n_unrecognized += result.n_unrecognized()
 
     def __str__(self):

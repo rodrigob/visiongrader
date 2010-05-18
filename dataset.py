@@ -34,6 +34,7 @@ class ImageDataSet(object):
     def get_intersecting_objs(self, other):
         #TODO : is that really useful? Anyway, one can optimize that
         ret = []
+        '''
         box = other.bounding_box()
         imin = self.xmaxs.find_index(box.x1)
         imax = self.xmins.find_index(box.x2)
@@ -50,7 +51,6 @@ class ImageDataSet(object):
         for obj in self.objs:
             if obj.bounding_box().overlap(other.bounding_box()):
                 ret.append(obj)
-        '''
         return ret
     
 
