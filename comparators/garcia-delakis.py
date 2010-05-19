@@ -1,4 +1,5 @@
-from result import DataSetResult, ImageResult
+from result import ImageResult
+from comparator_helpers import compare_datasets_default
 
 name = "GarciaDelakisComparator"
 
@@ -32,16 +33,4 @@ def compare_images(toscore, groundtruth):
     return result
 
 def compare_datasets(toscore, groundtruth):
-    result = DataSetResult()
-    i = 0
-    #for (image_toscore, image_groundtruth) in zip(toscore, groundtruth):
-    for key in toscore.images:
-        image_toscore = toscore.images[key]
-        image_groundtruth = groundtruth.images[key]
-        print i, key
-        i += 1
-        result.add_image_result(compare_images(image_toscore, image_groundtruth))
-    return result
-
-    
-
+    return compare_datasets_default(toscore, groundtruth, compare_images)

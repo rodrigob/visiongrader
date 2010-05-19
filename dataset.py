@@ -70,7 +70,10 @@ class DataSet(object):
         return len(self.images)
     
     def __getitem__(self, i):
-        return self.images.values()[i]
+        return self.images[i]
+
+    def __iter__(self):
+        return self.images.__iter__()
 
     def add_obj(self, image, obj):
         if image not in self.images:

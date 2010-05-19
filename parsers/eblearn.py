@@ -21,3 +21,4 @@ def parse(file):
         #TODO confidence
         ret.add_obj(filename, BoundingBox(x, y, x + w, y + h))
     return ret
+ 
