@@ -52,6 +52,13 @@ class ImageDataSet(object):
             if obj.bounding_box().overlap(other.bounding_box()):
                 ret.append(obj)
         return ret
+
+    def __str__(self):
+        ret = "(ImageDataSet : "
+        for obj in self.objs:
+            ret += "%s "%(str(obj),)
+        ret = ret[:-1] + ")"
+        return ret
     
 
 class DataSet(object):
@@ -69,6 +76,13 @@ class DataSet(object):
         if image not in self.images:
             self.images[image] = ImageDataSet()
         self.images[image].add_obj(obj)
+
+    def __str__(self):
+        ret = "(DataSet %s : "%(self.label,)
+        for img in self.images:
+            ret += "(%s : %s) "%(img, str(self.images[img]))
+        ret = ret[:-1] + ")"
+        return ret
     
 
 class ROCDataSet(object):

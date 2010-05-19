@@ -10,12 +10,9 @@ class ImageResult(object):
 
     def add_false_positive(self, box):
         self.false_positives.append(box)
-        print "false pos", box
-        print box.bounding_box()
 
     def add_unrecognized(self, box):
         self.unrecognized.append(box)
-        print "missed", box
 
     def n_matches(self):
         return len(self.matches)
