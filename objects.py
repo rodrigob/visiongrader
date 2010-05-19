@@ -1,3 +1,6 @@
+import math
+from point import mean
+
 class ObjectInfos(object):
     def __init__(self):
         super(ObjectInfos, self).__init__()
@@ -36,6 +39,8 @@ class BoundingBox(ObjectInfos):
         self._y = y
         self._x2 = x2
         self._y2 = y2
+        assert(self._x < self._x2)
+        assert(self._y < self._y2)
     
     def getX1(self):
         return self._x
@@ -145,7 +150,25 @@ class Mouth(PointsOnObject):
     def get_mouth(self):
         return [self.points["mouth"]]
 
-class EyesNoseMouth(Eyes, Nose, Mouth):
+class EyesMouth(Eyes, Mouth):
+    def __init__(self, left_eye = None, right_eye = None, mouth = None):
+        super(EyesMouth, self).__init__()
+        for name in ["left_eye", "right_eye", "mouth"]:
+            if vars()[name] != None:
+                self.add_point(name, vars()[name])
+
+    def bounding_box(self):
+        deyes = mean(self.get_right_eye()).x - mean(self.get_left_eye()).x
+        xmin = mean(self.get_left_eye()).x - deyes * 0.75
+        xmax = mean(self.get_right_eye()).x + deyes * 0.75
+        mean_eyes = mean(self.get_left_eye() + self.get_right_eye())
+        mean_mouth = mean(self.get_mouth())
+        deyesmouth = mean_mouth.y - mean_eyes.y
+        ymin = mean_eyes.y - deyesmouth
+        ymax = mean_mouth.y + deyesmouth * 0.5
+        return BoundingBox(xmin, ymin, xmax, ymax)
+
+class EyesNoseMouth(EyesMouth, Nose):
     def __init__(self, left_eye = None, right_eye = None, nose = None,
                  left_corner_mouth = None, center_mouth = None, right_corner_mouth = None):
         super(EyesNoseMouth, self).__init__()

@@ -17,8 +17,7 @@ def parse(file):
         filename = splited[0]
         filename = filename[filename.rfind("/")+1:]
         class_id = int(splited[1])
-        (confidence, x, y, w, h) = tuple([float(a) for a in splited[2:]])
+        (confidence, x, y, x2, y2) = tuple([float(a) for a in splited[2:]])
         #TODO confidence
-        ret.add_obj(filename, BoundingBox(x, y, x + w, y + h))
+        ret.add_obj(filename, BoundingBox(x, y, x2, y2))
     return ret
- 
