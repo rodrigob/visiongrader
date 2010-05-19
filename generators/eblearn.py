@@ -33,13 +33,14 @@ def generate(threshold, destination):
     eblearn.wait()
     print eblearn.stdout.read()
 
+    detections_path = "."
     detection_dirs = []
-    for filename in os.listdir(eblearn_path):
+    for filename in os.listdir(detections_path):
         if filename[0:10] == "detections":
             detection_dirs.append(filename)
     def compare(a, b):
-        time_a = os.stat(os.path.join(eblearn_path, a))[stat.ST_MTIME]
-        time_b = os.stat(os.path.join(eblearn_path, b))[stat.ST_MTIME]
+        time_a = os.stat(os.path.join(detections_path, a))[stat.ST_MTIME]
+        time_b = os.stat(os.path.join(detections_path, b))[stat.ST_MTIME]
         if time_a < time_b:
             return -1
         elif time_a == time_b:
@@ -47,7 +48,7 @@ def generate(threshold, destination):
         else:
             return 1
     detection_dirs.sort(compare)
-    shutil.copy(os.path.join(eblearn_path,
+    shutil.copy(os.path.join(detections_path,
                              os.path.join(detection_dirs[-1], "bbox.txt")),
                 destination)
     
