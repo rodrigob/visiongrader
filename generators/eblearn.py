@@ -31,7 +31,7 @@ def generate(threshold, destination):
     eblearn = subprocess.Popen([eblearn_command_line], shell = True,
                                stdout = subprocess.PIPE)
     eblearn.wait()
-    print eblearn.stdout.read()
+    #print eblearn.stdout.read()
 
     detections_path = "."
     detection_dirs = []
@@ -51,6 +51,3 @@ def generate(threshold, destination):
     shutil.copy(os.path.join(detections_path,
                              os.path.join(detection_dirs[-1], "bbox.txt")),
                 destination)
-    
-
-generate(-0.6, ".")
