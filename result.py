@@ -43,3 +43,15 @@ class DataSetResult(object):
         return "DataSetResult : %d matches, %d false positive, %d missed"%(self.n_matches,
                                                                            self.n_false_positives,
                                                                            self.n_unrecognized)
+class ROCResult(object):
+    def __init__(self):
+        self.datasets = {}
+
+    def add_result(self, threshold, result):
+        self.datasets[threshold] = result
+
+    def __str__(self):
+        ret = "ROCResult : "
+        for th in self.datasets:
+            ret += "(%s : %s) "%(th, self.datasets[th])
+        return ret[:-1]

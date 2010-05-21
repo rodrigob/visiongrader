@@ -51,3 +51,4 @@ def generate(threshold, destination):
     shutil.copy(os.path.join(detections_path,
                              os.path.join(detection_dirs[-1], "bbox.txt")),
                 destination)
+    shutil.rmtree(os.path.join(detections_path, detection_dirs[-1]))

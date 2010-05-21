@@ -5,6 +5,8 @@ import os
 import os.path
 import sys
 
+from result import ROCResult
+
 class ModuleHandler(object):
     def __init__(self, module_dir, module_name):
         self.modules = {}
@@ -103,6 +105,7 @@ if __name__=="__main__":
         print result
     elif mode == "ROC":
         thresholds = [-0.9,-0.8, -0.7, -0.6, -0.5, -0.4, -0.3, -0.2, -0.1, 0, 0.2, 0.4, 0.6, 0.9]
+        roc_result = ROCResult()
         for threshold in thresholds:
             #TODO create generated
             dest = os.path.join("generated", "bbox%f.txt"%(threshold,))
@@ -114,3 +117,5 @@ if __name__=="__main__":
             result = comparator.compare_datasets(toscore, groundtruth)
             print "Threshold = %f"%(threshold)
             print result
+            roc_result.add_result(threshold, result)
+        print roc_result

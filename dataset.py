@@ -86,8 +86,3 @@ class DataSet(object):
             ret += "(%s : %s) "%(img, str(self.images[img]))
         ret = ret[:-1] + ")"
         return ret
-    
-
-class ROCDataSet(object):
-    def __init__(self):
-        self.results = []
