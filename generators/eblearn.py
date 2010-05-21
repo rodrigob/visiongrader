@@ -9,7 +9,7 @@ name = "eblearnGenerator"
 def describe():
     return "The eblearn results generator"
 
-def generate(threshold, destination):
+def generate(images, threshold, destination):
     #set the config file
     eblearn_path = "/home/mfm352/eblearn/current/eblearn"
     conf_path = os.path.join(eblearn_path, "demos/obj/face/trained/best.conf")
@@ -26,7 +26,6 @@ def generate(threshold, destination):
 
     eblearn_bin = os.path.join(eblearn_path, "bin/objdetect")
     eblearn_best_conf = os.path.join(eblearn_path, "demos/obj/face/trained/best.conf")
-    images = "/home/mfm352/scolearn/data/CMU/test/"
     eblearn_command_line = "%s %s %s"%(eblearn_bin, eblearn_best_conf, images)
     eblearn = subprocess.Popen([eblearn_command_line], shell = True,
                                stdout = subprocess.PIPE)

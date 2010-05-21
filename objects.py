@@ -158,14 +158,27 @@ class EyesMouth(Eyes, Mouth):
                 self.add_point(name, vars()[name])
 
     def bounding_box(self):
-        deyes = mean(self.get_right_eye()).x - mean(self.get_left_eye()).x
-        xmin = mean(self.get_left_eye()).x - deyes * 0.75
-        xmax = mean(self.get_right_eye()).x + deyes * 0.75
-        mean_eyes = mean(self.get_left_eye() + self.get_right_eye())
+        leye = mean(self.get_right_eye())
+        reye = mean(self.get_left_eye())
+        deyes = reye - leye
+        #xmin = leye - deyes * 0.75).x
+        #xmax = reye + deyes * 0.75).x
+        mean_eyes = mean([leye, reye])
         mean_mouth = mean(self.get_mouth())
-        deyesmouth = mean_mouth.y - mean_eyes.y
-        ymin = mean_eyes.y - deyesmouth
-        ymax = mean_mouth.y + deyesmouth * 0.5
+        deyesmouth = mean_mouth - mean_eyes
+        #ymin = (mean_eyes - deyesmouth).y
+        #ymax = (mean_mouth + deyesmouth * 0.5).y
+        t = leye - deyesmouth
+        b = t + deyesmouth * 2.5
+        tl = t - deyes * 0.75
+        tr = t + deyes * 1.75
+        bl = b - deyes * 1.75
+        br = b + deyes * 1.75
+        pts = [tl, tr, bl, br]
+        xmin = min([p.x for p in pts])
+        xmax = max([p.x for p in pts])
+        ymin = min([p.y for p in pts])
+        ymax = max([p.y for p in pts])
         return BoundingBox(xmin, ymin, xmax, ymax)
 
 class EyesNoseMouth(EyesMouth, Nose):

@@ -58,6 +58,10 @@ if __name__=="__main__":
                          help = "Generator directory")
     optparser.add_option("-g", "--generator", dest = "generator", default = None, type = "str",
                          help = "Generator to use (if not specified, an input file must be specified")
+    optparser.add_option("--images_dir", dest = "images_path", default = None, type = "str",
+                         help = "Path to the images to generate from")
+    optparser.add_option("--generated_dir", dest = "generated_dir", default = "generated", type = "str",
+                         help = "Directory to pick and put the generated files in case of generate mode")
     (options, args) = optparser.parse_args()
 
     if options.input != None:
@@ -105,13 +109,19 @@ if __name__=="__main__":
         result = comparator.compare_datasets(toscore, groundtruth)
         print result
     elif mode == "ROC":
-        thresholds = [-0.99, -0.97, -0.94, -0.9, -0.85, -0.8, -0.7, -0.6, -0.5, -0.4, -0.3, -0.2, -0.1, 0, 0.2, 0.4, 0.6, 0.9]
+        #thresholds = [-0.99, -0.97, -0.94, -0.9, -0.85, -0.8, -0.7, -0.6, -0.5, -0.4,
+        #              -0.3, -0.2, -0.1, 0, 0.2, 0.4, 0.6, 0.9]
+        thresholds = [-0.999, -0.995, -0.99, -0.98, -0.97, -0.96, -0.95, -0.93, -0.9,
+                      -0.85, -0.8, -0.7, -0.6, -0.5, -0.3, 0, 0.5, 0.99]
         roc_result = ROCResult()
         for threshold in thresholds:
             #TODO create generated
-            dest = os.path.join("generated", "bbox%f.txt"%(threshold,))
+            dest = os.path.join(options.generated_dir, "bbox%f.txt"%(threshold,))
             if not os.path.exists(dest):
-                generator.generate(threshold, dest)
+                if options.images_path == None:
+                    print "No image directory specified"
+                    sys.exit(0)
+                generator.generate(options.images_path, threshold, dest)
             toscore_file = open(dest, "r")
             print dir(toscore_parser)
             toscore = toscore_parser.parse(toscore_file)

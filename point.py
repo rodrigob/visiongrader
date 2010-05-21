@@ -9,6 +9,15 @@ class Point(object):
     def __add__(self, other):
         return Point(self.x + other.x, self.y + other.y)
 
+    def __sub__(self, other):
+        return Point(self.x - other.x, self.y - other.y)
+
+    def __mul__(self, other):
+        if type(other) not in [int, float]:
+            raise NotImplementedError()
+        else:
+            return Point(self.x * other, self.y * other)
+
 def mean(A):
     ret = Point(0., 0.)
     for a in A:
