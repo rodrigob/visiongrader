@@ -4,6 +4,7 @@ import optparse
 import os
 import os.path
 import sys
+import roc
 
 from result import ROCResult
 
@@ -104,12 +105,13 @@ if __name__=="__main__":
         result = comparator.compare_datasets(toscore, groundtruth)
         print result
     elif mode == "ROC":
-        thresholds = [-0.9,-0.8, -0.7, -0.6, -0.5, -0.4, -0.3, -0.2, -0.1, 0, 0.2, 0.4, 0.6, 0.9]
+        thresholds = [-0.99, -0.97, -0.94, -0.9, -0.85, -0.8, -0.7, -0.6, -0.5, -0.4, -0.3, -0.2, -0.1, 0, 0.2, 0.4, 0.6, 0.9]
         roc_result = ROCResult()
         for threshold in thresholds:
             #TODO create generated
             dest = os.path.join("generated", "bbox%f.txt"%(threshold,))
-            generator.generate(threshold, dest)
+            if not os.path.exists(dest):
+                generator.generate(threshold, dest)
             toscore_file = open(dest, "r")
             print dir(toscore_parser)
             toscore = toscore_parser.parse(toscore_file)
@@ -119,3 +121,4 @@ if __name__=="__main__":
             print result
             roc_result.add_result(threshold, result)
         print roc_result
+        roc.print_ROC(roc_result)

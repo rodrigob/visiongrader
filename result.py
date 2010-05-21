@@ -55,3 +55,9 @@ class ROCResult(object):
         for th in self.datasets:
             ret += "(%s : %s) "%(th, self.datasets[th])
         return ret[:-1]
+
+    def __iter__(self):
+        return self.datasets.__iter__()
+
+    def __getitem__(self, i):
+        return self.datasets[i]
