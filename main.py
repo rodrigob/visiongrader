@@ -4,7 +4,7 @@ import optparse
 import os
 import os.path
 import sys
-import roc
+import plot
 
 from result import ROCResult
 
@@ -38,7 +38,7 @@ class ModuleHandler(object):
 
 if __name__=="__main__":
     usage = "usage: %prog -g groundtruth --input_parser inputparser --groundtruth_parser \
-    groundtruthparser -c comparator [OPTIONS] [-i input] [-g generator]"
+    groundtruthparser -c comparator [OPTIONS] [-i input] [-g generator] [--roc] [--det]"
     optparser = optparse.OptionParser(add_help_option = True, usage = usage, prog = "./main.py")
     optparser.add_option("-i", "--input", dest = "input", default = None, type = "str",
                          help = "Input file to score (if not specified, a generator must be specified)")
@@ -62,16 +62,32 @@ if __name__=="__main__":
                          help = "Path to the images to generate from")
     optparser.add_option("--generated_dir", dest = "generated_dir", default = "generated", type = "str",
                          help = "Directory to pick and put the generated files in case of generate mode")
+    optparser.add_option("--roc", dest = "roc", action = "store_true", default = False,
+                         help = "Print ROC curve. Can only work with a generator.")
+    optparser.add_option("--det", dest = "det", action = "store_true", default = False,
+                         help = "Print DET curve. Can only work with a generator.")
     (options, args) = optparser.parse_args()
 
     if options.input != None:
         toscore_filename = options.input
         mode = "input_file"
+        if options.roc or options.det:
+            print "You must use a generator to use --roc or --det option."
+            sys.exit(0)
     elif options.generator != None:
         generator_dir = options.generator_dir
         generators = ModuleHandler(".", generator_dir)
         generator = generators.get_module(options.generator)
-        mode = "ROC"
+        if options.roc and options.det:
+            print "You cannot choose both --roc and --det."
+            sys.exit(0)
+        if options.roc:
+            mode = "ROC"
+        elif options.det:
+            mode = "DET"
+        else:
+            print "Choose either --roc od --det."
+            sys.exit(0)
     else:
         optparser.print_usage()
         sys.exit(0)
@@ -108,7 +124,7 @@ if __name__=="__main__":
         toscore_file.close()
         result = comparator.compare_datasets(toscore, groundtruth)
         print result
-    elif mode == "ROC":
+    elif mode == "ROC" or mode == "DET":
         thresholds = generator.thresholds
         roc_result = ROCResult()
         for threshold in thresholds:
@@ -128,4 +144,7 @@ if __name__=="__main__":
             print result
             roc_result.add_result(threshold, result)
         print roc_result
-        roc.print_ROC(roc_result)
+        if mode == "ROC":
+            plot.print_ROC(roc_result)
+        elif mode == "DET":
+            plot.print_DET(roc_result)
