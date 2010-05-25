@@ -13,8 +13,8 @@ def match_objs(obj, gndtruth, max_area_ratio):
             return False
     #return float(obj.bounding_box().area()) / float(gndtruth.bounding_box().area()) <= max_area_ratio
     if float(obj.bounding_box().area()) / float(gndtruth.bounding_box().area()) > max_area_ratio:
-        print obj.bounding_box().x1, obj.bounding_box().x2, \
-              gndtruth.bounding_box().x1, gndtruth.bounding_box().x2
+        #print obj.bounding_box().x1, obj.bounding_box().x2, \
+        #      gndtruth.bounding_box().x1, gndtruth.bounding_box().x2
         return False
     else:
         return True

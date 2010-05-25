@@ -1,23 +1,23 @@
 import pylab
 
-def print_ROC(roc_result):
+def print_ROC(multi_result):
     points = []
-    for thres in roc_result:
-        fp = float(roc_result[thres].n_false_positives)
-        missed = float(roc_result[thres].n_unrecognized)
-        matches = float(roc_result[thres].n_matches)
+    for thres in multi_result:
+        fp = float(multi_result[thres].n_false_positives)
+        missed = float(multi_result[thres].n_unrecognized)
+        matches = float(multi_result[thres].n_matches)
         points.append((fp, matches / (matches + missed)))
     points.sort()
     pylab.plot([a[0] for a in points], [a[1] for a in points])
     pylab.show()
 
-def print_DET(roc_result):
+def print_DET(multi_result):
     points = []
-    for thres in roc_result:
-        fp = float(roc_result[thres].n_false_positives)
-        missed = float(roc_result[thres].n_unrecognized)
-        matches = float(roc_result[thres].n_matches)
-        n_imgs = float(len(roc_result[thres].images_results))
+    for thres in multi_result:
+        fp = float(multi_result[thres].n_false_positives)
+        missed = float(multi_result[thres].n_unrecognized)
+        matches = float(multi_result[thres].n_matches)
+        n_imgs = float(len(multi_result[thres].images_results))
         points.append((fp / n_imgs, missed / (matches + missed)))
     points.sort()
     pylab.plot([a[0] for a in points], [a[1] for a in points])

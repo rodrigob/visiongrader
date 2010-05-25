@@ -6,7 +6,7 @@ import os.path
 import sys
 import plot
 
-from result import ROCResult
+from result import MultiResult
 
 class ModuleHandler(object):
     def __init__(self, module_dir, module_name):
@@ -126,7 +126,7 @@ if __name__=="__main__":
         print result
     elif mode == "ROC" or mode == "DET":
         thresholds = generator.thresholds
-        roc_result = ROCResult()
+        multi_result = MultiResult()
         for threshold in thresholds:
             #TODO create generated
             dest = os.path.join(options.generated_dir, "bbox%f.txt"%(threshold,))
@@ -136,15 +136,13 @@ if __name__=="__main__":
                     sys.exit(0)
                 generator.generate(options.images_path, threshold, dest)
             toscore_file = open(dest, "r")
-            print dir(toscore_parser)
             toscore = toscore_parser.parse(toscore_file)
             toscore_file.close()
             result = comparator.compare_datasets(toscore, groundtruth)
             print "Threshold = %f"%(threshold)
             print result
-            roc_result.add_result(threshold, result)
-        print roc_result
+            multi_result.add_result(threshold, result)
         if mode == "ROC":
-            plot.print_ROC(roc_result)
+            plot.print_ROC(multi_result)
         elif mode == "DET":
-            plot.print_DET(roc_result)
+            plot.print_DET(multi_result)
