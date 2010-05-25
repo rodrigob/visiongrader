@@ -109,10 +109,7 @@ if __name__=="__main__":
         result = comparator.compare_datasets(toscore, groundtruth)
         print result
     elif mode == "ROC":
-        #thresholds = [-0.99, -0.97, -0.94, -0.9, -0.85, -0.8, -0.7, -0.6, -0.5, -0.4,
-        #              -0.3, -0.2, -0.1, 0, 0.2, 0.4, 0.6, 0.9]
-        thresholds = [-0.999, -0.995, -0.99, -0.98, -0.97, -0.96, -0.95, -0.93, -0.9,
-                      -0.85, -0.8, -0.7, -0.6, -0.5, -0.3, 0, 0.5, 0.99]
+        thresholds = generator.thresholds
         roc_result = ROCResult()
         for threshold in thresholds:
             #TODO create generated

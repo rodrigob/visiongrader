@@ -9,6 +9,9 @@ name = "eblearnGenerator"
 def describe():
     return "The eblearn results generator"
 
+thresholds =[-0.999, -0.995, -0.99, -0.98, -0.97, -0.96, -0.95, -0.93, -0.9,
+             -0.85, -0.8, -0.7, -0.6, -0.5, -0.3, 0, 0.5, 0.99]
+
 def generate(images, threshold, destination):
     #set the config file
     eblearn_path = "/home/mfm352/eblearn/current/eblearn"
