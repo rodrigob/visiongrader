@@ -9,7 +9,7 @@ def desctibe():
 def recognize(file):
     return False
 
-def parse(file):
+def parse(file, threshold = -0.6):
     ret = DataSet()
     for line in file:
         line = line.strip().rstrip()
@@ -18,6 +18,6 @@ def parse(file):
         filename = filename[filename.rfind("/")+1:]
         class_id = int(splited[1])
         (confidence, x, y, x2, y2) = tuple([float(a) for a in splited[2:]])
-        #TODO confidence
-        ret.add_obj(filename, BoundingBox(x, y, x2, y2))
+        if confidence > threshold:
+            ret.add_obj(filename, BoundingBox(x, y, x2, y2))
     return ret

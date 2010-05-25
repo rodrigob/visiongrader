@@ -37,8 +37,8 @@ class ModuleHandler(object):
         return self.modules["%s.%s"%(self.module_name, name)]
 
 if __name__=="__main__":
-    usage = "usage: %prog -g groundtruth --input_parser inputparser --groundtruth_parser \
-    groundtruthparser -c comparator [OPTIONS] [-i input] [-g generator] [--roc] [--det]"
+    usage = "usage: %prog -i input -g groundtruth --input_parser inputparser --groundtruth_parser \
+    groundtruthparser -c comparator [OPTIONS] [--roc] [--det]"
     optparser = optparse.OptionParser(add_help_option = True, usage = usage, prog = "./main.py")
     optparser.add_option("-i", "--input", dest = "input", default = None, type = "str",
                          help = "Input file to score (if not specified, a generator must be specified)")
@@ -54,26 +54,35 @@ if __name__=="__main__":
                          type = "str", help = "Comparator directory")
     optparser.add_option("-c", "--comparator", dest = "comparator", default = None, type = "str",
                          help = "Comparator to use (required)")
-    optparser.add_option("--generator_dir", dest = "generator_dir", default = "generators", type = "str",
-                         help = "Generator directory")
-    optparser.add_option("-g", "--generator", dest = "generator", default = None, type = "str",
-                         help = "Generator to use (if not specified, an input file must be specified")
+    #optparser.add_option("--generator_dir", dest = "generator_dir", default = "generators", type = "str",
+    #                     help = "Generator directory")
+    #optparser.add_option("-g", "--generator", dest = "generator", default = None, type = "str",
+    #                     help = "Generator to use (if not specified, an input file must be specified")
     optparser.add_option("--images_dir", dest = "images_path", default = None, type = "str",
                          help = "Path to the images to generate from")
-    optparser.add_option("--generated_dir", dest = "generated_dir", default = "generated", type = "str",
-                         help = "Directory to pick and put the generated files in case of generate mode")
+    #optparser.add_option("--generated_dir", dest = "generated_dir", default = "generated", type = "str",
+    #                     help = "Directory to pick and put the generated files in case of generate mode")
     optparser.add_option("--roc", dest = "roc", action = "store_true", default = False,
                          help = "Print ROC curve. Can only work with a generator.")
     optparser.add_option("--det", dest = "det", action = "store_true", default = False,
                          help = "Print DET curve. Can only work with a generator.")
     (options, args) = optparser.parse_args()
 
-    if options.input != None:
-        toscore_filename = options.input
-        mode = "input_file"
-        if options.roc or options.det:
-            print "You must use a generator to use --roc or --det option."
+    if options.input == None:
+        optparser.print_usage()
+        sys.exit(0)
+    toscore_filename = options.input
+
+    if options.roc == True:
+        if options.det == True:
+            print "You cannot choose both --roc and --det."
             sys.exit(0)
+        mode = "ROC"
+    elif options.det == True:
+       mode = "DET"
+    else:
+        mode = "input_file"
+    '''
     elif options.generator != None:
         generator_dir = options.generator_dir
         generators = ModuleHandler(".", generator_dir)
@@ -91,6 +100,8 @@ if __name__=="__main__":
     else:
         optparser.print_usage()
         sys.exit(0)
+    '''
+        
     if options.groundtruth == None:
         optparser.print_usage()
         sys.exit(0)
@@ -125,9 +136,11 @@ if __name__=="__main__":
         result = comparator.compare_datasets(toscore, groundtruth)
         print result
     elif mode == "ROC" or mode == "DET":
-        thresholds = generator.thresholds
+        thresholds =[-1, -0.998, -0.996, -0.994, -0.992, -0.99, -0.09, -0.97, -0.96, -0.95, -0.93, -0.9,
+             -0.85, -0.8, -0.7, -0.6, -0.5, -0.3, 0, 0.5, 0.99] #TODO
         multi_result = MultiResult()
         for threshold in thresholds:
+            '''
             #TODO create generated
             dest = os.path.join(options.generated_dir, "bbox%f.txt"%(threshold,))
             if not os.path.exists(dest):
@@ -135,8 +148,9 @@ if __name__=="__main__":
                     print "No image directory specified"
                     sys.exit(0)
                 generator.generate(options.images_path, threshold, dest)
-            toscore_file = open(dest, "r")
-            toscore = toscore_parser.parse(toscore_file)
+            '''
+            toscore_file = open(toscore_filename, "r")
+            toscore = toscore_parser.parse(toscore_file, threshold = threshold)
             toscore_file.close()
             result = comparator.compare_datasets(toscore, groundtruth)
             print "Threshold = %f"%(threshold)
