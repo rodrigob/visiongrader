@@ -32,11 +32,7 @@ def generate_boxes(conf_path, bin_path, images_path, dst, temp_dir = "."):
     eblearn_bin = bin_path
     eblearn_best_conf = conf_path
     eblearn_command_line = "%s %s %s"%(eblearn_bin, eblearn_best_conf, images_path)
-    #eblearn = subprocess.Popen([eblearn_command_line], shell = True,
-    #                           stdout = subprocess.PIPE)
-    #eblearn.wait()
     os.system(eblearn_command_line)
-    #print eblearn.stdout.read()
 
     detections_path = temp_dir
     detection_dirs = []

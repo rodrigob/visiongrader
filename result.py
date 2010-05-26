@@ -45,19 +45,16 @@ class DataSetResult(object):
                                                                            self.n_unrecognized)
 class MultiResult(object):
     def __init__(self):
-        self.datasets = {}
+        self.datasets = []
 
-    def add_result(self, threshold, result):
-        self.datasets[threshold] = result
+    def add_result(self, result):
+        self.datasets.append(result)
 
     def __str__(self):
         ret = "MultiResult : "
         for th in self.datasets:
-            ret += "(%s : %s) "%(th, self.datasets[th])
+            ret += "%s "%(self.datasets[th],)
         return ret[:-1]
-
-    def __iter__(self):
-        return self.datasets.__iter__()
 
     def __getitem__(self, i):
         return self.datasets[i]

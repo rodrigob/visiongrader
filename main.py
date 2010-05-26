@@ -54,18 +54,10 @@ if __name__=="__main__":
                          type = "str", help = "Comparator directory")
     optparser.add_option("-c", "--comparator", dest = "comparator", default = None, type = "str",
                          help = "Comparator to use (required)")
-    optparser.add_option("--images_dir", dest = "images_path", default = None, type = "str",
-                         help = "Path to the images to generate from")
     optparser.add_option("--roc", dest = "roc", action = "store_true", default = False,
                          help = "Print ROC curve. Can only work with a generator.")
     optparser.add_option("--det", dest = "det", action = "store_true", default = False,
                          help = "Print DET curve. Can only work with a generator.")
-    optparser.add_option("--threshold_min", dest = "threshold_min", default = -1.0, type = "float",
-                         help = "Minimum value for the treshold in ROC or DET mode.")
-    optparser.add_option("--threshold_max", dest = "threshold_max", default = 1.0, type = "float",
-                         help = "Maximum value for the treshold in ROC or DET mode.")
-    optparser.add_option("--threshold_step", dest = "threshold_step", default = 0.1, type = "float",
-                         help = "Treshold step in ROC or DET mode.")
     (options, args) = optparser.parse_args()
 
     if options.input == None:
@@ -115,18 +107,14 @@ if __name__=="__main__":
         result = comparator.compare_datasets(toscore, groundtruth)
         print result
     elif mode == "ROC" or mode == "DET":
-        step = options.threshold_step
-        thresholds = [step * a for a in range(options.threshold_min / step,
-                                              options.threshold_max / step + 1)] #TODO
+        toscore_file = open(toscore_filename, "r")
+        toscore = toscore_parser.parse_multi(toscore_file)
+        toscore_file.close()        
         multi_result = MultiResult()
-        for threshold in thresholds:
-            toscore_file = open(toscore_filename, "r")
-            toscore = toscore_parser.parse(toscore_file, threshold = threshold)
-            toscore_file.close()
-            result = comparator.compare_datasets(toscore, groundtruth)
-            print "Threshold = %f"%(threshold)
-            print result
-            multi_result.add_result(threshold, result)
+        for confidence in toscore:
+            dataset = toscore[confidence]
+            result = comparator.compare_datasets(dataset, groundtruth)
+            multi_result.add_result(result)
         if mode == "ROC":
             plot.print_ROC(multi_result)
         elif mode == "DET":

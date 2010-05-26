@@ -86,3 +86,27 @@ class DataSet(object):
             ret += "(%s : %s) "%(img, str(self.images[img]))
         ret = ret[:-1] + ")"
         return ret
+
+class DataSetMulti(DataSet):
+    def __init__(self, label = ""):
+        DataSet.__init__(self, label)
+        self.confidences = {}
+
+    def add_obj(self, confidence, filename, obj):
+        DataSet.add_obj(self, filename, obj)
+        while confidence in self.confidences:
+            confidence += 0.00001 #TODO
+        self.confidences[confidence] = (filename, self.images[filename][-1])
+
+    def __str__(self):
+        return "MultiDataSet " + DataSet.__str__(self)
+
+    def __iter__(self):
+        return self.confidences.__iter__()
+
+    def __getitem__(self, i):
+        ret = DataSet()
+        for confidence in self.confidences:
+            if confidence > i:
+                ret.add_obj(*self.confidences[confidence])
+        return ret
