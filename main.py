@@ -54,18 +54,18 @@ if __name__=="__main__":
                          type = "str", help = "Comparator directory")
     optparser.add_option("-c", "--comparator", dest = "comparator", default = None, type = "str",
                          help = "Comparator to use (required)")
-    #optparser.add_option("--generator_dir", dest = "generator_dir", default = "generators", type = "str",
-    #                     help = "Generator directory")
-    #optparser.add_option("-g", "--generator", dest = "generator", default = None, type = "str",
-    #                     help = "Generator to use (if not specified, an input file must be specified")
     optparser.add_option("--images_dir", dest = "images_path", default = None, type = "str",
                          help = "Path to the images to generate from")
-    #optparser.add_option("--generated_dir", dest = "generated_dir", default = "generated", type = "str",
-    #                     help = "Directory to pick and put the generated files in case of generate mode")
     optparser.add_option("--roc", dest = "roc", action = "store_true", default = False,
                          help = "Print ROC curve. Can only work with a generator.")
     optparser.add_option("--det", dest = "det", action = "store_true", default = False,
                          help = "Print DET curve. Can only work with a generator.")
+    optparser.add_option("--threshold_min", dest = "threshold_min", default = -1.0, type = "float",
+                         help = "Minimum value for the treshold in ROC or DET mode.")
+    optparser.add_option("--threshold_max", dest = "threshold_max", default = 1.0, type = "float",
+                         help = "Maximum value for the treshold in ROC or DET mode.")
+    optparser.add_option("--threshold_step", dest = "threshold_step", default = 0.1, type = "float",
+                         help = "Treshold step in ROC or DET mode.")
     (options, args) = optparser.parse_args()
 
     if options.input == None:
@@ -82,26 +82,7 @@ if __name__=="__main__":
        mode = "DET"
     else:
         mode = "input_file"
-    '''
-    elif options.generator != None:
-        generator_dir = options.generator_dir
-        generators = ModuleHandler(".", generator_dir)
-        generator = generators.get_module(options.generator)
-        if options.roc and options.det:
-            print "You cannot choose both --roc and --det."
-            sys.exit(0)
-        if options.roc:
-            mode = "ROC"
-        elif options.det:
-            mode = "DET"
-        else:
-            print "Choose either --roc od --det."
-            sys.exit(0)
-    else:
-        optparser.print_usage()
-        sys.exit(0)
-    '''
-        
+
     if options.groundtruth == None:
         optparser.print_usage()
         sys.exit(0)
@@ -115,8 +96,6 @@ if __name__=="__main__":
     if options.input_parser == None or options.groundtruth_parser == None:
         optparser.print_usage()
         sys.exit(0)
-    #print parsers.modules
-    #print parsers.modules[options.input_parser].describe()
     toscore_parser = parsers.get_module(options.input_parser) #TODO : check existence
     groundtruth_parser = parsers.get_module(options.groundtruth_parser) #TODO same
 
@@ -136,19 +115,11 @@ if __name__=="__main__":
         result = comparator.compare_datasets(toscore, groundtruth)
         print result
     elif mode == "ROC" or mode == "DET":
-        thresholds =[-1, -0.998, -0.996, -0.994, -0.992, -0.99, -0.09, -0.97, -0.96, -0.95, -0.93, -0.9,
-             -0.85, -0.8, -0.7, -0.6, -0.5, -0.3, 0, 0.5, 0.99] #TODO
+        step = options.threshold_step
+        thresholds = [step * a for a in range(options.threshold_min / step,
+                                              options.threshold_max / step + 1)] #TODO
         multi_result = MultiResult()
         for threshold in thresholds:
-            '''
-            #TODO create generated
-            dest = os.path.join(options.generated_dir, "bbox%f.txt"%(threshold,))
-            if not os.path.exists(dest):
-                if options.images_path == None:
-                    print "No image directory specified"
-                    sys.exit(0)
-                generator.generate(options.images_path, threshold, dest)
-            '''
             toscore_file = open(toscore_filename, "r")
             toscore = toscore_parser.parse(toscore_file, threshold = threshold)
             toscore_file.close()
