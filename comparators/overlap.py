@@ -1,4 +1,3 @@
-from result import ImageResult
 from comparator_helpers import compare_images_default, compare_datasets_default
 
 name = "OverlapComparator"

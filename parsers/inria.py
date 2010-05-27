@@ -3,6 +3,8 @@ from objects import BoundingBox
 import os
 import os.path
 
+data_type = "images"
+
 name = "INRIA_Parser"
 
 def describe():

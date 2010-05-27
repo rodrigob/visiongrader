@@ -27,5 +27,7 @@ def compare_datasets_default(toscore, groundtruth, compare_images):
             result.add_image_result(compare_images(ImageDataSet(), groundtruth[img]))
         else:
             result.add_image_result(compare_images(toscore[img], groundtruth[img]))
-        #TODO : look for the img in toscore but not in gndtruth
+    for img in toscore:
+        if img not in groundtruth:
+            result.add_image_result(compare_image(toscore[img], ImageDataSet()))
     return result

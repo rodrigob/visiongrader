@@ -4,22 +4,22 @@ from slist import slist
 class ImageDataSet(object):
     def __init__(self):
         self.objs = []
-        self.xmins = slist()
-        self.xmaxs = slist()
-        self.xmin_dict = {}
-        self.xmax_dict = {}
+        #self.xmins = slist()
+        #self.xmaxs = slist()
+        #self.xmin_dict = {}
+        #self.xmax_dict = {}
 
     def add_obj(self, obj):
-        box = obj.bounding_box()
+        #box = obj.bounding_box()
         self.objs.append(obj)
-        self.xmins.insert(box.x1)
-        self.xmaxs.insert(box.x2)
-        if box.x1 not in self.xmin_dict:
-            self.xmin_dict[box.x1] = []
-        self.xmin_dict[box.x1].append(obj)
-        if box.x2 not in self.xmax_dict:
-            self.xmax_dict[box.x2] = []
-        self.xmax_dict[box.x2].append(obj)
+        #self.xmins.insert(box.x1)
+        #self.xmaxs.insert(box.x2)
+        #if box.x1 not in self.xmin_dict:
+        #    self.xmin_dict[box.x1] = []
+        #self.xmin_dict[box.x1].append(obj)
+        #if box.x2 not in self.xmax_dict:
+        #    self.xmax_dict[box.x2] = []
+        #self.xmax_dict[box.x2].append(obj)
 
     def __len__(self):
         return len(self.objs)
@@ -75,16 +75,22 @@ class DataSet(object):
     def __iter__(self):
         return self.images.__iter__()
 
-    def add_obj(self, image, obj):
+    def add_empty_image(self, image):
         if image not in self.images:
             self.images[image] = ImageDataSet()
+        else:
+            print "Warning : DataSet.add_empty_image : image already exists."
+
+    def add_obj(self, image, obj):
+        if image not in self.images:
+            self.add_empty_image(image)
         self.images[image].add_obj(obj)
 
     def __str__(self):
         ret = "(DataSet %s : "%(self.label,)
         for img in self.images:
             ret += "(%s : %s) "%(img, str(self.images[img]))
-        ret = ret[:-1] + ")"
+        ret[-1] = ")"
         return ret
 
 class DataSetMulti(DataSet):

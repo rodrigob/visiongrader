@@ -75,7 +75,7 @@ if __name__=="__main__":
             sys.exit(0)
         mode = "ROC"
     elif options.det == True:
-       mode = "DET"
+        mode = "DET"
     else:
         mode = "input_file"
 

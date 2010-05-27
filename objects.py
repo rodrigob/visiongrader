@@ -6,7 +6,7 @@ class ObjectInfos(object):
         super(ObjectInfos, self).__init__()
 
     def bounding_box(self):
-        pass
+        return BoundingBox(self.x1, self.y1, self.x2, self.y2)
 
     def getX1(self):
         return self.bounding_box()._x
@@ -27,6 +27,29 @@ class ObjectInfos(object):
 
     def __str__(self):
         return "ObjectInfos"
+
+class WholeImage(ObjectInfos):
+    def __init__(self, filename):
+        super(WholeImage, self).__init__()
+        self.filename = filename
+
+    def __str__(self):
+        return "Whole Image : %s"%(self.filename,)
+
+    def getX1(self):
+        return 0
+
+    def getY1(self):
+        return 0
+
+    def getX2(self):
+        raise NotImplementedError() #TODO
+
+    def getY2(self):
+        raise NotImplementedError() #TODO
+
+    def bounding_box(self):
+        raise NotImplementedError()
 
 class BoundingBoxError(StandardError):
     def __init__(self):

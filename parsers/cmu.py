@@ -4,6 +4,8 @@ from objects import EyesNoseMouth
 
 name = "CMU"
 
+data_type = "images"
+
 def describe():
     return "Parser for the CMU dataset."
 

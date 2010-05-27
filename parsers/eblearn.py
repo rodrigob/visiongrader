@@ -3,6 +3,8 @@ from objects import BoundingBox
 
 name = "eblearnParser"
 
+data_type = "images"
+
 def desctibe():
     return "Parser for eblearn result files"
 

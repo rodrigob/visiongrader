@@ -2,7 +2,7 @@ class ImageResult(object):
     def __init__(self):
         self.matches = []
         self.false_positives = []
-        self.unrecognized = []
+        self.false_negatives = []
 
     def add_match(self, box1, box2):
         self.matches.append((box1, box2))
@@ -13,7 +13,7 @@ class ImageResult(object):
         #print "false positive", box
 
     def add_unrecognized(self, box):
-        self.unrecognized.append(box)
+        self.false_negatives.append(box)
         #print "missed", box
 
     def n_matches(self):
@@ -23,7 +23,7 @@ class ImageResult(object):
         return len(self.false_positives)
 
     def n_unrecognized(self):
-        return len(self.unrecognized)
+        return len(self.false_negatives)
 
 
 class DataSetResult(object):
@@ -58,3 +58,27 @@ class MultiResult(object):
 
     def __getitem__(self, i):
         return self.datasets[i]
+
+def BoolResult(object):
+    def __init__(self):
+        self.images = {}
+
+    def add_true_positive(self, filename):
+        if filename in self.images:
+            print "Warning : BoolResult : %s already exists."%(filename,)
+        self.images[filename] = "TP"
+
+    def add_false_positive(self, filename):
+        if filename in self.images:
+            print "Warning : BoolResult : %s already exists."%(filename,)
+        self.images[filename] = "FP"
+
+    def add_true_negative(self, filename):
+        if filename in self.images:
+            print "Warning : BoolResult : %s already exists."%(filename,)
+        self.images[filename] = "TN"
+
+    def add_false_negative(self, filename):
+        if filename in self.images:
+            print "Warning : BoolResult : %s already exists."%(filename,)
+        self.images[filename] = "FN"
