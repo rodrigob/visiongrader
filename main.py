@@ -55,9 +55,9 @@ if __name__=="__main__":
     optparser.add_option("-c", "--comparator", dest = "comparator", default = None, type = "str",
                          help = "Comparator to use (required)")
     optparser.add_option("--roc", dest = "roc", action = "store_true", default = False,
-                         help = "Print ROC curve. Can only work with a generator.")
+                         help = "Print ROC curve.")
     optparser.add_option("--det", dest = "det", action = "store_true", default = False,
-                         help = "Print DET curve. Can only work with a generator.")
+                         help = "Print DET curve.")
     optparser.add_option("--confidence_max", dest = "confidence_max", default = None,
                          type = "float", help = "Maximum confidence to display for the curves.")
     optparser.add_option("--confidence_min", dest = "confidence_min", default = None,
