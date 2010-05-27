@@ -31,9 +31,10 @@ def print_DET(multi_result):
         fp = float(result.n_false_positives)
         fn = float(result.n_false_negatives)
         n_imgs = float(len(result.images_results))
-        points.append((fp / n_imgs, fn / (tp + fn)))
+        #the "-" is a trick for sorting
+        points.append((fp / n_imgs, - fn / (tp + fn)))
     points.sort()
-    pylab.plot([a[0] for a in points], [a[1] for a in points])
+    pylab.plot([a[0] for a in points], [- a[1] for a in points])
     pylab.show()
 
 def print_DET_posneg(multi_result):
@@ -43,7 +44,8 @@ def print_DET_posneg(multi_result):
         fp = float(result.n_false_positives())
         tn = float(result.n_true_negatives())
         fn = float(result.n_false_nogatices())
-        points.append(fp / (fp + tn), fn / (tp + fn))
+        #the "-" is a trick for sorting
+        points.append(fp / (fp + tn), - fn / (tp + fn))
     points.sort()
-    pylab.plot([a[0] for a in points], [a[1] for a in points])
+    pylab.plot([a[0] for a in points], [- a[1] for a in points])
     pylab.show()
