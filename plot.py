@@ -22,4 +22,3 @@ def print_DET(multi_result):
     points.sort()
     pylab.plot([a[0] for a in points], [a[1] for a in points])
     pylab.show()
-    

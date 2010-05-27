@@ -71,7 +71,7 @@ class BoundingBox(ObjectInfos):
 
     def overlapping_area(self, other):
         w = min(self.x2, other.x2) - max(self.x1, other.x1)
-        h = min(self.y2, other.y2) - max(self.y2, other.y2)
+        h = min(self.y2, other.y2) - max(self.y1, other.y1)
         if (w < 0 or h < 0):
             return 0
         else:

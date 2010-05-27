@@ -58,6 +58,10 @@ if __name__=="__main__":
                          help = "Print ROC curve. Can only work with a generator.")
     optparser.add_option("--det", dest = "det", action = "store_true", default = False,
                          help = "Print DET curve. Can only work with a generator.")
+    optparser.add_option("--confidence_max", dest = "confidence_max", default = None,
+                         type = "float", help = "Maximum confidence to display for the curves.")
+    optparser.add_option("--confidence_min", dest = "confidence_min", default = None,
+                         type = "float", help = "Mminimum confidence to display for the curves.")
     (options, args) = optparser.parse_args()
 
     if options.input == None:
@@ -109,9 +113,15 @@ if __name__=="__main__":
     elif mode == "ROC" or mode == "DET":
         toscore_file = open(toscore_filename, "r")
         toscore = toscore_parser.parse_multi(toscore_file)
-        toscore_file.close()        
+        toscore_file.close()
         multi_result = MultiResult()
         for confidence in toscore:
+            if options.confidence_min != None:
+                if confidence < options.confidence_min:
+                    continue
+            if options.confidence_max != None:
+                if confidence > options.confidence_max:
+                    continue
             dataset = toscore[confidence]
             result = comparator.compare_datasets(dataset, groundtruth)
             multi_result.add_result(result)
