@@ -3,7 +3,7 @@ from objects import BoundingBox
 import os
 import os.path
 
-data_type = "bool"
+data_type = "posneg"
 
 name = "INRIA_Bool_Parser"
 

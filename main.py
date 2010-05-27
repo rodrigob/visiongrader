@@ -126,6 +126,16 @@ if __name__=="__main__":
             result = comparator.compare_datasets(dataset, groundtruth)
             multi_result.add_result(result)
         if mode == "ROC":
-            plot.print_ROC(multi_result)
+            if groundtruth_parser.data_type == "images":
+                plot.print_ROC(multi_result)
+            elif groundtruth_parser.data_type == "posneg":
+                plot.print_ROC_posneg(multi_result)
+            else:
+                raise NotImplementedError()
         elif mode == "DET":
-            plot.print_DET(multi_result)
+            if groundtruth_parser.data_type == "images":
+                plot.print_DET(multi_result)
+            elif groundtruth_parser.data_type == "posneg":
+                plot.print_DET_posneg(multi_result)
+            else:
+                raise NotImplementedError()

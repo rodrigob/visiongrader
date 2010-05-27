@@ -82,3 +82,15 @@ def BoolResult(object):
         if filename in self.images:
             print "Warning : BoolResult : %s already exists."%(filename,)
         self.images[filename] = "FN"
+
+    def n_true_positives(self):
+        return len(self.true_positives)
+
+    def n_false_positives(self):
+        return len(self.false_positives)
+
+    def n_true_negatives(self):
+        return len(self.true_negatives)
+
+    def n_false_negatives(self):
+        return len(self.false_negatives)
