@@ -93,6 +93,26 @@ class DataSet(object):
         ret[-1] = ")"
         return ret
 
+class DataSetFromMulti(object):
+    def __init__(self, parent, i_conf_min, label = ""):
+        self.parent = parent
+        self.i_conf_min = i_conf_min
+        self.label = label
+
+    def __len__(self):
+        return len(self.parent) - self.i_conf_min
+
+    def __iter__(self):
+        ret = self.parent.images.__iter__()
+        for i in xrange(0, self.i_conf_min):
+            ret.next()
+        return ret
+        #return DataSetFromMultiIterator(self, self.i_conf_min)
+
+    def __getitem__(self, it):
+        if type(i) == int:
+            return self.parent[i+self.i_conf_min]
+
 class DataSetMulti(DataSet):
     def __init__(self, label = ""):
         DataSet.__init__(self, label)
@@ -110,9 +130,21 @@ class DataSetMulti(DataSet):
     def __iter__(self):
         return self.confidences.__iter__()
 
-    def __getitem__(self, i):
+    def __getitem__(self, conf):
         ret = DataSet()
         for confidence in self.confidences:
-            if confidence > i:
+            if confidence > conf:
                 ret.add_obj(*self.confidences[confidence])
         return ret
+        '''
+        i = 0
+        for c in self.confidences:
+            if self.confidences[c] >= conf:
+                break
+            i += 1
+            print i
+        return DataSetFromMulti(self, i)
+        '''
+
+    def keys(self):
+        return self.confidences.keys()

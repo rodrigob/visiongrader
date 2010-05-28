@@ -18,8 +18,8 @@ def print_ROC_posneg(multi_result):
         tp = float(result.n_true_positives())
         fp = float(result.n_false_positives())
         tn = float(result.n_true_negatives())
-        fn = float(result.n_false_nogatices())
-        points.append(fp / (fp + tn), tp / (tp + fn))
+        fn = float(result.n_false_negatives())
+        points.append((fp / (fp + tn), tp / (tp + fn)))
     points.sort()
     pylab.plot([a[0] for a in points], [a[1] for a in points])
     pylab.show()
@@ -38,14 +38,15 @@ def print_DET(multi_result):
     pylab.show()
 
 def print_DET_posneg(multi_result):
-    prints = []
+    points = []
     for result in multi_result:
         tp = float(result.n_true_positives())
         fp = float(result.n_false_positives())
         tn = float(result.n_true_negatives())
-        fn = float(result.n_false_nogatices())
+        fn = float(result.n_false_negatives())
         #the "-" is a trick for sorting
-        points.append(fp / (fp + tn), - fn / (tp + fn))
+        points.append((fp / (fp + tn), - fn / (tp + fn)))
     points.sort()
+    print points
     pylab.plot([a[0] for a in points], [- a[1] for a in points])
     pylab.show()

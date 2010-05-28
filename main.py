@@ -100,28 +100,27 @@ if __name__=="__main__":
         sys.exit(0)
     comparator = comparators.get_module(options.comparator)
 
-    groundtruth_file = open(groundtruth_filename, "r")
-    groundtruth = groundtruth_parser.parse(groundtruth_file)
-    groundtruth_file.close()
+    groundtruth = groundtruth_parser.parse(groundtruth_filename)
     
     if mode == "input_file":
-        toscore_file = open(toscore_filename, "r")
-        toscore = toscore_parser.parse(toscore_file)
-        toscore_file.close()
+        toscore = toscore_parser.parse(toscore_filename)
         result = comparator.compare_datasets(toscore, groundtruth)
         print result
     elif mode == "ROC" or mode == "DET":
-        toscore_file = open(toscore_filename, "r")
-        toscore = toscore_parser.parse_multi(toscore_file)
-        toscore_file.close()
+        toscore = toscore_parser.parse_multi(toscore_filename)
         multi_result = MultiResult()
-        for confidence in toscore:
+        print len(toscore)
+        n = 5
+        for i in xrange(0, len(toscore) / n):
+            #print i
+            confidence = toscore.keys()[i*n]
             if options.confidence_min != None:
                 if confidence < options.confidence_min:
                     continue
             if options.confidence_max != None:
                 if confidence > options.confidence_max:
                     continue
+            print i
             dataset = toscore[confidence]
             result = comparator.compare_datasets(dataset, groundtruth)
             multi_result.add_result(result)

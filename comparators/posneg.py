@@ -8,6 +8,7 @@ def describe():
 
 def compare_datasets(toscore, groundtruth):
     result = BoolResult()
+    #print groundtruth
     for img in groundtruth:
         len_gt = len(groundtruth[img])
         if img not in toscore:

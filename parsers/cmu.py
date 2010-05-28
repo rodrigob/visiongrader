@@ -12,7 +12,8 @@ def describe():
 def recognize(file):
     return False
 
-def parse(file):
+def parse(filen):
+    file = open(filen, "r")
     ret = DataSet()
     for line in file:
         line = line.strip().rstrip()
@@ -28,4 +29,5 @@ def parse(file):
                                             Point(left_corner_mouth_x, left_corner_mouth_y),
                                             Point(center_mouth_x, center_mouth_y),
                                             Point(right_corner_mouth_x, right_corner_mouth_y)))
+    file.close()
     return ret

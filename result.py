@@ -59,38 +59,42 @@ class MultiResult(object):
     def __getitem__(self, i):
         return self.datasets[i]
 
-def BoolResult(object):
+class BoolResult(object):
     def __init__(self):
         self.images = {}
 
     def add_true_positive(self, filename):
+        #print "tp"
         if filename in self.images:
             print "Warning : BoolResult : %s already exists."%(filename,)
         self.images[filename] = "TP"
 
     def add_false_positive(self, filename):
+        #print "fp"
         if filename in self.images:
             print "Warning : BoolResult : %s already exists."%(filename,)
         self.images[filename] = "FP"
 
     def add_true_negative(self, filename):
+        #print "tn"
         if filename in self.images:
             print "Warning : BoolResult : %s already exists."%(filename,)
         self.images[filename] = "TN"
 
     def add_false_negative(self, filename):
+        #print "fn"
         if filename in self.images:
             print "Warning : BoolResult : %s already exists."%(filename,)
         self.images[filename] = "FN"
 
     def n_true_positives(self):
-        return len(self.true_positives)
+        return self.images.values().count("TP")
 
     def n_false_positives(self):
-        return len(self.false_positives)
+        return self.images.values().count("FP")
 
     def n_true_negatives(self):
-        return len(self.true_negatives)
+        return self.images.values().count("TN")
 
     def n_false_negatives(self):
-        return len(self.false_negatives)
+        return self.images.values().count("FN")
