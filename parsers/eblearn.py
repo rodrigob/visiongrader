@@ -7,6 +7,9 @@ name = "eblearnParser"
 
 data_type = "images"
 
+drop_neg = True
+negs = "/home/myrhev32/visiongrader/visiongrader/data/inria/INRIAPerson/Test/neg"
+
 def desctibe():
     return "Parser for eblearn result files"
 
@@ -34,12 +37,17 @@ def parse_multi_file(filen, ret = None):
     file = open(filen, "r")
     if ret == None:
         ret = DataSetMulti()
+    if drop_neg:
+        negs_files = [f[:f.rfind(".")] for f in os.listdir(negs)]
     for line in file:
         line = line.strip().rstrip()
         splited = line.split()
         filename = splited[0]
         filename = filename[filename.rfind("/")+1:]
         filename = filename[:filename.rfind(".")]
+        if drop_neg:
+            if filename in negs_files:
+                continue
         class_id = int(splited[1])
         (confidence, x, y, x2, y2) = tuple([float(a) for a in splited[2:]])
         ret.add_obj(confidence, filename, BoundingBox(x, y, x2, y2))

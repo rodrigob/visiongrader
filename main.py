@@ -64,7 +64,7 @@ if __name__=="__main__":
                          type = "float", help = "Mminimum confidence to display for the curves.")
     optparser.add_option("--crawl", action = "store_true", dest = "crawl", default = False,
                          help = "Crawls eblearn files.")
-    optparser.add_option("--sampling", dest = "sampling", default = 10,
+    optparser.add_option("--sampling", dest = "sampling", default = None, type = "int",
                          help = "Sampling rate. 1 is the most accurate, +inf the least.")
     (options, args) = optparser.parse_args()
     
@@ -114,10 +114,13 @@ if __name__=="__main__":
         toscore = toscore_parser.parse_multi(toscore_filename, crawl = options.crawl)
         multi_result = MultiResult()
         print toscore.n_confidences()
-        n = options.sampling
-        for i in xrange(0, toscore.n_confidences() / n):
+        if options.sampling == None:
+            n = 200
+        else:
+            n = int(toscore.n_confidences() / options.sampling)
+        for i in xrange(0, n):
             #print i
-            confidence = toscore.keys()[i*n]
+            confidence = toscore.keys()[toscore.n_confidences() / n * i]
             if options.confidence_min != None:
                 if confidence < options.confidence_min:
                     continue
