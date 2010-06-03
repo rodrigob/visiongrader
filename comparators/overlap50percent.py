@@ -15,7 +15,7 @@ def match_objs(obj, gndtruth, p):
     return inter / union > p
 
 def compare_images(toscore, groundtruth):
-    return compare_images_default(toscore, groundtruth, lambda a, b: match_objs(a, b, 0.3))
+    return compare_images_default(toscore, groundtruth, lambda a, b: match_objs(a, b, 0.5))
 
 def compare_datasets(toscore, groundtruth):
     return compare_datasets_default(toscore, groundtruth, compare_images)
