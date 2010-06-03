@@ -1,5 +1,7 @@
 from dataset import DataSet, DataSetMulti
 from objects import BoundingBox
+import os
+import os.path
 
 name = "eblearnParser"
 
@@ -12,6 +14,7 @@ def recognize(file):
     return False
 
 def parse(filen):
+    raise NotImplementedError()
     file = open(filen, "r")
     ret = DataSet()
     for line in file:
@@ -27,9 +30,10 @@ def parse(filen):
     file.close()
     return ret
 
-def parse_multi(filen):
+def parse_multi_file(filen, ret = None):
     file = open(filen, "r")
-    ret = DataSetMulti()
+    if ret == None:
+        ret = DataSetMulti()
     for line in file:
         line = line.strip().rstrip()
         splited = line.split()
@@ -41,3 +45,13 @@ def parse_multi(filen):
         ret.add_obj(confidence, filename, BoundingBox(x, y, x2, y2))
     file.close()
     return ret
+
+def parse_multi(filen, crawl = False):
+    if not crawl:
+        return parse_multi_file(filen)
+    else:
+        ret = DataSetMulti()
+        for (root, dirs, files) in os.walk(filen):
+            for file in [os.path.join(root, file) for file in files if file == "bbox.txt"]:
+                parse_multi_file(file, ret)
+        return ret

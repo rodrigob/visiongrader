@@ -10,10 +10,13 @@ def print_ROC(multi_result, n_imgs):
         #n_imgs = float(len(result.images))
         points.append((fp / n_imgs, tp / (tp + fn)))
     points.sort()
-    pylab.plot([a[0] for a in points], [a[1] for a in points])
+    pylab.semilogx([a[0] for a in points], [a[1] for a in points])
+    pylab.xlabel("False positives per image")
+    pylab.ylabel("Detection rate")
     pylab.show()
 
 def print_ROC_posneg(multi_result):
+    raise NotImplementedError()
     prints = []
     for result in multi_result:
         tp = float(result.n_true_positives())
@@ -41,9 +44,12 @@ def print_DET(multi_result, n_imgs):
     #TODO : params
     pylab.axis(xmin=0.005, xmax=10)
     pylab.axis(ymin=0.05,  ymax=1)
+    pylab.xlabel("False positives per image")
+    pylab.ylabel("Miss rate")
     pylab.show()
 
 def print_DET_posneg(multi_result):
+    raise NotImplementedError()
     points = []
     for result in multi_result:
         tp = float(result.n_true_positives())

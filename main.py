@@ -62,8 +62,12 @@ if __name__=="__main__":
                          type = "float", help = "Maximum confidence to display for the curves.")
     optparser.add_option("--confidence_min", dest = "confidence_min", default = None,
                          type = "float", help = "Mminimum confidence to display for the curves.")
+    optparser.add_option("--crawl", action = "store_true", dest = "crawl", default = False,
+                         help = "Crawls eblearn files.")
+    optparser.add_option("--sampling", dest = "sampling", default = 10,
+                         help = "Sampling rate. 1 is the most accurate, +inf the least.")
     (options, args) = optparser.parse_args()
-
+    
     if options.input == None:
         optparser.print_usage()
         sys.exit(0)
@@ -107,10 +111,10 @@ if __name__=="__main__":
         result = comparator.compare_datasets(toscore, groundtruth)
         print result
     elif mode == "ROC" or mode == "DET":
-        toscore = toscore_parser.parse_multi(toscore_filename)
+        toscore = toscore_parser.parse_multi(toscore_filename, crawl = options.crawl)
         multi_result = MultiResult()
         print toscore.n_confidences()
-        n = 10
+        n = options.sampling
         for i in xrange(0, toscore.n_confidences() / n):
             #print i
             confidence = toscore.keys()[i*n]
