@@ -11,7 +11,8 @@ def match_objs(obj, gndtruth, p):
     b1 = obj.bounding_box()
     b2 = gndtruth.bounding_box()
     inter = b1.overlapping_area(b2)
-    return (b1.area() < inter * p) and (b2.area() < inter * p)
+    union = b1.area() + b2.area() - inter
+    return inter / union > 0.5
 
 def compare_images(toscore, groundtruth):
     return compare_images_default(toscore, groundtruth, lambda a, b: match_objs(a, b, 2))

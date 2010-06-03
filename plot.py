@@ -1,12 +1,13 @@
 import pylab
+import matplotlib
 
-def print_ROC(multi_result):
+def print_ROC(multi_result, n_imgs):
     points = []
     for result in multi_result:
-        tp = float(result.n_true_positives)
-        fp = float(result.n_false_positives)
-        fn = float(result.n_false_negatives)
-        n_imgs = float(len(result.images_results))
+        tp = float(result.n_true_positives())
+        fp = float(result.n_false_positives())
+        fn = float(result.n_false_negatives())
+        #n_imgs = float(len(result.images))
         points.append((fp / n_imgs, tp / (tp + fn)))
     points.sort()
     pylab.plot([a[0] for a in points], [a[1] for a in points])
@@ -24,17 +25,21 @@ def print_ROC_posneg(multi_result):
     pylab.plot([a[0] for a in points], [a[1] for a in points])
     pylab.show()
 
-def print_DET(multi_result):
+def print_DET(multi_result, n_imgs):
     points = []
     for result in multi_result:
-        tp = float(result.n_true_positives)
-        fp = float(result.n_false_positives)
-        fn = float(result.n_false_negatives)
-        n_imgs = float(len(result.images_results))
+        tp = float(result.n_true_positives())
+        fp = float(result.n_false_positives())
+        fn = float(result.n_false_negatives())
+        #n_imgs = float(len(result.images))
         #the "-" is a trick for sorting
         points.append((fp / n_imgs, - fn / (tp + fn)))
     points.sort()
-    pylab.plot([a[0] for a in points], [- a[1] for a in points])
+    pylab.loglog([a[0] for a in points], [- a[1] for a in points])
+    print max([a[0] for a in points]), n_imgs
+    #TODO : params
+    pylab.axis(xmin=0.005, xmax=10)
+    pylab.axis(ymin=0.05,  ymax=1)
     pylab.show()
 
 def print_DET_posneg(multi_result):

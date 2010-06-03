@@ -90,8 +90,8 @@ class DataSet(object):
         ret = "(DataSet %s : "%(self.label,)
         for img in self.images:
             ret += "(%s : %s) "%(img, str(self.images[img]))
-        ret[-1] = ")"
-        return ret
+        #ret[-1] = ")"
+        return ret[:-1] + ")"
 
 class DataSetFromMulti(object):
     def __init__(self, parent, i_conf_min, label = ""):

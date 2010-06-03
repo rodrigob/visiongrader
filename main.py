@@ -110,7 +110,7 @@ if __name__=="__main__":
         toscore = toscore_parser.parse_multi(toscore_filename)
         multi_result = MultiResult()
         print len(toscore)
-        n = 5
+        n = 10
         for i in xrange(0, len(toscore) / n):
             #print i
             confidence = toscore.keys()[i*n]
@@ -126,15 +126,17 @@ if __name__=="__main__":
             multi_result.add_result(result)
         if mode == "ROC":
             if groundtruth_parser.data_type == "images":
-                plot.print_ROC(multi_result)
+                plot.print_ROC(multi_result, len(toscore))
             elif groundtruth_parser.data_type == "posneg":
-                plot.print_ROC_posneg(multi_result)
+                plot.print_ROC(multi_result, len(toscore))
+                #plot.print_ROC_posneg(multi_result)
             else:
                 raise NotImplementedError()
         elif mode == "DET":
             if groundtruth_parser.data_type == "images":
-                plot.print_DET(multi_result)
+                plot.print_DET(multi_result, len(toscore))
             elif groundtruth_parser.data_type == "posneg":
-                plot.print_DET_posneg(multi_result)
+                #plot.print_DET_posneg(multi_result)
+                plot.print_DET(multi_result, len(toscore))
             else:
                 raise NotImplementedError()
