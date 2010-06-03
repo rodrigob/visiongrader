@@ -58,6 +58,7 @@ def parse(path):
         file = open(os.path.join(path, filename), "r")
         bboxes = parse_file(file)
         file.close()
+        filename = filename[:filename.rfind(".")]
         for bbox in bboxes:
             ret.add_obj(filename, bbox)
     return ret

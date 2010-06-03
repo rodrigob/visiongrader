@@ -32,6 +32,7 @@ def print_DET(multi_result, n_imgs):
         fp = float(result.n_false_positives())
         fn = float(result.n_false_negatives())
         #n_imgs = float(len(result.images))
+        print tp, fp, fn
         #the "-" is a trick for sorting
         points.append((fp / n_imgs, - fn / (tp + fn)))
     points.sort()

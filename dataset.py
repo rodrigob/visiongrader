@@ -121,7 +121,7 @@ class DataSetMulti(DataSet):
     def add_obj(self, confidence, filename, obj):
         DataSet.add_obj(self, filename, obj)
         while confidence in self.confidences:
-            confidence += 0.00001 #TODO
+            confidence += 0.000001 #TODO
         self.confidences[confidence] = (filename, self.images[filename][-1])
 
     def __str__(self):
@@ -148,3 +148,6 @@ class DataSetMulti(DataSet):
 
     def keys(self):
         return self.confidences.keys()
+
+    def n_confidences(self):
+        return len(self.confidences)

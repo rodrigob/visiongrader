@@ -109,9 +109,9 @@ if __name__=="__main__":
     elif mode == "ROC" or mode == "DET":
         toscore = toscore_parser.parse_multi(toscore_filename)
         multi_result = MultiResult()
-        print len(toscore)
+        print toscore.n_confidences()
         n = 10
-        for i in xrange(0, len(toscore) / n):
+        for i in xrange(0, toscore.n_confidences() / n):
             #print i
             confidence = toscore.keys()[i*n]
             if options.confidence_min != None:

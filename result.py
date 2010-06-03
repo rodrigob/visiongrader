@@ -29,20 +29,29 @@ class ImageResult(object):
 class DataSetResult(object):
     def __init__(self):
         self.images_results = []
-        self.n_true_positives = 0
-        self.n_false_positives = 0
-        self.n_false_negatives = 0
+        self._n_true_positives = 0
+        self._n_false_positives = 0
+        self._n_false_negatives = 0
 
     def add_image_result(self, result):
         self.images_results.append(result)
-        self.n_true_positives += result.n_true_positives()
-        self.n_false_positives += result.n_false_positives()
-        self.n_false_negatives += result.n_false_negatives()
+        self._n_true_positives += result.n_true_positives()
+        self._n_false_positives += result.n_false_positives()
+        self._n_false_negatives += result.n_false_negatives()
+
+    def n_true_positives(self):
+        return self._n_true_positives
+
+    def n_false_positives(self):
+        return self._n_false_positives
+
+    def n_false_negatives(self):
+        return self._n_false_negatives
 
     def __str__(self):
         return "DataSetResult : %d true positives, %d false positive, \
-        %d false negatives"%(self.n_true_positives, self.n_false_positives,
-                             self.n_false_negatives)
+        %d false negatives"%(self.n_true_positives(), self.n_false_positives(),
+                             self.n_false_negatives())
 class MultiResult(object):
     def __init__(self):
         self.datasets = []
