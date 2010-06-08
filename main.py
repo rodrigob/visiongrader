@@ -132,15 +132,19 @@ if __name__=="__main__":
             if groundtruth_parser.data_type == "images":
                 plot.print_ROC(multi_result, len(toscore))
             elif groundtruth_parser.data_type == "posneg":
-                plot.print_ROC(multi_result, len(toscore))
-                #plot.print_ROC_posneg(multi_result)
+                #TODO: bug in plotter
+                raise NotImplementedError()
+                #plot.print_ROC(multi_result, len(toscore))
+                plot.print_ROC_posneg(multi_result)
             else:
                 raise NotImplementedError()
         elif mode == "DET":
             if groundtruth_parser.data_type == "images":
                 plot.print_DET(multi_result, len(toscore))
             elif groundtruth_parser.data_type == "posneg":
-                #plot.print_DET_posneg(multi_result)
-                plot.print_DET(multi_result, len(toscore))
+                #TODO: bug in plotter
+                raise NotImplementedError()
+                plot.print_DET_posneg(multi_result)
+                #plot.print_DET(multi_result, len(toscore))
             else:
                 raise NotImplementedError()

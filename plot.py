@@ -3,6 +3,7 @@ import matplotlib
 
 def print_ROC(multi_result, n_imgs):
     points = []
+    n_imps = float(n_imgs)
     for result in multi_result:
         tp = float(result.n_true_positives())
         fp = float(result.n_false_positives())
@@ -16,7 +17,7 @@ def print_ROC(multi_result, n_imgs):
     pylab.show()
 
 def print_ROC_posneg(multi_result):
-    raise NotImplementedError()
+    raise NotImplementedError() #TODO : do not use
     prints = []
     for result in multi_result:
         tp = float(result.n_true_positives())
@@ -30,12 +31,12 @@ def print_ROC_posneg(multi_result):
 
 def print_DET(multi_result, n_imgs):
     points = []
+    n_imgs = float(n_imgs)
     for result in multi_result:
         tp = float(result.n_true_positives())
         fp = float(result.n_false_positives())
         fn = float(result.n_false_negatives())
         #n_imgs = float(len(result.images))
-        print tp, fp, fn
         #the "-" is a trick for sorting
         points.append((fp / n_imgs, - fn / (tp + fn)))
     points.sort()
@@ -49,7 +50,7 @@ def print_DET(multi_result, n_imgs):
     pylab.show()
 
 def print_DET_posneg(multi_result):
-    raise NotImplementedError()
+    raise NotImplementedError() #TODO : do not use
     points = []
     for result in multi_result:
         tp = float(result.n_true_positives())
