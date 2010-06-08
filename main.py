@@ -70,13 +70,13 @@ if __name__=="__main__":
                          help = "Do not display the ROC/DET curve.")
     optparser.add_option("--saving-file", dest = "saving_file", default = None, type = "str",
                          help = "Name of the file to save the curve. The curve is not saved if no file is specified.")
-    optparser.add_option("--xmin", dest = "xmin", desfaut = None, type = "float",
+    optparser.add_option("--xmin", dest = "xmin", default = None, type = "float",
                          help = "Minimum of the x axis for ROC/DET curve.")
-    optparser.add_option("--xmax", dest = "xmax", desfaut = None, type = "float",
+    optparser.add_option("--xmax", dest = "xmax", default = None, type = "float",
                          help = "Maximum of the x axis for ROC/DET curve.")
-    optparser.add_option("--ymin", dest = "ymin", desfaut = None, type = "float",
+    optparser.add_option("--ymin", dest = "ymin", default = None, type = "float",
                          help = "Minimum of the y axis for ROC/DET curve.")
-    optparser.add_option("--xmax", dest = "ymax", desfaut = None, type = "float",
+    optparser.add_option("--ymax", dest = "ymax", default = None, type = "float",
                          help = "Maximum of the y axis for ROC/DET curve.")
     (options, args) = optparser.parse_args()
     

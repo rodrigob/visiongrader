@@ -19,7 +19,9 @@ def parse_file_multi(file, filename, dataset):
         (x, y, w, h, score) = tuple([float(a) for a in line.strip().rstrip().split(",")])
         dataset.add_obj(score, name_converter.corresp[filename], BoundingBox(x, y, x+w, y+h))
 
-def parse_multi(path, crawl = None):
+def parse_multi(path, crawl = False):
+    if crawl == True:
+        raise StandardError()
     ret = DataSetMulti()
     filenames = os.listdir(path)
     for filename in filenames:

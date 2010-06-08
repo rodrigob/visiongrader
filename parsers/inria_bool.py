@@ -13,7 +13,9 @@ def describe():
 def recognize(file):
     return False
 
-def parse(path):
+def parse(path, crawl = False):
+    if crawl == True:
+        raise StandardError()
     pos_filename = os.path.join(path, "pos.lst")
     neg_filename = os.path.join(path, "neg.lst")
     pos_dir = os.path.join(path, "pos")

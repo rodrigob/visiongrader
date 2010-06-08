@@ -16,7 +16,7 @@ def desctibe():
 def recognize(file):
     return False
 
-def parse(filen):
+def parse(filen, crawl = False):
     raise NotImplementedError()
     file = open(filen, "r")
     ret = DataSet()

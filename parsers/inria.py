@@ -50,7 +50,9 @@ def parse_file(file):
         bbox = get_object(data, i)
     return ret
 
-def parse(path):
+def parse(path, crawl = False):
+    if crawl = True:
+        raise StandardError()
     ret = DataSet()
     filenames = os.listdir(path)
     for filename in filenames:

@@ -12,7 +12,9 @@ def describe():
 def recognize(file):
     return False
 
-def parse(filen):
+def parse(filen, crawl = False):
+    if crawl = True:
+        raise StandardError()
     file = open(filen, "r")
     ret = DataSet()
     for line in file:

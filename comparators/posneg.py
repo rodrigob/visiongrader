@@ -7,6 +7,7 @@ def describe():
     return "Comparator for images containing only a single person or none"
 
 def compare_datasets(toscore, groundtruth):
+    raise NotImplementedError()
     result = BoolResult()
     #print groundtruth
     for img in groundtruth:
