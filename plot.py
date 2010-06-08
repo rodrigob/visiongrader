@@ -2,7 +2,8 @@ import pylab
 import matplotlib
 import cPickle
 
-def print_ROC(multi_result, n_imgs, save_filename = None, show_curve = True):
+def print_ROC(multi_result, n_imgs, save_filename = None, show_curve = True,
+              xmin = None, ymin = None, xmax = None, ymax = None):
     points = []
     n_imps = float(n_imgs)
     for result in multi_result:
@@ -18,11 +19,20 @@ def print_ROC(multi_result, n_imgs, save_filename = None, show_curve = True):
         f.close()
     if show_curve:
         pylab.semilogx([a[0] for a in points], [a[1] for a in points])
+        if xmin != None:
+            pylab.axis(xmin = xmin)
+        if xmax != None:
+            pylab.axis(xmax = xmax)
+        if ymin != None:
+            pylab.axis(ymin = ymin)
+        if ymax != None:
+            pylab.axis(ymax = ymax)
         pylab.xlabel("False positives per image")
         pylab.ylabel("Detection rate")
         pylab.show()
 
-def print_DET(multi_result, n_imgs, save_filename = None, show_curve = True):
+def print_DET(multi_result, n_imgs, save_filename = None, show_curve = True,
+              xmin = None, ymin = None, xmax = None, ymax = None):
     points = []
     n_imgs = float(n_imgs)
     for result in multi_result:
@@ -40,8 +50,14 @@ def print_DET(multi_result, n_imgs, save_filename = None, show_curve = True):
     #TODO : params
     if show_curve:
         pylab.loglog([a[0] for a in points], [- a[1] for a in points])
-        pylab.axis(xmin=0.005, xmax=10)
-        pylab.axis(ymin=0.05,  ymax=1)
+        if xmin != None:
+            pylab.axis(xmin = xmin)
+        if xmax != None:
+            pylab.axis(xmax = xmax)
+        if ymin != None:
+            pylab.axis(ymin = ymin)
+        if ymax != None:
+            pylab.axis(ymax = ymax)
         pylab.xlabel("False positives per image")
         pylab.ylabel("Miss rate")
         pylab.show()

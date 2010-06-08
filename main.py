@@ -70,6 +70,14 @@ if __name__=="__main__":
                          help = "Do not display the ROC/DET curve.")
     optparser.add_option("--saving-file", dest = "saving_file", default = None, type = "str",
                          help = "Name of the file to save the curve. The curve is not saved if no file is specified.")
+    optparser.add_option("--xmin", dest = "xmin", desfaut = None, type = "float",
+                         help = "Minimum of the x axis for ROC/DET curve.")
+    optparser.add_option("--xmax", dest = "xmax", desfaut = None, type = "float",
+                         help = "Maximum of the x axis for ROC/DET curve.")
+    optparser.add_option("--ymin", dest = "ymin", desfaut = None, type = "float",
+                         help = "Minimum of the y axis for ROC/DET curve.")
+    optparser.add_option("--xmax", dest = "ymax", desfaut = None, type = "float",
+                         help = "Maximum of the y axis for ROC/DET curve.")
     (options, args) = optparser.parse_args()
     
     if options.input == None:
@@ -137,7 +145,8 @@ if __name__=="__main__":
             multi_result.add_result(result)
         if mode == "ROC":
             if groundtruth_parser.data_type == "images":
-                plot.print_ROC(multi_result, len(toscore), options.saving_file, options.show_curve)
+                plot.print_ROC(multi_result, len(toscore), options.saving_file, options.show_curve,
+                               xmin = xmin, ymin = ymin, xmax = xmax, ymax = ymax)
             elif groundtruth_parser.data_type == "posneg":
                 #TODO: bug in plotter
                 raise NotImplementedError()
@@ -147,7 +156,8 @@ if __name__=="__main__":
                 raise NotImplementedError()
         elif mode == "DET":
             if groundtruth_parser.data_type == "images":
-                plot.print_DET(multi_result, len(toscore), options.saving_file, options.show_curve)
+                plot.print_DET(multi_result, len(toscore), options.saving_file, options.show_curve,
+                               xmin = xmin, ymin = ymin, xmax = xmax, ymax = ymax)
             elif groundtruth_parser.data_type == "posneg":
                 #TODO: bug in plotter
                 raise NotImplementedError()
