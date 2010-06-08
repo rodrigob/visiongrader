@@ -17,34 +17,33 @@
     it can adapt to quite a large range of situations. You can either
     score a single result or, if you got the confidence of the results,
     plot a ROC or a DET curve.</p>
-    
     <h1>
       Usage
     </h1>
     <p>For the time being, <i>visiongrader</i> is a command-line program.
-    You can run it bt typing either <b>python main.py</b> or
-    simply <b>./main.py</b> if it has been correctly chmoded.
+    You can run it bt typing either <code>python main.py</code> or
+    simply <code>./main.py</code> if it has been correctly chmoded.
     The options depend on the kind of data you are scoring.</p>
     <h2>
       Common options
     </h2>
-      <p>If you do not specify <i>--roc</i> or <i>--det</i>, it will just score
+      <p>If you do not specify <opt>--roc</opt> or <opt>--det</opt>, it will just score
       a single file. See the next section to plot curves from confidences.</p>
       <p><ul>
-        <li>--help : displays the help.</li>
-	<li>--input : the path to the input file. It is the file to score.</li>
-	<li>--input_parser : the parser to use to read the input file.</li>
-	<li>--groundtruth : the path to the groundtruth file.</li>
-	<li>--groundtruth_parser : the parser to use to read the
+        <li><opt>--help</opt> : displays the help.</li>
+	<li><opt>--input</opt> : the path to the input file. It is the file to score.</li>
+	<li><opt>--input_parser</opt> : the parser to use to read the input file.</li>
+	<li><opt>--groundtruth</opt> : the path to the groundtruth file.</li>
+	<li><opt>--groundtruth_parser</opt> : the parser to use to read the
 	groundtruth file</li>
-	<li>--parser_dir : the path to the directory where the parsers are
+	<li><opt>--parser_dir</opt> : the path to the directory where the parsers are
 	located. If not specified, it is set to <i>./parsers</i> .</li>
-	<li>--comparator : the comparator to use. The comparator role is
+	<li><opt>--comparator</opt> : the comparator to use. The comparator role is
 	to tell if two boxes (or whatever object is used to describe the
 	detections) match.</li>
-	<li>--comparator_dir : the path to the directory there the parsers
+	<li><opt>--comparator_dir</opt> : the path to the directory there the parsers
 	are located. If not specified, it is set to <i>./comparators</i> .</li>
-	<li>--crawl : instead of an input file, use an input directory.
+	<li><opt>--crawl</opt> : instead of an input file, use an input directory.
 	It will only have an effect if the input parser has a crawl
 	support. The comportement can differ from a parser to another,
 	but the idea is to crawl into the directory and concatenate all
@@ -53,25 +52,25 @@
     <h2>
       ROC/DET options
     </h2>
-      <p>If you specify <i>--roc</i> or <i>--det</i>, then more options become
+      <p>If you specify <opt>--roc</opt> or <opt>--det</opt>, then more options become
       available, in addition to the previous ones. If one of these options are
-      set without any of <i>--roc</i> or <i>--det</i> set, it will either be
+      set without any of <opt>--roc</opt> or <opt>--det</opt> set, it will either be
       ignored or raise an error.
       <p><ul>
-        <li>--roc : make a ROC curve.</li>
-        <li>--det : make a DET curve.</li>
-	<li>--confidence_min : the mininal confidence to consider when
+        <li><opt>--roc</opt> : make a ROC curve.</li>
+        <li><opt>--det</opt> : make a DET curve.</li>
+	<li><opt>--confidence_min</opt> : the mininal confidence to consider when
 	making the curve.</li>
-	<li>--confidence_max : the maxinal confidence to consider when
+	<li><opt>--confidence_max</opt> : the maxinal confidence to consider when
 	making the curve.</li>
-	<li>--sampling : the number of points used to make the curve.</li>
-	<li>--show-no-curve : does not display the curve when computed.</li>
-	<li>--saving-file : by default, the curve is not saved. If you specify
+	<li><opt>--sampling</opt> : the number of points used to make the curve.</li>
+	<li><opt>--show-no-curve</opt> : does not display the curve when computed.</li>
+	<li><opt>--saving-file</opt> : by default, the curve is not saved. If you specify
 	a file with this options, the curve is saved in that file.</li>
-	<li>--xmin : the minimal x on the displayed curve.</li>
-	<li>--xmax : the maximal x on the displayed curve.</li>
-	<li>--ymin : the minimal y on the displayed curve.</li>
-	<li>--ymax : the maximal y on the displayed curve.</li>
+	<li><opt>--xmin</opt> : the minimal x on the displayed curve.</li>
+	<li><opt>--xmax</opt> : the maximal x on the displayed curve.</li>
+	<li><opt>--ymin</opt> : the minimal y on the displayed curve.</li>
+	<li><opt>--ymax</opt> : the maximal y on the displayed curve.</li>
       </ul></p>
     <h1>
       Parsers
@@ -83,13 +82,13 @@
     <p>A parser sould at least have one of the following functions, and can have
     several of them, according to its usage.
     <ul>
-      <li><b>parse(filename, crawl = False)</b> : if <b>crawl</b> is set to False,
+      <li><code>parse(filename, crawl = False)</code> : if <code>crawl</code> is set to False,
       it should parse a single file, if it is set to True, it can either look for
-      several files in the <b>filename</b> directory, or raise an error if the
-      crawl mode is not supported. It should return a <b>dataset.DataSet</b> object.</li>
-      <li><b>parse_multi(filename, crawl)</b> : it has the same comportement than
-      <b>parse</b>, except than it takes confidences into account, and returns a
-      <b>dataset.DataSetMulti</b> object.</li>
+      several files in the <code>filename</code> directory, or raise an error if the
+      crawl mode is not supported. It should return a <code>dataset.DataSet</code> object.</li>
+      <li><code>parse_multi(filename, crawl)</code> : it has the same comportement than
+      <code>parse</code>, except than it takes confidences into account, and returns a
+      <code>dataset.DataSetMulti</code> object.</li>
     </ul></p>
     <h1>
       Comparators
@@ -98,10 +97,10 @@
     in the <i>comparators</i> folder, and they are named by their file name without
     the <i>.py</i> .</p>
     <p>The only recognized function in a comparator is
-    <b>compare_datasets(toscore, groundtruth)</b>, which takes two
-    <b>dataset.DataSet</b> and returns a <b>result.DataSetResult</b> .</p>
+    <code>compare_datasets(toscore, groundtruth)</code>, which takes two
+    <code>dataset.DataSet</code> and returns a <code>result.DataSetResult</code> .</p>
     <p>There are several common and useful functions for comparators that can be
-    found in <b>comparator_helpers</b> .</p>
+    found in <code>comparator_helpers</code> .</p>
   </div>
   </body>
 </html>

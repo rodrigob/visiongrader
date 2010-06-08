@@ -1,6 +1,6 @@
 body {
 	background-color:#d5e5ff;
-	font-size:90%;
+	font-size:85%;
 	font-family: Calibri, Arial;
 	margin:0;
 	padding:0;
@@ -19,6 +19,14 @@ body {
 	padding:15px;
 }
 
+code {
+	font-family: monospace, Arial;
+}
+
+opt {
+	font-family: monospace, Arial;
+}
+
 h1 {
 	font-size:170%;
 	color:#000000;
@@ -32,37 +40,13 @@ h2 {
 }
 
 h3 {
-	margin-top:30px;
 }
 
 h4 {
-	color:#000000;
-	margin-left:20px;
-	margin-bottom:0px;
-}
-
-.with, .with a {
-	color:white;
-	font-style:italic;
-}
-
-.description {
-	font-size:14pt;
-	color:#FFFFCC;
-	margin:0;
-}
-
-a {
-	color:#FFFFCC;
-	text-decoration:none;
-}
-
-a:hover {
-	text-decoration:underline;
 }
 
 li {
-	list-style-type:square;
+	list-style-type:disc;
 }
 
 p {
