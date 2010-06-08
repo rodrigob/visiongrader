@@ -1,16 +1,13 @@
+#!/usr/bin/python
+
 import pylab
 import cPickle
 import sys
+import optparse
 
 n_colors = 6
 colors = ['b', 'g', 'c', 'm', 'y', 'k']
-xmin = 0.003
-xmax = 200
-ymin = 0.04
-ymax = 1.01
 i = 0
-def get_y1(points):
-    return int(float([-a[1] for a in points if a[0] <= 1][-1]) * 100.)
 
 toplot = []
 
@@ -24,9 +21,6 @@ def plot(arg, main = False):
         label = label[:label.rfind(".")]
     if label.find("/") != -1:
         label = label[label.rfind("/")+1:]
-    if label == "eblearn":
-        label = "U+_tanh R+_tanh"
-    label += " (%d%%)"%(get_y1(points),)
     color = colors[i%6]
     width = 1
     if main == True:
@@ -43,24 +37,50 @@ def plot(arg, main = False):
     else:
         style = "-."
     i += 1
-    toplot.append([[-get_y1(points), main], [a[0] for a in points],
-                   [- a[1] for a in points], style,
-                   color, label, width])
+    index = i
+    toplot.append([index, [a[0] for a in points], [- a[1] for a in points],
+                   style, color, label, width])
 
-def plot_bar(x):
-    pylab.plot([x, x], [ymin, ymax], color = 'k')
+if __name__=="__main__":
+    usage = "usage: TODO"
+    optp = optparse.OptionParser(add_help_option = True, usage = usage, prog = "./plotpickle.py")
+    optp.add_option("-m", "--main_curve", dest = "main_curve", default = None, type = "str",
+                    help = "Main curve.")
+    optp.add_option("--xlegend", dest = "x_legend", default = None, type = "str",
+                    help = "Legend on the x axis.")
+    optp.add_option("--ylegend", dest = "y_legend", default = None, type = "str",
+                    help = "Legend on the y axis.")
+    optp.add_options("--xmin", dest = "xmin", default = None, type = "float",
+                     help = "Minimum of the x axis.")
+    optp.add_options("--xmax", dest = "xmax", default = None, type = "float",
+                     help = "Maximum of the x axis.")
+    optp.add_options("--ymin", dest = "ymin", default = None, type = "float",
+                     help = "Minimum of the y axis.")
+    optp.add_options("--ymax", dest = "ymax", default = None, type = "float",
+                     help = "Maximum of the y axis.")
+    (options, args) = optp.parse_args()
+    for arg in [a for a in args if a != options.main_curve]:
+        plot(arg)
+    if os.path.exists(option.main_curve):
+        plot(options.main_cuirve, True)
+    else:
+        print "Warning: %s does not exixts."%(option.main_curve,)
+    toplot.sort()
+    for p in toplot:
+        pylab.loglog(p[1], p[2], p[3], color = p[4], label = p[5], linewidth = p[6])
 
-for arg in [a for a in sys.argv[1:] if a.find("eblearn") == -1]:
-    plot(arg)
-for arg in [a for a in sys.argv[1:] if a.find("eblearn") != -1]:
-    plot(arg, True)
-toplot.sort()
-for p in toplot:
-    pylab.loglog(p[1], p[2], p[3], color = p[4], label = p[5], linewidth = p[6])
-plot_bar(1.0)
-
-pylab.legend(loc=4)
-pylab.xlabel("False positives per image")
-pylab.ylabel("Miss rate")
-pylab.axis(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax)
-pylab.show()
+    pylab.legend(loc=4)
+    if options.x_legend != None:
+        pylab.xlabel(options.x_legend)
+    if options.y_legend != None:
+        pylab.ylabel(options.y_legend)
+    if options.xmin != None:
+        pylab.axis(xmin = options.xmin)
+    if options.xmax != None:
+        pylab.axis(xmax = options.xmax)
+    if options.ymin != None:
+        pylab.axis(ymin = options.ymin)
+    if options.ymax != None:
+        pylab.axis(ymax = options.ymax)
+    
+    pylab.show()

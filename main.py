@@ -65,7 +65,7 @@ if __name__=="__main__":
     optparser.add_option("--crawl", action = "store_true", dest = "crawl", default = False,
                          help = "Crawls eblearn files.")
     optparser.add_option("--sampling", dest = "sampling", default = None, type = "int",
-                         help = "Sampling rate. 1 is the most accurate, +inf the least.")
+                         help = "Number of points used to generate the ROC/DET curve..")
     (options, args) = optparser.parse_args()
     
     if options.input == None:
