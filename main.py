@@ -66,6 +66,10 @@ if __name__=="__main__":
                          help = "Crawls eblearn files.")
     optparser.add_option("--sampling", dest = "sampling", default = None, type = "int",
                          help = "Number of points used to generate the ROC/DET curve..")
+    optparser.add_option("--show-no-curve", dest = "show_curve", action = "store_false",
+                         help = "Do not display the ROC/DET curve.")
+    optparser.add_option("--saving-file", dest = "saving_file", default = None, type = "str",
+                         help = "Name of the file to save the curve. The curve is not saved if no file is specified.")
     (options, args) = optparser.parse_args()
     
     if options.input == None:
@@ -133,7 +137,7 @@ if __name__=="__main__":
             multi_result.add_result(result)
         if mode == "ROC":
             if groundtruth_parser.data_type == "images":
-                plot.print_ROC(multi_result, len(toscore))
+                plot.print_ROC(multi_result, len(toscore), options.saving_file, options.show_curve)
             elif groundtruth_parser.data_type == "posneg":
                 #TODO: bug in plotter
                 raise NotImplementedError()
@@ -143,7 +147,7 @@ if __name__=="__main__":
                 raise NotImplementedError()
         elif mode == "DET":
             if groundtruth_parser.data_type == "images":
-                plot.print_DET(multi_result, len(toscore))
+                plot.print_DET(multi_result, len(toscore), options.saving_file, options.show_curve)
             elif groundtruth_parser.data_type == "posneg":
                 #TODO: bug in plotter
                 raise NotImplementedError()

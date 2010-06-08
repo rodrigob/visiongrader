@@ -1,13 +1,8 @@
 import pylab
 import matplotlib
+import cPickle
 
-save_curve = True
-if save_curve:
-    import cPickle
-
-show_curve = False
-
-def print_ROC(multi_result, n_imgs):
+def print_ROC(multi_result, n_imgs, save_filename = None, show_curve = True):
     points = []
     n_imps = float(n_imgs)
     for result in multi_result:
@@ -17,11 +12,44 @@ def print_ROC(multi_result, n_imgs):
         #n_imgs = float(len(result.images))
         points.append((fp / n_imgs, tp / (tp + fn)))
     points.sort()
-    pylab.semilogx([a[0] for a in points], [a[1] for a in points])
-    pylab.xlabel("False positives per image")
-    pylab.ylabel("Detection rate")
-    pylab.show()
+    if save_filename != None:
+        f = open(save_filename, "w")
+        cPickle.dump(points, f)
+        f.close()
+    if show_curve:
+        pylab.semilogx([a[0] for a in points], [a[1] for a in points])
+        pylab.xlabel("False positives per image")
+        pylab.ylabel("Detection rate")
+        pylab.show()
 
+def print_DET(multi_result, n_imgs, save_filename = None, show_curve = True):
+    points = []
+    n_imgs = float(n_imgs)
+    for result in multi_result:
+        tp = float(result.n_true_positives())
+        fp = float(result.n_false_positives())
+        fn = float(result.n_false_negatives())
+        #n_imgs = float(len(result.images))
+        #the "-" is a trick for sorting
+        points.append((fp / n_imgs, - fn / (tp + fn)))
+    points.sort()
+    if save_fulename != None:
+        f = open(save_filename, "w")
+        cPickle.dump(points, f)
+        f.close()
+    #TODO : params
+    if show_curve:
+        pylab.loglog([a[0] for a in points], [- a[1] for a in points])
+        pylab.axis(xmin=0.005, xmax=10)
+        pylab.axis(ymin=0.05,  ymax=1)
+        pylab.xlabel("False positives per image")
+        pylab.ylabel("Miss rate")
+        pylab.show()
+
+
+
+################## old : ####################
+        
 def print_ROC_posneg(multi_result):
     raise NotImplementedError() #TODO : do not use
     prints = []
@@ -34,31 +62,6 @@ def print_ROC_posneg(multi_result):
     points.sort()
     pylab.plot([a[0] for a in points], [a[1] for a in points])
     pylab.show()
-
-def print_DET(multi_result, n_imgs):
-    points = []
-    n_imgs = float(n_imgs)
-    for result in multi_result:
-        tp = float(result.n_true_positives())
-        fp = float(result.n_false_positives())
-        fn = float(result.n_false_negatives())
-        #n_imgs = float(len(result.images))
-        #the "-" is a trick for sorting
-        points.append((fp / n_imgs, - fn / (tp + fn)))
-    points.sort()
-    pylab.loglog([a[0] for a in points], [- a[1] for a in points])
-    if save_curve:
-        f = open("curve.pickle", "w")
-        cPickle.dump(points, f)
-        f.close()
-        #print max([a[0] for a in points]), n_imgs
-    #TODO : params
-    pylab.axis(xmin=0.005, xmax=10)
-    pylab.axis(ymin=0.05,  ymax=1)
-    pylab.xlabel("False positives per image")
-    pylab.ylabel("Miss rate")
-    if show_curve:
-        pylab.show()
 
 def print_DET_posneg(multi_result):
     raise NotImplementedError() #TODO : do not use
