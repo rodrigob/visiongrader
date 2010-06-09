@@ -7,8 +7,11 @@
   <body>
   <div id="content">
     <h1>
-      Inctoduction
+      visiongrader help
     </h1>
+    <h2>
+      Intoduction
+    </h2>
     <p><i>visiongrader</i> is a scoring tool for detection algorithms.
     It is mainly used with face and pedestrians recognition, but
     nothing prevents you from using it with another type of data,
@@ -17,16 +20,16 @@
     it can adapt to quite a large range of situations. You can either
     score a single result or, if you got the confidence of the results,
     plot a ROC or a DET curve.</p>
-    <h1>
+    <h2>
       Usage
-    </h1>
+    </h2>
     <p>For the time being, <i>visiongrader</i> is a command-line program.
     You can run it bt typing either <code>python main.py</code> or
     simply <code>./main.py</code> if it has been correctly chmoded.
     The options depend on the kind of data you are scoring.</p>
-    <h2>
+    <h3>
       Common options
-    </h2>
+    </h3>
       <p>If you do not specify <opt>--roc</opt> or <opt>--det</opt>, it will just score
       a single file. See the next section to plot curves from confidences.</p>
       <p><ul>
@@ -49,9 +52,9 @@
 	but the idea is to crawl into the directory and concatenate all
 	the result files.</li>
       </ul></p>
-    <h2>
+    <h3>
       ROC/DET options
-    </h2>
+    </h3>
       <p>If you specify <opt>--roc</opt> or <opt>--det</opt>, then more options become
       available, in addition to the previous ones. If one of these options are
       set without any of <opt>--roc</opt> or <opt>--det</opt> set, it will either be
@@ -72,9 +75,9 @@
 	<li><opt>--ymin</opt> : the minimal y on the displayed curve.</li>
 	<li><opt>--ymax</opt> : the maximal y on the displayed curve.</li>
       </ul></p>
-    <h1>
+    <h2>
       Parsers
-    </h1>
+    </h2>
     <p>By default, parsers are stored in the <i>parsers</i> directory. A parser
     <i>foo.py</i> will be named <i>foo</i> when used. Every <i>.py</i> file
     in the parser directory will be considerated as a parser, and an error
@@ -86,13 +89,13 @@
       it should parse a single file, if it is set to True, it can either look for
       several files in the <code>filename</code> directory, or raise an error if the
       crawl mode is not supported. It should return a <code>dataset.DataSet</code> object.</li>
-      <li><code>parse_multi(filename, crawl)</code> : it has the same comportement than
+      <li><code>parse_multi(filename, crawl = False)</code> : it has the same comportement than
       <code>parse</code>, except than it takes confidences into account, and returns a
       <code>dataset.DataSetMulti</code> object.</li>
     </ul></p>
-    <h1>
+    <h2>
       Comparators
-    </h1>
+    </h2>
     <p>Comparators are similar to parsers in the way they are handled. They are
     in the <i>comparators</i> folder, and they are named by their file name without
     the <i>.py</i> .</p>
