@@ -30,54 +30,82 @@
     <h3>
       Common options
     </h3>
-      <p>If you do not specify <opt>--roc</opt> or <opt>--det</opt>, it will just score
-      a single file. See the next section to plot curves from confidences.</p>
-      <p><ul>
-        <li><opt>--help</opt> : displays the help.</li>
-	<li><opt>--input</opt> : the path to the input file. It is the file to score.</li>
-	<li><opt>--input_parser</opt> : the parser to use to read the input file.</li>
-	<li><opt>--groundtruth</opt> : the path to the groundtruth file.</li>
-	<li><opt>--groundtruth_parser</opt> : the parser to use to read the
-	groundtruth file</li>
-	<li><opt>--parser_dir</opt> : the path to the directory where the parsers are
-	located. If not specified, it is set to <i>./parsers</i> .</li>
-	<li><opt>--comparator</opt> : the comparator to use. The comparator role is
-	to tell if two boxes (or whatever object is used to describe the
-	detections) match.</li>
-	<li><opt>--comparator_dir</opt> : the path to the directory there the parsers
-	are located. If not specified, it is set to <i>./comparators</i> .</li>
-	<li><opt>--crawl</opt> : instead of an input file, use an input directory.
-	It will only have an effect if the input parser has a crawl
-	support. The comportement can differ from a parser to another,
-	but the idea is to crawl into the directory and concatenate all
-	the result files.</li>
-      </ul></p>
+    <p>If you do not specify <opt>--roc</opt> or <opt>--det</opt>, it will just score
+    a single file. See the next section to plot curves from confidences.</p>
+    <p><ul>
+      <li><opt>--help</opt> : displays the help.</li>
+      <li><opt>--input</opt> : the path to the input file. It is the file to score.</li>
+      <li><opt>--input_parser</opt> : the parser to use to read the input file.</li>
+      <li><opt>--groundtruth</opt> : the path to the groundtruth file.</li>
+      <li><opt>--groundtruth_parser</opt> : the parser to use to read the
+      groundtruth file</li>
+      <li><opt>--parser_dir</opt> : the path to the directory where the parsers are
+      located. If not specified, it is set to <i>./parsers</i> .</li>
+      <li><opt>--comparator</opt> : the comparator to use. The comparator role is
+      to tell if two boxes (or whatever object is used to describe the
+      detections) match.</li>
+      <li><opt>--comparator_dir</opt> : the path to the directory there the parsers
+      are located. If not specified, it is set to <i>./comparators</i> .</li>
+      <li><opt>--crawl</opt> : instead of an input file, use an input directory.
+      It will only have an effect if the input parser has a crawl
+      support. The comportement can differ from a parser to another,
+      but the idea is to crawl into the directory and concatenate all
+      the result files.</li>
+    </ul></p>
     <h3>
       ROC/DET options
     </h3>
-      <p>If you specify <opt>--roc</opt> or <opt>--det</opt>, then more options become
-      available, in addition to the previous ones. If one of these options are
-      set without any of <opt>--roc</opt> or <opt>--det</opt> set, it will either be
-      ignored or raise an error.
-      <p><ul>
-        <li><opt>--roc</opt> : make a ROC curve.</li>
-        <li><opt>--det</opt> : make a DET curve.</li>
-	<li><opt>--confidence_min</opt> : the mininal confidence to consider when
-	making the curve.</li>
-	<li><opt>--confidence_max</opt> : the maxinal confidence to consider when
-	making the curve.</li>
-	<li><opt>--sampling</opt> : the number of points used to make the curve.</li>
-	<li><opt>--show-no-curve</opt> : does not display the curve when computed.</li>
-	<li><opt>--saving-file</opt> : by default, the curve is not saved. If you specify
-	a file with this options, the curve is saved in that file.</li>
-	<li><opt>--xmin</opt> : the minimal x on the displayed curve.</li>
-	<li><opt>--xmax</opt> : the maximal x on the displayed curve.</li>
-	<li><opt>--ymin</opt> : the minimal y on the displayed curve.</li>
-	<li><opt>--ymax</opt> : the maximal y on the displayed curve.</li>
-      </ul></p>
+    <p>If you specify <opt>--roc</opt> or <opt>--det</opt>, then more options become
+    available, in addition to the previous ones. If one of these options are
+    set without any of <opt>--roc</opt> or <opt>--det</opt> set, it will either be
+    ignored or raise an error.
+    <p><ul>
+      <li><opt>--roc</opt> : make a ROC curve.</li>
+      <li><opt>--det</opt> : make a DET curve.</li>
+      <li><opt>--confidence_min</opt> : the mininal confidence to consider when
+      making the curve.</li>
+      <li><opt>--confidence_max</opt> : the maxinal confidence to consider when
+      making the curve.</li>
+      <li><opt>--sampling</opt> : the number of points used to make the curve.</li>
+      <li><opt>--show-no-curve</opt> : does not display the curve when computed.</li>
+      <li><opt>--saving-file</opt> : by default, the curve is not saved. If you specify
+      file with this options, the curve is saved in that file.</li>
+      <li><opt>--xmin</opt> : the minimal x on the displayed curve.</li>
+      <li><opt>--xmax</opt> : the maximal x on the displayed curve.</li>
+      <li><opt>--ymin</opt> : the minimal y on the displayed curve.</li>
+      <li><opt>--ymax</opt> : the maximal y on the displayed curve.</li>
+    </ul></p>
+    <h3>
+      Print saved/multiple curves
+    </h3>
+    <p>Saved curves are stored in a python pickle format, so you cannot read
+    them easily. That's why there is the <i>plotpickle.py</i> module. It
+    allows you to plot one or several saved curves on the same graph.
+    Basically, you use it typing</p>
+    <p><code>python plotpickle.py [options] file1 [file2 [file3...]]</code></p>
+    <p>There are several options you can use :
+    <ul>
+      <li><opt>--help</opt> : displays the help.</li>
+      <li><opt>--main_curve</opt> : if there is a curve you want to highlight,
+      specify the name of its file with this option. Don't forget you still have
+      to put the name just like any curve, so the file name will appear twice.</li>
+      <li><opt>--xlegend</opt> : the legend on the x axis.</li>
+      <li><opt>--ylegend</opt> : the legend on the y axis.</li>
+      <li><opt>--xmin</opt> : the minimal x on the graph.</li>
+      <li><opt>--xmax</opt> : the maximal x on the graph.</li>
+      <li><opt>--ymin</opt> : the minimal y on the graph.</li>
+      <li><opt>--ymax</opt> : the maximal y on the graph.</li>
+    </ul></p>
     <h2>
-      Parsers
+      Examples
     </h2>
+      <p>TODO</p>
+    <h2>
+      Writing modules
+    </h2>
+    <h3>
+      Parsers
+    </h3>
     <p>By default, parsers are stored in the <i>parsers</i> directory. A parser
     <i>foo.py</i> will be named <i>foo</i> when used. Every <i>.py</i> file
     in the parser directory will be considerated as a parser, and an error
@@ -93,9 +121,9 @@
       <code>parse</code>, except than it takes confidences into account, and returns a
       <code>dataset.DataSetMulti</code> object.</li>
     </ul></p>
-    <h2>
+    <h3>
       Comparators
-    </h2>
+    </h3>
     <p>Comparators are similar to parsers in the way they are handled. They are
     in the <i>comparators</i> folder, and they are named by their file name without
     the <i>.py</i> .</p>

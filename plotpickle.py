@@ -70,14 +70,14 @@ if __name__=="__main__":
                     help = "Legend on the x axis.")
     optp.add_option("--ylegend", dest = "y_legend", default = None, type = "str",
                     help = "Legend on the y axis.")
-    optp.add_options("--xmin", dest = "xmin", default = None, type = "float",
-                     help = "Minimum of the x axis.")
-    optp.add_options("--xmax", dest = "xmax", default = None, type = "float",
-                     help = "Maximum of the x axis.")
-    optp.add_options("--ymin", dest = "ymin", default = None, type = "float",
-                     help = "Minimum of the y axis.")
-    optp.add_options("--ymax", dest = "ymax", default = None, type = "float",
-                     help = "Maximum of the y axis.")
+    optp.add_option("--xmin", dest = "xmin", default = None, type = "float",
+                    help = "Minimum of the x axis.")
+    optp.add_option("--xmax", dest = "xmax", default = None, type = "float",
+                    help = "Maximum of the x axis.")
+    optp.add_option("--ymin", dest = "ymin", default = None, type = "float",
+                    help = "Minimum of the y axis.")
+    optp.add_option("--ymax", dest = "ymax", default = None, type = "float",
+                    help = "Maximum of the y axis.")
     (options, args) = optp.parse_args()
     for arg in [a for a in args if a != options.main_curve]:
         plot(arg)
