@@ -73,6 +73,9 @@ class ImageDataSet(object):
                 ret.append(obj)
         return ret
 
+    def get_gprims(self):
+        return [obj.get_gprim() for obj in self.objs]
+
     def __str__(self):
         ret = "(ImageDataSet : "
         for obj in self.objs:
@@ -94,6 +97,9 @@ class DataSet(object):
 
     def __iter__(self):
         return self.images.__iter__()
+
+    def keys(self):
+        return self.images.keys()
 
     def add_empty_image(self, image):
         if image not in self.images:

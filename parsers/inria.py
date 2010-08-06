@@ -71,7 +71,7 @@ def parse_file(file):
     return ret
 
 def parse(path, crawl = False):
-    if crawl = True:
+    if crawl == True:
         raise StandardError()
     ret = DataSet()
     filenames = os.listdir(path)
@@ -84,3 +84,10 @@ def parse(path, crawl = False):
         for bbox in bboxes:
             ret.add_obj(filename, bbox)
     return ret
+
+def get_img_from_name(name, annotations_path, images_path):
+    if images_path != None:
+        return os.path.join(images_path, name)
+    else:
+        return os.path.join(os.path.join(annotations_path, ".."),
+                            os.path.join("pos", name + ".png"))

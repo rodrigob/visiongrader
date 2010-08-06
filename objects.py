@@ -20,6 +20,7 @@
 
 import math
 from point import mean
+import gprimitives
 
 class ObjectInfos(object):
     def __init__(self):
@@ -44,6 +45,9 @@ class ObjectInfos(object):
     x2 = property(getX2)
     y1 = property(getY1)
     y2 = property(getY2)
+    
+    def get_grpim(self):
+        raise NotImplementedError()
 
     def __str__(self):
         return "ObjectInfos"
@@ -125,6 +129,10 @@ class BoundingBox(ObjectInfos):
 
     def bounding_box(self):
         return self
+
+    def get_gprim(self):
+        return gprimitives.Rectangle(self.x1, self.y1,
+                                     self.getWidth(), self.getHeight())
 
     def __str__(self):
         return "Bounding box : x1 = %f, y1 = %f, x2 = %f, y2 = %f"%(self.x1, self.y1,

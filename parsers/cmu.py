@@ -33,7 +33,7 @@ def recognize(file):
     return False
 
 def parse(filen, crawl = False):
-    if crawl = True:
+    if crawl == True:
         raise StandardError()
     file = open(filen, "r")
     ret = DataSet()
