@@ -50,3 +50,6 @@ def compare_datasets(toscore, groundtruth):
                 else:
                     result.add_true_positive(img)
     return result
+
+def set_param(param):
+    pass

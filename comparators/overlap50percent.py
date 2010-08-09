@@ -25,6 +25,8 @@ name = "Overlap50PercentComparator"
 def describe():
     return "The boxes match iff they overlap more than 50%."
 
+p_overlap = 0.5
+
 def match_objs(obj, gndtruth, p):
     '''p is the maximum ratio allowed between the intersection and the union.
     Set it to 0.5 to have 50%.'''
@@ -35,7 +37,13 @@ def match_objs(obj, gndtruth, p):
     return inter / union > p
 
 def compare_images(toscore, groundtruth):
-    return compare_images_default(toscore, groundtruth, lambda a, b: match_objs(a, b, 0.5))
+    return compare_images_default(toscore, groundtruth,
+                                  lambda a, b: match_objs(a, b, p_overlap))
 
 def compare_datasets(toscore, groundtruth):
     return compare_datasets_default(toscore, groundtruth, compare_images)
+
+def set_param(param):
+    if param != None:
+        global p_overlap
+        p_overlap = param

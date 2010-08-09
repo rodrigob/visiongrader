@@ -25,6 +25,8 @@ name = "GarciaDelakisComparator"
 def describe():
     return "Comparator described by Garcia and Delakis. It matches iff the eyes and the mouth are in the box, and the box size does not exceed 20% to the groundtruth box size."
 
+p_max_ratio = 2.5
+
 def match_objs(obj, gndtruth, max_area_ratio):
     points = gndtruth.get_left_eye() + gndtruth.get_right_eye() + gndtruth.get_mouth()
     for point in points:
@@ -40,5 +42,10 @@ def compare_images(toscore, groundtruth, max_area_ratio):
 
 def compare_datasets(toscore, groundtruth):
     def compare(toscore, gndtruth):
-        return compare_images(toscore, gndtruth, 2.5)
+        return compare_images(toscore, gndtruth, p_max_ratio)
     return compare_datasets_default(toscore, groundtruth, compare)
+
+def set_param(param):
+    if param != None:
+        global p_max_ratio
+        p_max_ratio = param

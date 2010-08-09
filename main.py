@@ -112,6 +112,8 @@ The curve is not saved if no file is specified.")
                          help = "Maximum of the y axis for ROC/DET curve.")
     optparser.add_option("--images_path", dest = "img_path", default = None,
                          type = "str", help = "Path to the images if 'disp' mode.")
+    optparser.add_option("--comparator_param", dest = "comp_param", default = None,
+                         type = "float", help = "Parameter to pass to the comparator.")
     (options, args) = optparser.parse_args()
     
     if options.input == None:
@@ -157,6 +159,7 @@ The curve is not saved if no file is specified.")
             sys.stderr.write("comparator missing.\n")
             sys.exit(0)
         comparator = comparators.get_module(options.comparator)
+        comparator.set_param(options.comp_param)
     
     if mode == "input_file":
         print core.single_scoring(toscore_filename, toscore_parser,

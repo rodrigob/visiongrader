@@ -33,3 +33,6 @@ def compare_images(toscore, groundtruth):
 
 def compare_datasets(toscore, groundtruth):
     return compare_datasets_default(toscore, groundtruth, compare_images)
+
+def set_param(param):
+    pass
