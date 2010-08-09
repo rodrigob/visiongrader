@@ -90,10 +90,15 @@ def get_img_from_name(name, annotations_path, images_path):
     possible_paths = []
     if images_path != None:
         possible_paths.append(os.path.join(images_path, name + ".png"))
+        possible_paths.append(os.path.join(images_path, name + ".jpg"))
     possible_paths.append(os.path.join(os.path.join(annotations_path, ".."),
                                        os.path.join("pos", name + ".png")))
     possible_paths.append(os.path.join(os.path.join(annotations_path, ".."),
                                        os.path.join("neg", name + ".png")))
+    possible_paths.append(os.path.join(os.path.join(annotations_path, ".."),
+                                       os.path.join("pos", name + ".jpg")))
+    possible_paths.append(os.path.join(os.path.join(annotations_path, ".."),
+                                       os.path.join("neg", name + ".jpg")))
     for path in possible_paths:
         if os.path.exists(path):
             return path
