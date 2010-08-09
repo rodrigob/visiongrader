@@ -115,6 +115,7 @@ The curve is not saved if no file is specified.")
     
     if options.input == None:
         optparser.print_usage()
+        sys.stderr.write("input missing.\n")
         sys.exit(0)
     toscore_filename = options.input
 
@@ -123,7 +124,7 @@ The curve is not saved if no file is specified.")
     for (mode_opt, mode_name) in modes:
         if getattr(options, mode_opt) == True:
             if mode != None:
-                print "You cannot choose mode than one mode (--roc, --det or --display)."
+                sys.stderr.write("You cannot choose mode than one mode (--roc, --det or --display).\n")
                 sys.exit(0)
             mode = mode_name
     if mode == None:
@@ -131,24 +132,27 @@ The curve is not saved if no file is specified.")
 
     if options.groundtruth == None:
         optparser.print_usage()
+        sys.stderr.write("groundtruth missing.\n")
         sys.exit(0)
     groundtruth_filename = options.groundtruth
 
     parser_dir = options.parser_dir
     comparator_dir = options.comparator_dir
-    parsers = ModuleHandler(".", parser_dir)
-    comparators = ModuleHandler(".", comparator_dir)
+    main_path = os.path.join(os.getcwd(), os.path.dirname(sys.argv[0]))
+    parsers = ModuleHandler(main_path, parser_dir)
+    comparators = ModuleHandler(main_path, comparator_dir)
 
     if options.input_parser == None or options.groundtruth_parser == None:
         optparser.print_usage()
+        sys.stderr.write("A parser is missing.\n")
         sys.exit(0)
     toscore_parser = parsers.get_module(options.input_parser) #TODO : check existence
     groundtruth_parser = parsers.get_module(options.groundtruth_parser) #TODO same
 
     if mode != "display":
         if options.comparator == None:
-            print "You must specify a comparator."
             optparser.print_usage()
+            sys.stderr.write("comparator missing.\n")
             sys.exit(0)
         comparator = comparators.get_module(options.comparator)
 
@@ -178,7 +182,11 @@ The curve is not saved if no file is specified.")
         import plot
         toscore = toscore_parser.parse_multi(toscore_filename, crawl = options.crawl)
         multi_result = MultiResult()
-        print toscore.n_confidences()
+        #print toscore.n_confidences()
+        xmin = options.xmin #TODO
+        xmax = options.xmax
+        ymin = options.ymin
+        ymax = options.ymax
         if options.sampling == None:
             n = 200
         else:

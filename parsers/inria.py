@@ -22,6 +22,7 @@ from dataset import DataSet
 from objects import BoundingBox
 import os
 import os.path
+import sys
 
 data_type = "images"
 
@@ -86,8 +87,15 @@ def parse(path, crawl = False):
     return ret
 
 def get_img_from_name(name, annotations_path, images_path):
+    possible_paths = []
     if images_path != None:
-        return os.path.join(images_path, name)
-    else:
-        return os.path.join(os.path.join(annotations_path, ".."),
-                            os.path.join("pos", name + ".png"))
+        possible_paths.append(os.path.join(images_path, name + ".png"))
+    possible_paths.append(os.path.join(os.path.join(annotations_path, ".."),
+                                       os.path.join("pos", name + ".png")))
+    possible_paths.append(os.path.join(os.path.join(annotations_path, ".."),
+                                       os.path.join("neg", name + ".png")))
+    for path in possible_paths:
+        if os.path.exists(path):
+            return path
+    sys.stderr.write("%s : image not found.\n"%(name,))
+    raise StandardError()

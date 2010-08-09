@@ -28,7 +28,10 @@ name = "eblearnParser"
 data_type = "images"
 
 drop_neg = True
-negs = "/home/myrhev32/visiongrader/visiongrader/data/inria/INRIAPerson/Test/neg"
+negs = "/home/myrhev/visiongrader/visiongrader/data/inria/INRIAPerson/Test/neg"
+if not os.path.exists(negs):
+    print "Please specify the negs path in parsers/eblearn (TODO)"
+parse_confidence_min = 1
 
 def desctibe():
     return "Parser for eblearn result files"
@@ -37,7 +40,6 @@ def recognize(file):
     return False
 
 def parse(filen, crawl = False):
-    raise NotImplementedError()
     file = open(filen, "r")
     ret = DataSet()
     for line in file:
@@ -48,7 +50,7 @@ def parse(filen, crawl = False):
         filename = filename[:filename.rfind(".")]
         class_id = int(splited[1])
         (confidence, x, y, x2, y2) = tuple([float(a) for a in splited[2:]])
-        if confidence > 1.5: #TODO
+        if confidence > parse_confidence_min: #TODO
             ret.add_obj(filename, BoundingBox(x, y, x2, y2))
     file.close()
     return ret

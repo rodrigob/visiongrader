@@ -24,6 +24,8 @@ import pylab
 import cPickle
 import sys
 import optparse
+import os
+import os.path
 
 n_colors = 6
 colors = ['b', 'g', 'c', 'm', 'y', 'k']
@@ -81,8 +83,8 @@ if __name__=="__main__":
     (options, args) = optp.parse_args()
     for arg in [a for a in args if a != options.main_curve]:
         plot(arg)
-    if os.path.exists(option.main_curve):
-        plot(options.main_cuirve, True)
+    if os.path.exists(options.main_curve):
+        plot(options.main_curve, True)
     else:
         print "Warning: %s does not exixts."%(option.main_curve,)
     toplot.sort()

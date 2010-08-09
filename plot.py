@@ -63,7 +63,7 @@ def print_DET(multi_result, n_imgs, save_filename = None, show_curve = True,
         #the "-" is a trick for sorting
         points.append((fp / n_imgs, - fn / (tp + fn)))
     points.sort()
-    if save_fulename != None:
+    if save_filename != None:
         f = open(save_filename, "w")
         cPickle.dump(points, f)
         f.close()
