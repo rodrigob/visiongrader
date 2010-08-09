@@ -112,6 +112,12 @@ class DataSet(object):
             self.add_empty_image(image)
         self.images[image].add_obj(obj)
 
+    def get_gprims(self, key):
+        if key in self.images:
+            return self.images[key].get_gprims()
+        else:
+            return []
+
     def __str__(self):
         ret = "(DataSet %s : "%(self.label,)
         for img in self.images:

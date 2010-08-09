@@ -20,13 +20,12 @@
 # Authors :
 #  Michael Mathieu <michael.mathieu@ens.fr>
 
-import viewer
 import optparse
 import os
 import os.path
 import sys
-
-from result import MultiResult
+import core
+import plot
 
 class ModuleHandler(object):
     def __init__(self, module_dir, module_name):
@@ -56,9 +55,11 @@ class ModuleHandler(object):
     def get_module(self, name):
         return self.modules["%s.%s"%(self.module_name, name)]
 
+
 if __name__=="__main__":
-    usage = "usage: %prog -i input -g groundtruth --input_parser inputparser \
---groundtruth_parser groundtruthparser [-c comparator] [OPTIONS] [--roc] [--det]"
+    #usage = "usage: %prog -i input -g groundtruth --input_parser inputparser \
+#--groundtruth_parser groundtruthparser [-c comparator] [OPTIONS] [--roc] [--det]"
+    usage = "usage: TODO"
     optparser = optparse.OptionParser(add_help_option = True, usage = usage,
                                       prog = "./main.py")
     optparser.add_option("-i", "--input", dest = "input", default = None, type = "str",
@@ -119,22 +120,23 @@ The curve is not saved if no file is specified.")
         sys.exit(0)
     toscore_filename = options.input
 
-    modes = [("roc", "ROC"), ("det", "DET"), ("display", "display")]
-    mode = None
-    for (mode_opt, mode_name) in modes:
-        if getattr(options, mode_opt) == True:
-            if mode != None:
-                sys.stderr.write("You cannot choose mode than one mode (--roc, --det or --display).\n")
-                sys.exit(0)
-            mode = mode_name
-    if mode == None:
-        mode = "input_file"
-
     if options.groundtruth == None:
         optparser.print_usage()
         sys.stderr.write("groundtruth missing.\n")
         sys.exit(0)
     groundtruth_filename = options.groundtruth
+
+    modes = [("roc", "ROC"), ("det", "DET"), ("display", "display")]
+    mode = None
+    for (mode_opt, mode_name) in modes:
+        if getattr(options, mode_opt) == True:
+            if mode != None:
+                sys.stderr.write("You cannot choose mode than one mode \
+(--roc, --det or --display).\n")
+                sys.exit(0)
+            mode = mode_name
+    if mode == None:
+        mode = "input_file"
 
     parser_dir = options.parser_dir
     comparator_dir = options.comparator_dir
@@ -155,77 +157,43 @@ The curve is not saved if no file is specified.")
             sys.stderr.write("comparator missing.\n")
             sys.exit(0)
         comparator = comparators.get_module(options.comparator)
-
-    groundtruth = groundtruth_parser.parse(groundtruth_filename)
     
     if mode == "input_file":
-        toscore = toscore_parser.parse(toscore_filename)
-        result = comparator.compare_datasets(toscore, groundtruth)
-        print result
+        print core.single_scoring(toscore_filename, toscore_parser,
+                                  groundtruth_filename, groundtruth_parser,
+                                  comparator)
     elif mode == "display":
-        toscore = toscore_parser.parse(toscore_filename)
-        v = viewer.Viewer()
-        global i
-        i= 0
-        def on_click(toscore = toscore, v = v):
-            global i
-            img_name = toscore.keys()[i]
-            filename = groundtruth_parser.get_img_from_name(img_name,
-                                                            groundtruth_filename,
-                                                            options.img_path)
-            img = toscore[img_name]
-            print i
-            i = (i + 1) % len(toscore)
-            v.display(filename, img.get_gprims(), img.get_gprims())
-        v.start(on_click, on_click)
+        core.display(toscore_filename, toscore_parser,
+                     groundtruth_filename, groundtruth_parser, options.img_path)
     elif mode == "ROC" or mode == "DET":
-        import plot
-        toscore = toscore_parser.parse_multi(toscore_filename, crawl = options.crawl)
-        multi_result = MultiResult()
-        #print toscore.n_confidences()
-        xmin = options.xmin #TODO
-        xmax = options.xmax
-        ymin = options.ymin
-        ymax = options.ymax
-        if options.sampling == None:
-            n = 200
-        else:
-            n = int(toscore.n_confidences() / options.sampling)
-        for i in xrange(0, n):
-            #print i
-            confidence = toscore.keys()[toscore.n_confidences() / n * i]
-            if options.confidence_min != None:
-                if confidence < options.confidence_min:
-                    continue
-            if options.confidence_max != None:
-                if confidence > options.confidence_max:
-                    continue
-            print i
-            dataset = toscore[confidence]
-            result = comparator.compare_datasets(dataset, groundtruth)
-            multi_result.add_result(result)
+        (multi_result, ts) = core.multi_scoring(toscore_filename, toscore_parser,
+                                                groundtruth_filename,
+                                                groundtruth_parser, comparator,
+                                                options.crawl, options.sampling,
+                                                options.confidence_min,
+                                                options.confidence_max)
         if mode == "ROC":
             if groundtruth_parser.data_type == "images":
-                plot.print_ROC(multi_result, len(toscore), options.saving_file,
+                plot.print_ROC(multi_result, len(ts), options.saving_file,
                                options.show_curve,
-                               xmin = xmin, ymin = ymin, xmax = xmax, ymax = ymax)
+                               xmin = options.xmin, ymin = options.ymin,
+                               xmax = options.xmax, ymax = options.ymax)
             elif groundtruth_parser.data_type == "posneg":
                 #TODO: bug in plotter
                 raise NotImplementedError()
-                #plot.print_ROC(multi_result, len(toscore))
                 plot.print_ROC_posneg(multi_result)
             else:
                 raise NotImplementedError()
         elif mode == "DET":
             if groundtruth_parser.data_type == "images":
-                plot.print_DET(multi_result, len(toscore), options.saving_file,
+                plot.print_DET(multi_result, len(ts), options.saving_file,
                                options.show_curve,
-                               xmin = xmin, ymin = ymin, xmax = xmax, ymax = ymax)
+                               xmin = options.xmin, ymin = options.ymin,
+                               xmax = options.xmax, ymax = options.ymax)
             elif groundtruth_parser.data_type == "posneg":
                 #TODO: bug in plotter
                 raise NotImplementedError()
                 plot.print_DET_posneg(multi_result)
-                #plot.print_DET(multi_result, len(toscore))
             else:
                 raise NotImplementedError()
         
