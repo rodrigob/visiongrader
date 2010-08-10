@@ -27,7 +27,7 @@ name = "eblearnParser"
 
 data_type = "images"
 
-drop_neg = True
+drop_neg = False
 negs = "/home/myrhev/visiongrader/visiongrader/data/inria/INRIAPerson/Test/neg"
 if not os.path.exists(negs):
     print "Please specify the negs path in parsers/eblearn (TODO)"
@@ -50,8 +50,8 @@ def parse(filen, crawl = False):
         filename = filename[:filename.rfind(".")]
         class_id = int(splited[1])
         (confidence, x, y, x2, y2) = tuple([float(a) for a in splited[2:]])
-        if confidence > parse_confidence_min: #TODO
-            ret.add_obj(filename, BoundingBox(x, y, x2, y2))
+        #if confidence > parse_confidence_min: #TODO
+        ret.add_obj(filename, BoundingBox(x, y, x2, y2))
     file.close()
     return ret
 

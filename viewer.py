@@ -91,11 +91,9 @@ class GUI(object):
         #self.main_window.add_events(gtk.gdk.BUTTON_PRESS_MASK)
         #self.main_window.connect("button-press-event", self.on_click)
 
-        self.vbox1 = gtk.VBox(2)
+        self.vbox1 = gtk.VBox(3)
         self.vbox1.set_homogeneous(False)
         self.main_window.add(self.vbox1)
-        self.displayer = Displayer(self.main_window)
-        self.vbox1.pack_start(self.displayer, False, False)
 
         self.next_button = gtk.Button(label = "next")
         self.next_button.connect("clicked", self._on_next)
@@ -105,6 +103,20 @@ class GUI(object):
         self.hbox1.pack_start(self.prev_button, False, True)
         self.hbox1.pack_start(self.next_button, False, True)
         self.vbox1.pack_start(self.hbox1, False, False)
+
+        self.hbox2 = gtk.HBox(2)
+        self.hbox2.set_homogeneous(False)
+        self.vbox1.pack_start(self.hbox2, False, False)
+        self.label_slider = gtk.Label("Confidence : ")
+        self.hbox2.pack_start(self.label_slider, False, False)
+        self.hscale1 = gtk.HScale()
+        self.hscale1.set_range(0, 1)
+        self.hscale1.connect("value-changed", self._on_slider_moved)
+        self.hbox2.pack_start(self.hscale1, True, True)
+
+        self.displayer = Displayer(self.main_window)
+        self.vbox1.pack_start(self.displayer, False, False)
+
         self.main_window.show_all()
 
     def on_destroy(self, *args):
@@ -112,6 +124,13 @@ class GUI(object):
 
     def set_title(self, title):
         self.main_window.set_title(title)
+
+    def set_slider_params(self, xmin, xmax, digits):
+        self.hscale1.set_range(xmin, xmax)
+        self.hscale1.set_digits(digits)
+
+    def get_slider_position(self):
+        return self.hscale1.get_value()
 
     def display(self, img_filename, gts, positives):
         self.displayer.set_image(img_filename)
@@ -134,6 +153,13 @@ class GUI(object):
         return False
 
     def on_prev(self):
+        pass
+
+    def _on_slider_moved(self, *args):
+        self.on_slider_moved()
+        return False
+
+    def on_slider_moved(self):
         pass
 
     def start(self):

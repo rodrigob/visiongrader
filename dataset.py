@@ -181,5 +181,14 @@ class DataSetMulti(DataSet):
     def keys(self):
         return self.confidences.keys()
 
+    def images_keys(self):
+        return DataSet.keys(self)
+
     def n_confidences(self):
         return len(self.confidences)
+
+    def confidence_max(self):
+        return max(self.confidences.keys())
+
+    def confidence_min(self):
+        return min(self.confidences.keys())

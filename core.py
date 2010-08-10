@@ -7,27 +7,32 @@ def single_scoring(ts_filename, ts_parser, gt_filename, gt_parser, comparator):
     return comparator.compare_datasets(ts, gt)
 
 def display(ts_filename, ts_parser, gt_filename, gt_parser, img_path):
-    ts = ts_parser.parse(ts_filename)
+    ts = ts_parser.parse_multi(ts_filename)
     gt = gt_parser.parse(gt_filename)
     v = viewer.GUI()
+    keys = ts.images_keys()
     global i
     i = 0
     def on_refresh(ts = ts, v = v):
         global i
-        img_name = ts.keys()[i]
+        img_name = keys[i]
         filename = gt_parser.get_img_from_name(img_name, gt_filename, img_path)
         v.set_title(img_name)
-        v.display(filename, gt.get_gprims(img_name), ts.get_gprims(img_name))
+        confidence = v.get_slider_position()
+        ts2 = ts[confidence]
+        v.display(filename, gt.get_gprims(img_name), ts2.get_gprims(img_name))
     def on_next():
         global i
-        i = (i + 1) % len(ts)
+        i = (i + 1) % len(keys)
         on_refresh()
     def on_prev():
         global i
-        i = (i - 1) % len(ts)
+        i = (i - 1) % len(keys)
         on_refresh()
     v.on_next = on_next
     v.on_prev = on_prev
+    v.on_slider_moved = on_refresh
+    v.set_slider_params(ts.confidence_min(), ts.confidence_max(), 2)
     on_refresh()
     v.start()
 
