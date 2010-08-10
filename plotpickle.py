@@ -80,6 +80,11 @@ if __name__=="__main__":
                     help = "Minimum of the y axis.")
     optp.add_option("--ymax", dest = "ymax", default = None, type = "float",
                     help = "Maximum of the y axis.")
+    optp.add_option("--legend_position", dest = "legend_position",
+                    default = "lower_right", type = "str",
+                    help = 'Position for the legend. Choices are either "best" to \
+let pylab decide, or a combination of [lower center upper]_[left center right] \
+eg. "lower_right".')
     (options, args) = optp.parse_args()
     for arg in [a for a in args if a != options.main_curve]:
         plot(arg)
@@ -91,7 +96,17 @@ if __name__=="__main__":
     for p in toplot:
         pylab.loglog(p[1], p[2], p[3], color = p[4], label = p[5], linewidth = p[6])
 
-    pylab.legend(loc=4)
+    if options.legend_position == "best":
+        pylab.legend(loc=0)
+    elif options.legend_position == "center_center":
+        pylab.legend(loc=10)
+    else:
+        (loc1, loc2) = options.legend_position.split("_")
+        if (loc1 not in ["lower", "center", "upper"]) \
+                or (loc2 not in ["left", "center", "right"]):
+            sys.stderr.write("legend_position : invalid string.\n")
+            sys.exit(0)
+        pylab.legend(loc=loc1 + " " + loc2)
     if options.x_legend != None:
         pylab.xlabel(options.x_legend)
     if options.y_legend != None:
