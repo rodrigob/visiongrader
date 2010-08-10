@@ -64,7 +64,7 @@ def plot(arg, main = False):
                    style, color, label, width])
 
 if __name__=="__main__":
-    usage = "usage: TODO"
+    usage = "usage: %prog [-m main_curve] [OPTIONS] [--help]\n       %prog --help"
     optp = optparse.OptionParser(add_help_option = True, usage = usage, prog = "./plotpickle.py")
     optp.add_option("-m", "--main_curve", dest = "main_curve", default = None, type = "str",
                     help = "Main curve.")

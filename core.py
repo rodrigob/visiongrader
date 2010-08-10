@@ -57,7 +57,7 @@ def display(ts_filename, ts_parser, gt_filename, gt_parser, img_path):
     v.start()
 
 def multi_scoring(ts_filename, ts_parser, gt_filename, gt_parser, comparator,
-                  crawl, sampling, confidence_min, confidence_max):
+                  crawl, sampling, confidence_min):
     ts = ts_parser.parse_multi(ts_filename, crawl)
     gt = gt_parser.parse(gt_filename)
     multi_result = result.MultiResult()
@@ -69,9 +69,6 @@ def multi_scoring(ts_filename, ts_parser, gt_filename, gt_parser, comparator,
         confidence = ts.keys()[ts.n_confidences() / n * i]
         if confidence_min != None:
             if confidence < confidence_min:
-                continue
-        if confidence_max != None:
-            if confidence > confidence_max:
                 continue
         print i
         dataset = ts[confidence]

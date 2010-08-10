@@ -57,11 +57,12 @@ class ModuleHandler(object):
 
 
 if __name__=="__main__":
-    #usage = "usage: %prog -i input -g groundtruth --input_parser inputparser \
-#--groundtruth_parser groundtruthparser [-c comparator] [OPTIONS] [--roc] [--det]"
-    usage = "usage: TODO"
+    usage = "usage: %prog -i input -g groundtruth --input_parser inputparser \
+--groundtruth_parser groundtruthparser [-c comparator] [--roc] [--det] [--disp] \
+[OPTIONS]\n       %prog --help"
     optparser = optparse.OptionParser(add_help_option = True, usage = usage,
                                       prog = "./main.py")
+    # input files
     optparser.add_option("-i", "--input", dest = "input", default = None, type = "str",
                          help = "Input file to score (if not specified, a generator \
 must be specified)")
@@ -74,12 +75,16 @@ must be specified)")
                          help = "Parser to use for the ground truth file")
     optparser.add_option("--parser_dir", dest = "parser_dir", default = "parsers",
                          type = "str", help = "Parser directory")
+    # comparator
     optparser.add_option("--comparator_dir", dest = "comparator_dir",
                          default = "comparators", type = "str",
                          help = "Comparator directory")
     optparser.add_option("-c", "--comparator", dest = "comparator",
                          default = None, type = "str",
                          help = "Comparator to use (required)")
+    optparser.add_option("--comparator_param", dest = "comp_param", default = None,
+                         type = "float", help = "Parameter to pass to the comparator.")
+    # mode
     optparser.add_option("--roc", dest = "roc", action = "store_true", default = False,
                          help = "Print ROC curve.")
     optparser.add_option("--det", dest = "det", action = "store_true", default = False,
@@ -87,9 +92,7 @@ must be specified)")
     optparser.add_option("--disp", dest = "display", action = "store_true",
                          default = False,
                          help = "Display the images, groundtruths and bounding boxes.")
-    optparser.add_option("--confidence_max", dest = "confidence_max", default = None,
-                         type = "float",
-                         help = "Maximum confidence to display for the curves.")
+    # mode-specific options
     optparser.add_option("--confidence_min", dest = "confidence_min", default = None,
                          type = "float",
                          help = "Mminimum confidence to display for the curves.")
@@ -112,8 +115,6 @@ The curve is not saved if no file is specified.")
                          help = "Maximum of the y axis for ROC/DET curve.")
     optparser.add_option("--images_path", dest = "img_path", default = None,
                          type = "str", help = "Path to the images if 'disp' mode.")
-    optparser.add_option("--comparator_param", dest = "comp_param", default = None,
-                         type = "float", help = "Parameter to pass to the comparator.")
     (options, args) = optparser.parse_args()
     
     if options.input == None:
@@ -134,7 +135,7 @@ The curve is not saved if no file is specified.")
         if getattr(options, mode_opt) == True:
             if mode != None:
                 sys.stderr.write("You cannot choose mode than one mode \
-(--roc, --det or --display).\n")
+(--roc, --det or --disp).\n")
                 sys.exit(0)
             mode = mode_name
     if mode == None:
@@ -173,8 +174,7 @@ The curve is not saved if no file is specified.")
                                                 groundtruth_filename,
                                                 groundtruth_parser, comparator,
                                                 options.crawl, options.sampling,
-                                                options.confidence_min,
-                                                options.confidence_max)
+                                                options.confidence_min)
         if mode == "ROC":
             if groundtruth_parser.data_type == "images":
                 plot.print_ROC(multi_result, len(ts), options.saving_file,
