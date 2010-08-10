@@ -9,19 +9,27 @@ def single_scoring(ts_filename, ts_parser, gt_filename, gt_parser, comparator):
 def display(ts_filename, ts_parser, gt_filename, gt_parser, img_path):
     ts = ts_parser.parse(ts_filename)
     gt = gt_parser.parse(gt_filename)
-    v = viewer.Viewer()
-    global i #TODO : dirty
+    v = viewer.GUI()
+    global i
     i = 0
-    def on_click(ts = ts, v = v):
+    def on_refresh(ts = ts, v = v):
         global i
         img_name = ts.keys()[i]
         filename = gt_parser.get_img_from_name(img_name, gt_filename, img_path)
-        #img = ts[img_name]
-        #gt_img = gt[img_name]
-        print i
-        i = (i + 1) % len(ts)
+        v.set_title(img_name)
         v.display(filename, gt.get_gprims(img_name), ts.get_gprims(img_name))
-    v.start(on_click, on_click)
+    def on_next():
+        global i
+        i = (i + 1) % len(ts)
+        on_refresh()
+    def on_prev():
+        global i
+        i = (i - 1) % len(ts)
+        on_refresh()
+    v.on_next = on_next
+    v.on_prev = on_prev
+    on_refresh()
+    v.start()
 
 def multi_scoring(ts_filename, ts_parser, gt_filename, gt_parser, comparator,
                   crawl, sampling, confidence_min, confidence_max):

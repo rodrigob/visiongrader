@@ -34,7 +34,10 @@ class Displayer(gtk.DrawingArea):
         return False
 
     def set_window_size(self, w, h):
-        self.main_window.set_geometry_hints(None, w, h, w, h)
+        self.main_window.set_geometry_hints(self, w, h, w, h)
+        self.set_size_request(w, h)
+        #self.set_geometry_hints(None, w, h, w, h)
+        pass
 
     def set_image(self, filename):
         pixbuf = gtk.gdk.pixbuf_new_from_file(filename)
@@ -81,19 +84,34 @@ class Displayer(gtk.DrawingArea):
         self.queue_draw()
 
 class GUI(object):
-    def __init__(self, on_click_ext):
+    def __init__(self):
         super(GUI, self).__init__()
-        self.on_click_ext = on_click_ext
         self.main_window = gtk.Window(gtk.WINDOW_TOPLEVEL)
         self.main_window.connect("destroy", self.on_destroy)
+        #self.main_window.add_events(gtk.gdk.BUTTON_PRESS_MASK)
+        #self.main_window.connect("button-press-event", self.on_click)
+
+        self.vbox1 = gtk.VBox(2)
+        self.vbox1.set_homogeneous(False)
+        self.main_window.add(self.vbox1)
         self.displayer = Displayer(self.main_window)
-        self.main_window.add(self.displayer)
-        self.main_window.add_events(gtk.gdk.BUTTON_PRESS_MASK)
-        self.main_window.connect("button-press-event", self.on_click)
+        self.vbox1.pack_start(self.displayer, False, False)
+
+        self.next_button = gtk.Button(label = "next")
+        self.next_button.connect("clicked", self._on_next)
+        self.prev_button = gtk.Button(label = "prev")
+        self.prev_button.connect("clicked", self._on_prev)
+        self.hbox1 = gtk.HBox(2)
+        self.hbox1.pack_start(self.prev_button, False, True)
+        self.hbox1.pack_start(self.next_button, False, True)
+        self.vbox1.pack_start(self.hbox1, False, False)
         self.main_window.show_all()
 
     def on_destroy(self, *args):
         gtk.main_quit()
+
+    def set_title(self, title):
+        self.main_window.set_title(title)
 
     def display(self, img_filename, gts, positives):
         self.displayer.set_image(img_filename)
@@ -104,22 +122,22 @@ class GUI(object):
             self.displayer.add_gprim(pos, 0, 1, 0)
         self.displayer.draw()
 
-    def on_click(self, *args):
-        self.on_click_ext()
+    def _on_next(self, *args):
+        self.on_next()
         return False
 
-class Viewer(object):
-    def __init__(self):
-        super(Viewer, self).__init__()
-        self.gui = None
+    def on_next(self):
+        pass
 
-    def start(self, on_init, on_click):
-        self.gui = GUI(on_click)
-        on_init()
+    def _on_prev(self, *args):
+        self.on_prev()
+        return False
+
+    def on_prev(self):
+        pass
+
+    def start(self):
         gtk.main()
-
-    def display(self, img_filename, gts, positives):
-        self.gui.display(img_filename, gts, positives)
 
 if __name__ == "__main__":
     def c():
