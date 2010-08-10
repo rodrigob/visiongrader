@@ -22,7 +22,6 @@ from dataset import DataSetMulti
 from objects import BoundingBox
 import os
 import os.path
-import name_converter
 
 data_type = "images"
 
@@ -34,10 +33,22 @@ def describe():
 def recognize(file):
     return False
 
+pos_path = "/home/myrhev32/visiongrader/visiongrader/data/inria/INRIAPerson/Test/pos"
+
+try:
+    pos = os.listdir(pos_path)
+    pos.sort()
+
+    corresp = {}
+    for i in xrange(len(pos)):
+        corresp["I%05d"%(i)] = pos[i][:pos[i].rfind(".")]
+except OSError:
+    print "Warning : caltech parser won't be available. Please set pos_path to the path to INRIAPerson positives, such as inria/INRIAPerson/Test/pos"
+
 def parse_file_multi(file, filename, dataset):
     for line in file:
         (x, y, w, h, score) = tuple([float(a) for a in line.strip().rstrip().split(",")])
-        dataset.add_obj(score, name_converter.corresp[filename], BoundingBox(x, y, x+w, y+h))
+        dataset.add_obj(score, corresp[filename], BoundingBox(x, y, x+w, y+h))
 
 def parse_multi(path, crawl = False):
     if crawl == True:
