@@ -26,35 +26,7 @@ import os.path
 import sys
 import core
 import plot
-
-class ModuleHandler(object):
-    def __init__(self, module_dir, module_name):
-        self.modules = {}
-        self.module_name = module_name
-        modules_names = os.listdir(os.path.join(module_dir, module_name))
-        if module_dir not in sys.path:
-            sys.path.append(os.path.abspath(module_dir))
-            remove_from_path = True
-        else:
-            remove_from_path = False
-        __import__(module_name)
-        for name in modules_names:
-            if self.is_a_module_name(name):
-                name = "%s.%s"%(module_name, name[:-3])
-                __import__(name)
-                self.modules[name] = sys.modules[name]
-        if remove_from_path:
-            sys.path.remove(os.path.abspath(module_dir))
-
-    def is_a_module_name(self, name):
-        return name[-3:] == ".py"
-
-    def get_modules_names(self):
-        return self.modules.keys()
-
-    def get_module(self, name):
-        return self.modules["%s.%s"%(self.module_name, name)]
-
+from modules import ModuleHandler
 
 if __name__=="__main__":
     usage = "usage: %prog -i input -g groundtruth --input_parser inputparser \
@@ -168,7 +140,7 @@ The curve is not saved if no file is specified.")
                                   comparator)
     elif mode == "display":
         core.display(toscore_filename, toscore_parser,
-                     groundtruth_filename, groundtruth_parser, options.img_path)
+                     groundtruth_filename, groundtruth_parser, options.img_path, None)
     elif mode == "ROC" or mode == "DET":
         (multi_result, ts) = core.multi_scoring(toscore_filename, toscore_parser,
                                                 groundtruth_filename,
@@ -176,27 +148,12 @@ The curve is not saved if no file is specified.")
                                                 options.crawl, options.sampling,
                                                 options.confidence_min)
         if mode == "ROC":
-            if groundtruth_parser.data_type == "images":
-                plot.print_ROC(multi_result, len(ts), options.saving_file,
-                               options.show_curve,
-                               xmin = options.xmin, ymin = options.ymin,
-                               xmax = options.xmax, ymax = options.ymax)
-            elif groundtruth_parser.data_type == "posneg":
-                #TODO: bug in plotter
-                raise NotImplementedError()
-                plot.print_ROC_posneg(multi_result)
-            else:
-                raise NotImplementedError()
+            core.plot_ROC(groundtruth_parser, len(ts), multi_result,
+                          options.saving_file, options.show_curve,
+                          options.xmin, options.ymin,
+                          options.xmax, options.ymax)
         elif mode == "DET":
-            if groundtruth_parser.data_type == "images":
-                plot.print_DET(multi_result, len(ts), options.saving_file,
-                               options.show_curve,
-                               xmin = options.xmin, ymin = options.ymin,
-                               xmax = options.xmax, ymax = options.ymax)
-            elif groundtruth_parser.data_type == "posneg":
-                #TODO: bug in plotter
-                raise NotImplementedError()
-                plot.print_DET_posneg(multi_result)
-            else:
-                raise NotImplementedError()
-        
+            core.plot_DET(groundtruth_parser, len(ts), multi_result,
+                          options.saving_file, options.show_curve,
+                          options.xmin, options.ymin,
+                          options.xmax, options.ymax)        

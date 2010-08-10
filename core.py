@@ -20,13 +20,15 @@
 
 import viewer
 import result
+import plot
 
 def single_scoring(ts_filename, ts_parser, gt_filename, gt_parser, comparator):
     ts = ts_parser.parse(ts_filename)
     gt = gt_parser.parse(gt_filename)
     return comparator.compare_datasets(ts, gt)
 
-def display(ts_filename, ts_parser, gt_filename, gt_parser, img_path):
+def display(ts_filename, ts_parser, gt_filename, gt_parser, img_path,
+            parent_window = None):
     ts = ts_parser.parse_multi(ts_filename)
     gt = gt_parser.parse(gt_filename)
     v = viewer.GUI()
@@ -54,7 +56,10 @@ def display(ts_filename, ts_parser, gt_filename, gt_parser, img_path):
     v.on_slider_moved = on_refresh
     v.set_slider_params(ts.confidence_min(), ts.confidence_max(), 2)
     on_refresh()
-    v.start()
+    if parent_window == None:
+        v.start()
+    else:
+        parent_window.add(v)
 
 def multi_scoring(ts_filename, ts_parser, gt_filename, gt_parser, comparator,
                   crawl, sampling, confidence_min):
@@ -74,3 +79,27 @@ def multi_scoring(ts_filename, ts_parser, gt_filename, gt_parser, comparator,
         dataset = ts[confidence]
         multi_result.add_result(comparator.compare_datasets(dataset, gt))
     return (multi_result, ts)
+
+def plot_ROC(gt_parser, n_imgs, multi_result, saving_file, show_curve,
+             xmin, ymin, xmax, ymax):
+    if gt_parser.data_type == "images":
+        plot.print_ROC(multi_result, n_imgs, saving_file, show_curve,
+                       xmin, ymin, xmax, ymax)
+    elif gt_parser.data_type == "posneg":
+        raise NotImplementedError() #TODO: bug in plotter with posneg
+        plot.print_DET_posneg(multi_result)
+    else:
+        raise StandardError("Parser %s : data type %s not \
+recognized"%(gt_parser.name, gt_parser.data_type))
+
+def plot_DET(gt_parser, n_imgs, multi_result, saving_file, show_curve,
+             xmin, ymin, xmax, ymax):
+    if gt_parser.data_type == "images":
+        plot.print_DET(multi_result, n_imgs, saving_file, show_curve,
+                       xmin, ymin, xmax, ymax)
+    elif gt_parser.data_type == "posneg":
+        raise NotImplementedError() #TODO: bug in plotter with posneg
+        plot.print_DET_posneg(multi_result)
+    else:
+        raise StandardError("Parser %s : data type %s not \
+recognized"%(gt_parser.name, gt_parser.data_type))
