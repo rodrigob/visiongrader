@@ -28,10 +28,12 @@ def single_scoring(ts_filename, ts_parser, gt_filename, gt_parser, comparator):
     return comparator.compare_datasets(ts, gt)
 
 def display(ts_filename, ts_parser, gt_filename, gt_parser, img_path,
-            parent_window = None):
+            parent_window = None, set_legend = None):
     ts = ts_parser.parse_multi(ts_filename)
     gt = gt_parser.parse(gt_filename)
-    v = viewer.GUI()
+    v = viewer.GUI(parent_window)
+    if set_legend != None:
+        v.set_legend = set_legend
     keys = ts.images_keys()
     global i
     i = 0
@@ -39,7 +41,7 @@ def display(ts_filename, ts_parser, gt_filename, gt_parser, img_path,
         global i
         img_name = keys[i]
         filename = gt_parser.get_img_from_name(img_name, gt_filename, img_path)
-        v.set_title(img_name)
+        v.set_legend(img_name)
         confidence = v.get_slider_position()
         ts2 = ts[confidence]
         v.display(filename, gt.get_gprims(img_name), ts2.get_gprims(img_name))
@@ -58,8 +60,6 @@ def display(ts_filename, ts_parser, gt_filename, gt_parser, img_path,
     on_refresh()
     if parent_window == None:
         v.start()
-    else:
-        parent_window.add(v)
 
 def multi_scoring(ts_filename, ts_parser, gt_filename, gt_parser, comparator,
                   crawl, sampling, confidence_min):

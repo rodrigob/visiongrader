@@ -27,6 +27,8 @@ data_type = "images"
 
 name = "CaltechParser"
 
+path_is_folder = True
+
 def describe():
     return "Parser for the Caltech results."
 

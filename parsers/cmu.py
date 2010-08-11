@@ -26,6 +26,8 @@ name = "CMU"
 
 data_type = "images"
 
+path_is_folder = False
+
 def describe():
     return "Parser for the CMU dataset."
 

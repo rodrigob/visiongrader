@@ -27,6 +27,8 @@ name = "eblearnParser"
 
 data_type = "images"
 
+path_is_folder = False
+
 drop_neg = False
 negs = "/home/myrhev/visiongrader/visiongrader/data/inria/INRIAPerson/Test/neg"
 if not os.path.exists(negs):

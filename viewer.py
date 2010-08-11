@@ -104,12 +104,13 @@ class Displayer(gtk.DrawingArea):
         self.queue_draw()
 
 class GUI(object):
-    def __init__(self):
+    def __init__(self, parent = None):
         super(GUI, self).__init__()
-        self.main_window = gtk.Window(gtk.WINDOW_TOPLEVEL)
-        self.main_window.connect("destroy", self.on_destroy)
-        #self.main_window.add_events(gtk.gdk.BUTTON_PRESS_MASK)
-        #self.main_window.connect("button-press-event", self.on_click)
+        if parent != None:
+            self.main_window = parent
+        else:
+            self.main_window = gtk.Window(gtk.WINDOW_TOPLEVEL)
+            self.main_window.connect("destroy", self.on_destroy)
 
         self.vbox1 = gtk.VBox(3)
         self.vbox1.set_homogeneous(False)

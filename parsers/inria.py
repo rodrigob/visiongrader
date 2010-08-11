@@ -28,6 +28,8 @@ data_type = "images"
 
 name = "INRIA_Parser"
 
+path_is_folder = True
+
 def describe():
     return "Parser for the INRIA pedestrian dataset."
 
