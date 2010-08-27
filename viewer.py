@@ -115,11 +115,14 @@ class GUI(object):
         self.vbox1.set_homogeneous(False)
         self.main_window.add(self.vbox1)
 
+        self.input = gtk.Entry()
+        self.input.connect("activate", self._on_activate)
         self.next_button = gtk.Button(label = "next")
         self.next_button.connect("clicked", self._on_next)
         self.prev_button = gtk.Button(label = "prev")
         self.prev_button.connect("clicked", self._on_prev)
         self.hbox1 = gtk.HBox(2)
+        self.hbox1.pack_start(self.input, False, True)
         self.hbox1.pack_start(self.prev_button, False, True)
         self.hbox1.pack_start(self.next_button, False, True)
         self.vbox1.pack_start(self.hbox1, False, False)
@@ -161,11 +164,18 @@ class GUI(object):
             self.displayer.add_gprim(pos, 0, 1, 0)
         self.displayer.draw()
 
-    def _on_next(self, *args):
-        self.on_next()
+    def _on_activate(self, entry):
+        self.on_activate(entry.get_text())
         return False
 
-    def on_next(self):
+    def on_activate(self, text):
+        pass
+
+    def _on_next(self, *args):
+        self.on_next(*args)
+        return False
+
+    def on_next(self, *args):
         pass
 
     def _on_prev(self, *args):

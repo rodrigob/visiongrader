@@ -33,7 +33,8 @@ def describe():
 def recognize(file):
     return False
 
-pos_path = "/home/myrhev32/visiongrader/visiongrader/data/inria/INRIAPerson/Test/pos"
+#pos_path = "/home/myrhev32/visiongrader/visiongrader/data/inria/INRIAPerson/Test/pos"
+pos_path = "/data/pedestrians/INRIAPerson/Test/pos"
 
 try:
     pos = os.listdir(pos_path)

@@ -22,13 +22,15 @@ from dataset import DataSet, DataSetMulti
 from objects import BoundingBox
 import os
 import os.path
+import sys
 
 name = "eblearnParser"
 
 data_type = "images"
 
 drop_neg = False
-negs = "/home/myrhev/visiongrader/visiongrader/data/inria/INRIAPerson/Test/neg"
+#negs = "/home/myrhev/visiongrader/visiongrader/data/inria/INRIAPerson/Test/neg"
+negs = "/data/pedestrians/INRIAPerson/Test/neg"
 if not os.path.exists(negs):
     print "Please specify the negs path in parsers/eblearn (TODO)"
 parse_confidence_min = 1
@@ -82,6 +84,20 @@ def parse_multi(filen, crawl = False):
     else:
         ret = DataSetMulti()
         for (root, dirs, files) in os.walk(filen):
-            for file in [os.path.join(root, file) for file in files if file == "bbox.txt"]:
+            for file in [os.path.join(root, file)
+                         for file in files if file == "bbox.txt"]:
                 parse_multi_file(file, ret)
         return ret
+
+def get_img_from_name(name, annotations_path, images_path):
+    possible_paths = []
+    if images_path != None:
+        possible_paths.append(os.path.join(images_path, name + ".png"))
+        possible_paths.append(os.path.join(images_path, name + ".pgm"))
+        possible_paths.append(os.path.join(images_path, name + ".jpg"))
+    for path in possible_paths:
+        if os.path.exists(path):
+            return path
+    sys.stderr.write("tried: %s\n"%(os.path.join(images_path, name + ".pgm"),))
+    sys.stderr.write("%s : image not found.\n"%(name,))
+    raise StandardError()
