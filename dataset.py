@@ -188,7 +188,13 @@ class DataSetMulti(DataSet):
         return len(self.confidences)
 
     def confidence_max(self):
-        return max(self.confidences.keys())
+        if self.confidences.keys() == []:
+            return 0
+        else:
+            return max(self.confidences.keys())
 
     def confidence_min(self):
-        return min(self.confidences.keys())
+        if self.confidences.keys() == []:
+            return 0
+        else:
+            return min(self.confidences.keys())

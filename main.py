@@ -89,18 +89,6 @@ The curve is not saved if no file is specified.")
                          type = "str", help = "Path to the images if 'disp' mode.")
     (options, args) = optparser.parse_args()
     
-    if options.input == None:
-        optparser.print_usage()
-        sys.stderr.write("input missing.\n")
-        sys.exit(0)
-    toscore_filename = options.input
-
-    if options.groundtruth == None:
-        optparser.print_usage()
-        sys.stderr.write("groundtruth missing.\n")
-        sys.exit(0)
-    groundtruth_filename = options.groundtruth
-
     modes = [("roc", "ROC"), ("det", "DET"), ("display", "display")]
     mode = None
     for (mode_opt, mode_name) in modes:
@@ -113,17 +101,39 @@ The curve is not saved if no file is specified.")
     if mode == None:
         mode = "input_file"
 
+    if options.input == None and mode != "display":
+        optparser.print_usage()
+        sys.stderr.write("input missing.\n")
+        sys.exit(0)
+    toscore_filename = options.input
+
+    if options.groundtruth == None:
+        optparser.print_usage()
+        sys.stderr.write("groundtruth missing.\n")
+        sys.exit(0)
+    groundtruth_filename = options.groundtruth
+
     parser_dir = options.parser_dir
     comparator_dir = options.comparator_dir
     main_path = os.path.join(os.getcwd(), os.path.dirname(sys.argv[0]))
     parsers = ModuleHandler(main_path, parser_dir)
     comparators = ModuleHandler(main_path, comparator_dir)
 
-    if options.input_parser == None or options.groundtruth_parser == None:
+    if options.input_parser == None:
+        if toscore_filename != None:
+            optparser.print_usage()
+            sys.stderr.write("input parser is missing.\n")
+            sys.exit(0)
+        else:
+            toscore_parser = None
+    else:
+        #TODO : check existence
+        toscore_parser = parsers.get_module(options.input_parser)
+
+    if options.groundtruth_parser == None:
         optparser.print_usage()
-        sys.stderr.write("A parser is missing.\n")
+        sys.stderr.write("groundtruth parser is missing.\n")
         sys.exit(0)
-    toscore_parser = parsers.get_module(options.input_parser) #TODO : check existence
     groundtruth_parser = parsers.get_module(options.groundtruth_parser) #TODO same
 
     if mode != "display":

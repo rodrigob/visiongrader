@@ -173,7 +173,7 @@ class GUI(object):
         pass
 
     def _on_next(self, *args):
-        self.on_next(*args)
+        self.on_next()
         return False
 
     def on_next(self, *args):

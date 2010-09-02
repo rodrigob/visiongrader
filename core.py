@@ -21,6 +21,7 @@
 import viewer
 import result
 import plot
+import dataset
 
 def single_scoring(ts_filename, ts_parser, gt_filename, gt_parser, comparator):
     ts = ts_parser.parse(ts_filename)
@@ -29,12 +30,18 @@ def single_scoring(ts_filename, ts_parser, gt_filename, gt_parser, comparator):
 
 def display(ts_filename, ts_parser, gt_filename, gt_parser, img_path,
             parent_window = None, set_legend = None):
-    ts = ts_parser.parse_multi(ts_filename)
+    if ts_filename != None and ts_parser != None:
+        ts = ts_parser.parse_multi(ts_filename)
+    else:
+        ts = dataset.DataSetMulti()
     gt = gt_parser.parse(gt_filename)
     v = viewer.GUI(parent_window)
     if set_legend != None:
         v.set_legend = set_legend
     keys = ts.images_keys()
+    for key in gt.keys():
+        if key not in keys:
+            keys.append(key)
     global i
     i = 0
     def on_refresh(ts = ts, v = v, img_name = None):
@@ -47,7 +54,7 @@ def display(ts_filename, ts_parser, gt_filename, gt_parser, img_path,
                     i = j
                     break
         filename = gt_parser.get_img_from_name(img_name, gt_filename, img_path)
-        v.set_legend(img_name)
+        v.set_title(img_name)
         confidence = v.get_slider_position()
         ts2 = ts[confidence]
         v.display(filename, gt.get_gprims(img_name), ts2.get_gprims(img_name))
