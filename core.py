@@ -37,9 +37,15 @@ def display(ts_filename, ts_parser, gt_filename, gt_parser, img_path,
     keys = ts.images_keys()
     global i
     i = 0
-    def on_refresh(ts = ts, v = v):
+    def on_refresh(ts = ts, v = v, img_name = None):
         global i
-        img_name = keys[i]
+        if img_name == None:
+            img_name = keys[i]
+        else:
+            for j in range(0, len(keys)):
+                if (keys[j] == img_name):
+                    i = j
+                    break
         filename = gt_parser.get_img_from_name(img_name, gt_filename, img_path)
         v.set_legend(img_name)
         confidence = v.get_slider_position()
@@ -49,10 +55,14 @@ def display(ts_filename, ts_parser, gt_filename, gt_parser, img_path,
         global i
         i = (i + 1) % len(keys)
         on_refresh()
+    def on_activate(text):
+        print "opening image %s"%text
+        on_refresh(ts, v, text)
     def on_prev():
         global i
         i = (i - 1) % len(keys)
         on_refresh()
+    v.on_activate = on_activate
     v.on_next = on_next
     v.on_prev = on_prev
     v.on_slider_moved = on_refresh
