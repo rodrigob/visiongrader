@@ -31,8 +31,7 @@ data_type = "images"
 path_is_folder = False
 
 drop_neg = False
-#negs = "/home/myrhev/visiongrader/visiongrader/data/inria/INRIAPerson/Test/neg"
-negs = "/data/pedestrians/INRIAPerson/Test/neg"
+negs = "/home/myrhev/visiongrader/visiongrader/data/inria/INRIAPerson/Test/neg"
 if not os.path.exists(negs):
     print "Please specify the negs path in parsers/eblearn (TODO)"
 parse_confidence_min = 1

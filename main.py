@@ -73,7 +73,7 @@ must be specified)")
     optparser.add_option("--sampling", dest = "sampling", default = None, type = "int",
                          help = "Number of points used to generate the ROC/DET curve..")
     optparser.add_option("--show-no-curve", dest = "show_curve", action = "store_false",
-                         help = "Do not display the ROC/DET curve.")
+                         help = "Do not display the ROC/DET curve.", default = True)
     optparser.add_option("--saving-file", dest = "saving_file", default = None,
                          type = "str", help = "Name of the file to save the curve. \
 The curve is not saved if no file is specified.")
