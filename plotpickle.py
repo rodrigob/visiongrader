@@ -88,10 +88,13 @@ eg. "lower_right".')
     (options, args) = optp.parse_args()
     for arg in [a for a in args if a != options.main_curve]:
         plot(arg)
-    if os.path.exists(options.main_curve):
-        plot(options.main_curve, True)
+    if options.main_curve != None:
+        if os.path.exists(options.main_curve):
+            plot(options.main_curve, True)
+        else:
+            print "Warning: %s does not exixts."%(option.main_curve,)
     else:
-        print "Warning: %s does not exixts."%(option.main_curve,)
+        print "Warning: no main curve specified"
     toplot.sort()
     for p in toplot:
         pylab.loglog(p[1], p[2], p[3], color = p[4], label = p[5], linewidth = p[6])
