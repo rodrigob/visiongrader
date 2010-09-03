@@ -71,7 +71,8 @@ must be specified)")
     optparser.add_option("--crawl", action = "store_true", dest = "crawl",
                          default = False, help = "Crawls eblearn files.")
     optparser.add_option("--sampling", dest = "sampling", default = None, type = "int",
-                         help = "Number of points used to generate the ROC/DET curve..")
+                         help = "Sampling rate for the curves. With 1 all the points are \
+used, with 10, one on 10 is used, and so on.")
     optparser.add_option("--show-no-curve", dest = "show_curve", action = "store_false",
                          help = "Do not display the ROC/DET curve.", default = True)
     optparser.add_option("--saving-file", dest = "saving_file", default = None,

@@ -86,7 +86,7 @@ def multi_scoring(ts_filename, ts_parser, gt_filename, gt_parser, comparator,
     if sampling == None:
         n = 200
     else:
-        n = int(ts.n_confidence() / sampling)
+        n = int(ts.n_confidences() / sampling)
     for i in xrange(0, n):
         confidence = ts.keys()[ts.n_confidences() / n * i]
         if confidence_min != None:
