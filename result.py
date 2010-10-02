@@ -18,6 +18,8 @@
 # Authors :
 #  Michael Mathieu <michael.mathieu@ens.fr>
 
+# This class contains results of matching 2 image bounding boxes
+# against each other, such as false positives, false negatives, etc.
 class ImageResult(object):
     def __init__(self):
         self.true_positives = []
@@ -69,9 +71,11 @@ class DataSetResult(object):
         return self._n_false_negatives
 
     def __str__(self):
-        return "DataSetResult : %d true positives, %d false positive, \
-        %d false negatives"%(self.n_true_positives(), self.n_false_positives(),
-                             self.n_false_negatives())
+        return "DataSetResult: " + str(self.n_true_positives()) \
+            + " true positives, " + str(self.n_false_positives()) \
+            + " false positive, " + str(self.n_false_negatives()) \
+            + " false negatives"
+
 class MultiResult(object):
     def __init__(self):
         self.datasets = []
@@ -82,7 +86,7 @@ class MultiResult(object):
     def __str__(self):
         ret = "MultiResult : "
         for th in self.datasets:
-            ret += "%s "%(self.datasets[th],)
+            ret += "%s " % th
         return ret[:-1]
 
     def __getitem__(self, i):

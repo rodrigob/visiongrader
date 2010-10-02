@@ -62,7 +62,8 @@ class Displayer(gtk.DrawingArea):
     def set_image(self, filename):
         pixbuf = gtk.gdk.pixbuf_new_from_file(filename)
         self.img_surface = cairo.ImageSurface(cairo.FORMAT_ARGB32,
-                                              pixbuf.get_width(), pixbuf.get_height())
+                                              pixbuf.get_width(),
+                                              pixbuf.get_height())
         img_context = gtk.gdk.CairoContext(cairo.Context(self.img_surface))
         img_context.set_operator(cairo.OPERATOR_SOURCE)
         img_context.set_source_rgb(1, 1, 1)
@@ -131,7 +132,7 @@ class GUI(object):
         self.hbox2 = gtk.HBox(2)
         self.hbox2.set_homogeneous(False)
         self.vbox1.pack_start(self.hbox2, False, False)
-        self.label_slider = gtk.Label("Confidence : ")
+        self.label_slider = gtk.Label("Confidence: ")
         self.hbox2.pack_start(self.label_slider, False, False)
         self.hscale1 = gtk.HScale()
         self.hscale1.set_range(0, 1)
@@ -156,13 +157,20 @@ class GUI(object):
     def get_slider_position(self):
         return self.hscale1.get_value()
 
-    def display(self, img_filename, gts, positives):
+    def display(self, img_filename, gts, positives,
+                matched_gt = None, matched_ts = None):
         self.displayer.set_image(img_filename)
         self.displayer.clear_gprims()
         for gt in gts:
             self.displayer.add_gprim(gt, 1, 0, 0)
         for pos in positives:
             self.displayer.add_gprim(pos, 0, 1, 0)
+        if matched_gt:
+            for mgt in matched_gt:
+                self.displayer.add_gprim(mgt, 0, 1, 1)
+        if matched_ts:
+            for mts in matched_ts:
+                self.displayer.add_gprim(mts, 0, 0, 1)
         self.displayer.draw()
 
     def _on_activate(self, entry):

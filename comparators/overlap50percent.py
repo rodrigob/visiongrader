@@ -18,7 +18,8 @@
 # Authors :
 #  Michael Mathieu <michael.mathieu@ens.fr>
 
-from comparator_helpers import compare_images_default, compare_datasets_default
+from comparator_helpers import compare_images_default, \
+    compare_datasets_default, compare_images_gprims
 
 name = "Overlap50PercentComparator"
 
@@ -42,6 +43,10 @@ def compare_images(toscore, groundtruth):
 
 def compare_datasets(toscore, groundtruth):
     return compare_datasets_default(toscore, groundtruth, compare_images)
+
+def get_matched_gprims(img_toscore, img_groundtruth):
+    return compare_images_gprims(img_toscore, img_groundtruth,
+                                 lambda a, b: match_objs(a, b, p_overlap))
 
 def set_param(param):
     if param != None:

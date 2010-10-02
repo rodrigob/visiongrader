@@ -80,8 +80,9 @@ class BoundingBoxError(StandardError):
         super(BoundingBoxError, self).__init__()
 
 class BoundingBox(ObjectInfos):
-    def __init__(self, x, y, x2, y2):
+    def __init__(self, x, y, x2, y2, conf):
         super(BoundingBox, self).__init__()
+        self.confidence = conf
         self._x = x
         self._y = y
         self._x2 = x2
@@ -106,6 +107,9 @@ class BoundingBox(ObjectInfos):
 
     def getHeight(self):
         return self._y2 - self._y
+
+    def getConfidence(self):
+        return self.confidence
 
     width = property(getWidth)
     height = property(getHeight)

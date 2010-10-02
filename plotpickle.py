@@ -92,7 +92,7 @@ eg. "lower_right".')
         if os.path.exists(options.main_curve):
             plot(options.main_curve, True)
         else:
-            print "Warning: %s does not exixts."%(option.main_curve,)
+            print "Warning: %s does not exixts."%(options.main_curve,)
     else:
         print "Warning: no main curve specified"
     toplot.sort()

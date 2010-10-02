@@ -22,6 +22,7 @@ import pylab
 import matplotlib
 import cPickle
 
+################################################################################
 def print_ROC(multi_result, n_imgs, save_filename = None, show_curve = True,
               xmin = None, ymin = None, xmax = None, ymax = None):
     points = []
@@ -51,17 +52,26 @@ def print_ROC(multi_result, n_imgs, save_filename = None, show_curve = True,
         pylab.ylabel("Detection rate")
         pylab.show()
 
+################################################################################
 def print_DET(multi_result, n_imgs, save_filename = None, show_curve = True,
               xmin = None, ymin = None, xmax = None, ymax = None):
+    print "Printing DET curve with xmin: " + str(xmin) + " xmax: " + str(xmax) \
+        + " ymin: " + str(ymin) + " ymax: " + str(ymax)
     points = []
     n_imgs = float(n_imgs)
+    # each result is defined for a given threshold
     for result in multi_result:
         tp = float(result.n_true_positives())
         fp = float(result.n_false_positives())
         fn = float(result.n_false_negatives())
         #n_imgs = float(len(result.images))
         #the "-" is a trick for sorting
-        points.append((fp / n_imgs, - fn / (tp + fn)))
+        points.append((max(xmin, fp / n_imgs), - fn / (tp + fn)))
+        # print "appending " + str(max(xmin, fp / n_imgs)) + ", " \
+        #     + str(fn / (tp + fn)) + " tp=" + str(result.n_true_positives()) \
+        #     + " fp=" + str(result.n_false_positives()) \
+        #     + " fn=" + str(result.n_false_negatives()) \
+        #     + " nimgs=" + str(n_imgs)
     points.sort()
     if save_filename != None:
         f = open(save_filename, "w")

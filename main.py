@@ -70,7 +70,8 @@ must be specified)")
                          help = "Mminimum confidence to display for the curves.")
     optparser.add_option("--crawl", action = "store_true", dest = "crawl",
                          default = False, help = "Crawls eblearn files.")
-    optparser.add_option("--sampling", dest = "sampling", default = None, type = "int",
+    optparser.add_option("--sampling", dest = "sampling", default = None,
+                         type = "int",
                          help = "Sampling rate for the curves. With 1 all the points are \
 used, with 10, one on 10 is used, and so on.")
     optparser.add_option("--show-no-curve", dest = "show_curve", action = "store_false",
@@ -78,16 +79,17 @@ used, with 10, one on 10 is used, and so on.")
     optparser.add_option("--saving-file", dest = "saving_file", default = None,
                          type = "str", help = "Name of the file to save the curve. \
 The curve is not saved if no file is specified.")
-    optparser.add_option("--xmin", dest = "xmin", default = None, type = "float",
+    optparser.add_option("--xmin", dest = "xmin", default = None, type ="float",
                          help = "Minimum of the x axis for ROC/DET curve.")
-    optparser.add_option("--xmax", dest = "xmax", default = None, type = "float",
+    optparser.add_option("--xmax", dest = "xmax", default = None, type ="float",
                          help = "Maximum of the x axis for ROC/DET curve.")
-    optparser.add_option("--ymin", dest = "ymin", default = None, type = "float",
+    optparser.add_option("--ymin", dest = "ymin", default = None, type ="float",
                          help = "Minimum of the y axis for ROC/DET curve.")
-    optparser.add_option("--ymax", dest = "ymax", default = None, type = "float",
+    optparser.add_option("--ymax", dest = "ymax", default = None, type ="float",
                          help = "Maximum of the y axis for ROC/DET curve.")
     optparser.add_option("--images_path", dest = "img_path", default = None,
-                         type = "str", help = "Path to the images if 'disp' mode.")
+                         type = "str",
+                         help = "Path to the images if 'disp' mode.")
     (options, args) = optparser.parse_args()
     
     modes = [("roc", "ROC"), ("det", "DET"), ("display", "display")]
@@ -150,8 +152,14 @@ The curve is not saved if no file is specified.")
                                   groundtruth_filename, groundtruth_parser,
                                   comparator)
     elif mode == "display":
+        comparator = None
+        if options.comparator != None:
+            comparator = comparators.get_module(options.comparator)
+            comparator.set_param(options.comp_param)
+
         core.display(toscore_filename, toscore_parser,
-                     groundtruth_filename, groundtruth_parser, options.img_path, None)
+                     groundtruth_filename, groundtruth_parser, options.img_path,
+                     None, None, comparator)
     elif mode == "ROC" or mode == "DET":
         (multi_result, ts) = core.multi_scoring(toscore_filename, toscore_parser,
                                                 groundtruth_filename,

@@ -83,6 +83,8 @@ class ImageDataSet(object):
         ret = ret[:-1] + ")"
         return ret
     
+    def __iter__(self):
+        return self.objs.__iter__()
 
 class DataSet(object):
     def __init__(self, label = ""):
@@ -118,12 +120,40 @@ class DataSet(object):
         else:
             return []
 
+    def get_objs(self, key):
+        if key in self.images:
+            return self.images[key].get_objs()
+        else:
+            return []
+
     def __str__(self):
         ret = "(DataSet %s : "%(self.label,)
         for img in self.images:
             ret += "(%s : %s) "%(img, str(self.images[img]))
         #ret[-1] = ")"
         return ret[:-1] + ")"
+
+    def confidence_max(self):
+        if self.images == []:
+            return 0
+        else:
+            m = self.images[self.images.keys()[0]].get_objs()[0].confidence
+            for im in self.images:
+                for obj in self.images[im].get_objs():
+                    if obj.confidence > m:
+                        m = obj.confidence
+            return m
+
+    def confidence_min(self):
+        if self.images == []:
+            return 0
+        else:
+            m = self.images[self.images.keys()[0]].get_objs()[0].confidence
+            for im in self.images:
+                for obj in self.images[im].get_objs():
+                    if obj.confidence < m:
+                        m = obj.confidence
+            return m
 
 class DataSetFromMulti(object):
     def __init__(self, parent, i_conf_min, label = ""):
@@ -148,25 +178,32 @@ class DataSetFromMulti(object):
 class DataSetMulti(DataSet):
     def __init__(self, label = ""):
         DataSet.__init__(self, label)
-        self.confidences = {}
+        self.confidences = []
 
     def add_obj(self, confidence, filename, obj):
         DataSet.add_obj(self, filename, obj)
-        while confidence in self.confidences:
-            confidence += 0.000001 #TODO
-        self.confidences[confidence] = (filename, self.images[filename][-1])
+        self.confidences.append(float(confidence))
+        # while confidence in self.confidences:
+        #     confidence += 0.000000000001 #TODO
+#        self.objs[confidence] = (filename, self.images[filename][-1])
+#        self.confidences[confidence] = (filename, self.images[filename][-1])
+#        self.objs.append(filename, obj)
 
     def __str__(self):
         return "MultiDataSet " + DataSet.__str__(self)
 
     def __iter__(self):
         return self.confidences.__iter__()
+#        return self.Dataset.images.__iter__()
 
+    # Returns a subset of this dataset for which confidences are greater
+    # or equal to 'conf'.
     def __getitem__(self, conf):
         ret = DataSet()
-        for confidence in self.confidences:
-            if confidence > conf:
-                ret.add_obj(*self.confidences[confidence])
+        for im in DataSet.__iter__(self):
+            for obj in DataSet.__getitem__(self, im):
+                if obj.confidence >= conf:
+                    ret.add_obj(im, obj)
         return ret
         '''
         i = 0
@@ -178,23 +215,29 @@ class DataSetMulti(DataSet):
         return DataSetFromMulti(self, i)
         '''
 
-    def keys(self):
-        return self.confidences.keys()
+    def __len__(self):
+        return DataSet.__len__(self)
+
+    def sort_confidences(self):
+        self.confidences.sort()
+        
+    def get_confidences(self):
+        return self.confidences
 
     def images_keys(self):
         return DataSet.keys(self)
 
     def n_confidences(self):
         return len(self.confidences)
-
+    
     def confidence_max(self):
-        if self.confidences.keys() == []:
+        if self.confidences == []:
             return 0
         else:
-            return max(self.confidences.keys())
+            return max(self.confidences)
 
     def confidence_min(self):
-        if self.confidences.keys() == []:
+        if self.confidences == []:
             return 0
         else:
-            return min(self.confidences.keys())
+            return min(self.confidences)

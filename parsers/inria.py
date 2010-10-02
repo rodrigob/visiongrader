@@ -60,7 +60,7 @@ def get_object(data, i):
         object_char = object_char+1 + data[object_char+1:].find("object %d"%(i,))
     if xmin == None:
         return None
-    return BoundingBox(xmin, ymin, xmax, ymax)
+    return BoundingBox(xmin, ymin, xmax, ymax, 1.0)
 
 def parse_file(file):
     ret = []

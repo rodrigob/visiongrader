@@ -75,10 +75,11 @@ def parse_multi_file(filen, ret = None):
                 continue
         class_id = int(splited[1])
         (confidence, x, y, x2, y2) = tuple([float(a) for a in splited[2:]])
-        ret.add_obj(confidence, filename, BoundingBox(x, y, x2, y2))
+        ret.add_obj(confidence, filename, BoundingBox(x, y, x2, y2, confidence))
     file.close()
     return ret
 
+# Find all 'bbox.txt' files within a directory (recursively??)
 def parse_multi(filen, crawl = False):
     if not crawl:
         return parse_multi_file(filen)

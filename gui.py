@@ -76,7 +76,8 @@ class MainGUI(object):
     def set_comparator_dir(self, comparator_dir):
         if self.comparator_dir != comparator_dir:
             self.comparator_dir = comparator_dir
-            self.comparators = modules.ModuleHandler(self.main_path, comparator_dir)
+            self.comparators = modules.ModuleHandler(self.main_path,
+                                                     comparator_dir)
 
     def get_parser_list(self):
         return self.parsers.get_modules_names()
@@ -89,7 +90,7 @@ class MainGUI(object):
 
     def params_prompt(self, widget, on_ok, gt, ts, comp):
         possible_params = [("gt", 2), ("ts", 2), ("comp", 2)]
-        n_params = sum([p[1] for p in possible_params if locals()[p[0]] == True])
+        n_params = sum([p[1] for p in possible_params if locals()[p[0]] ==True])
         table = gtk.Table(n_params+1, 2)
         widget.add(table)
         i_row = 0
@@ -111,7 +112,8 @@ class MainGUI(object):
             table.attach(filename_chooser, 1, 2, i_row+1, i_row+2)
             fields[field_label_file] = filename_chooser
 
-            def on_combo_changed(widget, chooser = filename_chooser, self = self):
+            def on_combo_changed(widget, chooser = filename_chooser,
+                                 self = self):
                 if self.get_parser_by_index(widget.get_active()).path_is_folder:
                     chooser.set_action(gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER)
                 else:
@@ -119,7 +121,8 @@ class MainGUI(object):
             parser_combo.connect("changed", on_combo_changed)
 
         if gt:
-            add_parser("groundtruth parser", "groundtruth file", "choose groundtruth",
+            add_parser("groundtruth parser", "groundtruth file",
+                       "choose groundtruth",
                        "gt_parser_combo", "gt_filename_chooser", i_row)
             i_row += 2
         if ts:
@@ -130,7 +133,8 @@ class MainGUI(object):
             table.attach(gtk.Label("comparator : "), 0, 1, i_row, i_row+1)
             comp_combo = gtk.combo_box_new_text()
             table.attach(comp_entry, 1, 2, i_row, i_row+1)
-            table.attach(gtk.Label("comparator directory : "), 0, 1, i_row+1, i_row+2)
+            table.attach(gtk.Label("comparator directory : "), 0, 1, i_row+1,
+                         i_row+2)
             comp_dir_entry = gtk.Entry()
             table.attach(comp_dir_entry, 1, 2, i_row+1, i_row+2)
             i_row += 2
@@ -149,9 +153,11 @@ class MainGUI(object):
         def set_legend(text):
             pass
         core.display(fields["ts_filename_chooser"].get_filenames()[0],
-                     self.get_parser_by_index(fields["ts_parser_combo"].get_active()),
+                     self.get_parser_by_index(fields["ts_parser_combo"]
+                                              .get_active()),
                      fields["gt_filename_chooser"].get_filenames()[0],
-                     self.get_parser_by_index(fields["gt_parser_combo"].get_active()),
+                     self.get_parser_by_index(fields["gt_parser_combo"]
+                                              .get_active()),
                      None, self.main_viewport, set_legend)
                      
         
