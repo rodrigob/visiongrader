@@ -60,7 +60,23 @@ def plot(arg, main = False):
         style = "-."
     i += 1
     index = i
-    toplot.append([index, [a[0] for a in points], [- a[1] for a in points],
+    # find y for x=val
+    val = 1
+    y = 0
+    x1 = 0
+    x2 = 0
+    y1 = 0
+    y2 = 0
+    for a in points:
+        x2 = x1
+        y2 = y1
+        x1 = a[0]
+        y1 = -a[1]
+        if (x1 > 1 and x2 <= 1): # interpolate
+            y = y2 + (y1 - y2) * (val - x2) / (x1 - x2)
+    y = y * 100 # use percentage
+    label = label + " (%.1f%%)"%y
+    toplot.append([y, index, [a[0] for a in points], [- a[1] for a in points],
                    style, color, label, width])
 
 if __name__=="__main__":
@@ -95,9 +111,11 @@ eg. "lower_right".')
             print "Warning: %s does not exixts."%(options.main_curve,)
     else:
         print "Warning: no main curve specified"
-    toplot.sort()
+    toplot.sort() # sort by score (1st element)
+    toplot.reverse() # lower score down
     for p in toplot:
-        pylab.loglog(p[1], p[2], p[3], color = p[4], label = p[5], linewidth = p[6])
+        pylab.loglog(p[2], p[3], p[4], color = p[5], label = p[6],
+                     linewidth = p[7])
 
     if options.legend_position == "best":
         pylab.legend(loc=0)
@@ -122,5 +140,6 @@ eg. "lower_right".')
         pylab.axis(ymin = options.ymin)
     if options.ymax != None:
         pylab.axis(ymax = options.ymax)
+    pylab.axvline(1.0)
     
     pylab.show()

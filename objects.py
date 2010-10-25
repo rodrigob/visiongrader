@@ -87,8 +87,12 @@ class BoundingBox(ObjectInfos):
         self._y = y
         self._x2 = x2
         self._y2 = y2
-        assert(self._x < self._x2)
-        assert(self._y < self._y2)
+        if self._x > self._x2:
+            raise StandardError("Expected " + str(self._x) + " < "
+                                + str(self._x2))
+        if self._y > self._y2:
+            raise StandardError("Expected " + str(self._y) + " < "
+                                + str(self._y2))
     
     def getX1(self):
         return self._x

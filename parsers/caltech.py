@@ -36,7 +36,7 @@ def recognize(file):
     return False
 
 #pos_path = "/home/myrhev32/visiongrader/visiongrader/data/inria/INRIAPerson/Test/pos"
-pos_path = "/data/pedestrians/INRIAPerson/Test/pos"
+pos_path = "/data/pedestrians/inria/INRIAPerson/Test/pos"
 
 try:
     pos = os.listdir(pos_path)
@@ -51,7 +51,7 @@ except OSError:
 def parse_file_multi(file, filename, dataset):
     for line in file:
         (x, y, w, h, score) = tuple([float(a) for a in line.strip().rstrip().split(",")])
-        dataset.add_obj(score, corresp[filename], BoundingBox(x, y, x+w, y+h))
+        dataset.add_obj(score, corresp[filename], BoundingBox(x, y, x+w, y+h, score))
 
 def parse_multi(path, crawl = False):
     if crawl == True:
