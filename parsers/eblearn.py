@@ -64,6 +64,7 @@ def parse_multi_file(filen, ret = None):
         ret = DataSetMulti()
     if drop_neg:
         negs_files = [f[:f.rfind(".")] for f in os.listdir(negs)]
+    i = 0
     for line in file:
         line = line.strip().rstrip()
         splited = line.split()
@@ -76,6 +77,7 @@ def parse_multi_file(filen, ret = None):
         class_id = int(splited[1])
         (confidence, x, y, x2, y2) = tuple([float(a) for a in splited[2:]])
         ret.add_obj(confidence, filename, BoundingBox(x, y, x2, y2, confidence))
+        i = i + 1
     file.close()
     return ret
 
