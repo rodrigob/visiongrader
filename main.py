@@ -79,6 +79,12 @@ used, with 10, one on 10 is used, and so on.")
     optparser.add_option("--saving-file", dest = "saving_file", default = None,
                          type = "str", help = "Name of the file to save the curve. \
 The curve is not saved if no file is specified.")
+    optparser.add_option("--grid_major", dest = "grid_major",
+                         action = "store_true", default = False,
+                         help = "Display major grid")
+    optparser.add_option("--grid_minor", dest = "grid_minor",
+                         action = "store_true", default = False,
+                         help = "Display minor grid")
     optparser.add_option("--xmin", dest = "xmin", default = None, type ="float",
                          help = "Minimum of the x axis for ROC/DET curve.")
     optparser.add_option("--xmax", dest = "xmax", default = None, type ="float",
@@ -169,10 +175,10 @@ The curve is not saved if no file is specified.")
         if mode == "ROC":
             core.plot_ROC(groundtruth_parser, len(ts), multi_result,
                           options.saving_file, options.show_curve,
-                          options.xmin, options.ymin,
-                          options.xmax, options.ymax)
+                          options.xmin, options.ymin, options.xmax,
+                          options.ymax, options.grid_major, options.grid_minor)
         elif mode == "DET":
             core.plot_DET(groundtruth_parser, len(ts), multi_result,
                           options.saving_file, options.show_curve,
-                          options.xmin, options.ymin,
-                          options.xmax, options.ymax)        
+                          options.xmin, options.ymin, options.xmax,
+                          options.ymax, options.grid_major, options.grid_minor)

@@ -72,6 +72,12 @@ if __name__=="__main__":
                     help = "Legend on the x axis.")
     optp.add_option("--ylegend", dest = "y_legend", default = None, type = "str",
                     help = "Legend on the y axis.")
+    optp.add_option("--grid_major", dest = "grid_major",
+                    action = "store_true", default = False,
+                    help = "Display major grid")
+    optp.add_option("--grid_minor", dest = "grid_minor",
+                    action = "store_true", default = False,
+                    help = "Display minor grid")
     optp.add_option("--xmin", dest = "xmin", default = None, type = "float",
                     help = "Minimum of the x axis.")
     optp.add_option("--xmax", dest = "xmax", default = None, type = "float",
@@ -122,5 +128,8 @@ eg. "lower_right".')
         pylab.axis(ymin = options.ymin)
     if options.ymax != None:
         pylab.axis(ymax = options.ymax)
-    
+    if options.grid_major:
+        pylab.grid(True, which='major')
+    if options.grid_minor:
+        pylab.grid(True, which='minor')    
     pylab.show()

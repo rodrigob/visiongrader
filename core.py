@@ -131,10 +131,10 @@ def multi_scoring(ts_filename, ts_parser, gt_filename, gt_parser, comparator,
 
 ################################################################################
 def plot_ROC(gt_parser, n_imgs, multi_result, saving_file, show_curve,
-             xmin, ymin, xmax, ymax):
+             xmin, ymin, xmax, ymax, grid_major, grid_minor):
     if gt_parser.data_type == "images":
         plot.print_ROC(multi_result, n_imgs, saving_file, show_curve,
-                       xmin, ymin, xmax, ymax)
+                       xmin, ymin, xmax, ymax, grid_major, grid_minor)
     elif gt_parser.data_type == "posneg":
         raise NotImplementedError() #TODO: bug in plotter with posneg
         plot.print_DET_posneg(multi_result)
@@ -144,10 +144,10 @@ recognized"%(gt_parser.name, gt_parser.data_type))
 
 ################################################################################
 def plot_DET(gt_parser, n_imgs, multi_result, saving_file, show_curve,
-             xmin, ymin, xmax, ymax):
+             xmin, ymin, xmax, ymax, grid_major, grid_minor):
     if gt_parser.data_type == "images":
         plot.print_DET(multi_result, n_imgs, saving_file, show_curve,
-                       xmin, ymin, xmax, ymax)
+                       xmin, ymin, xmax, ymax, grid_major, grid_minor)
     elif gt_parser.data_type == "posneg":
         raise NotImplementedError() #TODO: bug in plotter with posneg
         plot.print_DET_posneg(multi_result)

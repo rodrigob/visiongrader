@@ -19,12 +19,13 @@
 #  Michael Mathieu <michael.mathieu@ens.fr>
 
 import pylab
-import matplotlib
+#import matplotlib
 import cPickle
 
 ################################################################################
 def print_ROC(multi_result, n_imgs, save_filename = None, show_curve = True,
-              xmin = None, ymin = None, xmax = None, ymax = None):
+              xmin = None, ymin = None, xmax = None, ymax = None,
+              grid_major = False, grid_minor = False):
     points = []
     n_imps = float(n_imgs)
     for result in multi_result:
@@ -54,7 +55,8 @@ def print_ROC(multi_result, n_imgs, save_filename = None, show_curve = True,
 
 ################################################################################
 def print_DET(multi_result, n_imgs, save_filename = None, show_curve = True,
-              xmin = None, ymin = None, xmax = None, ymax = None):
+              xmin = None, ymin = None, xmax = None, ymax = None,
+              grid_major = False, grid_minor = False):
     print "Printing DET curve with xmin: " + str(xmin) + " xmax: " + str(xmax) \
         + " ymin: " + str(ymin) + " ymax: " + str(ymax)
     points = []
@@ -90,6 +92,10 @@ def print_DET(multi_result, n_imgs, save_filename = None, show_curve = True,
             pylab.axis(ymax = ymax)
         pylab.xlabel("False positives per image")
         pylab.ylabel("Miss rate")
+        if grid_major:
+            pylab.grid(True, which='major')
+        if grid_minor:
+            pylab.grid(True, which='minor')    
         pylab.show()
 
 
