@@ -25,10 +25,9 @@ import os.path
 import sys
 
 name = "eblearnParser"
-
 data_type = "images"
-
 path_is_folder = False
+whratio = None # force bbox width to be height * whratio
 
 drop_neg = False
 negs = "/home/myrhev/visiongrader/visiongrader/data/inria/INRIAPerson/Test/neg"
@@ -54,6 +53,13 @@ def parse(filen, crawl = False):
         class_id = int(splited[1])
         (confidence, x, y, x2, y2) = tuple([float(a) for a in splited[2:]])
         #if confidence > parse_confidence_min: #TODO
+        if whratio != None:
+            print "Using ratio"
+            height = y2 - y
+            width = x2 - x
+            width2 = height * whratio
+            x += (width - width2) / 2.0
+            x2 = x + width2
         ret.add_obj(filename, BoundingBox(x, y, x2, y2))
     file.close()
     return ret
@@ -76,6 +82,12 @@ def parse_multi_file(filen, ret = None):
                 continue
         class_id = int(splited[1])
         (confidence, x, y, x2, y2) = tuple([float(a) for a in splited[2:]])
+        if whratio != None:
+            height = y2 - y
+            width = x2 - x
+            width2 = height * whratio
+            x += (width - width2) / 2.0
+            x2 = x + width2
         ret.add_obj(confidence, filename, BoundingBox(x, y, x2, y2, confidence))
         i = i + 1
     file.close()

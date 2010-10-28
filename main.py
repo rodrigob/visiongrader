@@ -32,71 +32,79 @@ if __name__=="__main__":
     usage = "usage: %prog -i input -g groundtruth --input_parser inputparser \
 --groundtruth_parser groundtruthparser [-c comparator] [--roc] [--det] [--disp] \
 [OPTIONS]\n       %prog --help"
-    optparser = optparse.OptionParser(add_help_option = True, usage = usage,
-                                      prog = "./main.py")
+    op = optparse.OptionParser(add_help_option = True, usage = usage,
+                               prog = "./main.py")
     # input files
-    optparser.add_option("-i", "--input", dest = "input", default = None, type = "str",
-                         help = "Input file to score (if not specified, a generator \
+    op.add_option("-i", "--input", dest = "input", default = None, type = "str",
+                  help = "Input file to score (if not specified, a generator \
 must be specified)")
-    optparser.add_option("-t", "--groundtruth", dest = "groundtruth", default = None,
-                         type = "str", help = "Ground truth file (required)")
-    optparser.add_option("--input_parser", dest = "input_parser", default = None,
-                         type = "str", help = "Parser to use for the file to score")
-    optparser.add_option("--groundtruth_parser", dest = "groundtruth_parser",
-                         default = None, type = "str",
-                         help = "Parser to use for the ground truth file")
-    optparser.add_option("--parser_dir", dest = "parser_dir", default = "parsers",
-                         type = "str", help = "Parser directory")
+    op.add_option("-t", "--groundtruth", dest = "groundtruth", default = None,
+                  type = "str", help = "Ground truth file (required)")
+    op.add_option("--input_parser", dest = "input_parser", default = None,
+                  type = "str", help = "Parser to use for the file to score")
+    op.add_option("--groundtruth_parser", dest = "groundtruth_parser",
+                  default = None, type = "str",
+                  help = "Parser to use for the ground truth file")
+    op.add_option("--parser_dir", dest = "parser_dir", default = "parsers",
+                  type = "str", help = "Parser directory")
     # comparator
-    optparser.add_option("--comparator_dir", dest = "comparator_dir",
-                         default = "comparators", type = "str",
-                         help = "Comparator directory")
-    optparser.add_option("-c", "--comparator", dest = "comparator",
-                         default = None, type = "str",
-                         help = "Comparator to use (required)")
-    optparser.add_option("--comparator_param", dest = "comp_param", default = None,
-                         type = "float", help = "Parameter to pass to the comparator.")
+    op.add_option("--comparator_dir", dest = "comparator_dir",
+                  default = "comparators", type = "str",
+                  help = "Comparator directory")
+    op.add_option("-c", "--comparator", dest = "comparator",
+                  default = None, type = "str",
+                  help = "Comparator to use (required)")
+    op.add_option("--comparator_param", dest = "comp_param", default = None,
+                  type = "float", help = "Parameter to pass to the comparator.")
     # mode
-    optparser.add_option("--roc", dest = "roc", action = "store_true", default = False,
-                         help = "Print ROC curve.")
-    optparser.add_option("--det", dest = "det", action = "store_true", default = False,
-                         help = "Print DET curve.")
-    optparser.add_option("--disp", dest = "display", action = "store_true",
-                         default = False,
-                         help = "Display the images, groundtruths and bounding boxes.")
+    op.add_option("--roc", dest = "roc", action = "store_true", default = False,
+                  help = "Print ROC curve.")
+    op.add_option("--det", dest = "det", action = "store_true", default = False,
+                  help = "Print DET curve.")
+    op.add_option("--disp", dest = "display", action = "store_true",
+                  default = False,
+                  help = "Display the images, groundtruths and bounding boxes.")
     # mode-specific options
-    optparser.add_option("--confidence_min", dest = "confidence_min", default = None,
-                         type = "float",
-                         help = "Mminimum confidence to display for the curves.")
-    optparser.add_option("--crawl", action = "store_true", dest = "crawl",
-                         default = False, help = "Crawls eblearn files.")
-    optparser.add_option("--sampling", dest = "sampling", default = None,
-                         type = "int",
-                         help = "Sampling rate for the curves. With 1 all the points are \
+    op.add_option("--confidence_min", dest = "confidence_min",
+                  default = None, type = "float",
+                  help = "Mminimum confidence to display for the curves.")
+    op.add_option("--crawl", action = "store_true", dest = "crawl",
+                  default = False, help = "Crawls eblearn files.")
+    op.add_option("--sampling", dest = "sampling", default = None,
+                  type = "int",
+                  help = "Sampling rate for the curves. With 1 all the points are \
 used, with 10, one on 10 is used, and so on.")
-    optparser.add_option("--show-no-curve", dest = "show_curve", action = "store_false",
-                         help = "Do not display the ROC/DET curve.", default = True)
-    optparser.add_option("--saving-file", dest = "saving_file", default = None,
-                         type = "str", help = "Name of the file to save the curve. \
+    op.add_option("--show-no-curve", dest = "show_curve", action = "store_false",
+                  help = "Do not display the ROC/DET curve.", default = True)
+    op.add_option("--saving-file", dest = "saving_file", default = None,
+                  type = "str", help = "Name of the file to save the curve. \
 The curve is not saved if no file is specified.")
-    optparser.add_option("--grid_major", dest = "grid_major",
-                         action = "store_true", default = False,
-                         help = "Display major grid")
-    optparser.add_option("--grid_minor", dest = "grid_minor",
-                         action = "store_true", default = False,
-                         help = "Display minor grid")
-    optparser.add_option("--xmin", dest = "xmin", default = None, type ="float",
-                         help = "Minimum of the x axis for ROC/DET curve.")
-    optparser.add_option("--xmax", dest = "xmax", default = None, type ="float",
-                         help = "Maximum of the x axis for ROC/DET curve.")
-    optparser.add_option("--ymin", dest = "ymin", default = None, type ="float",
-                         help = "Minimum of the y axis for ROC/DET curve.")
-    optparser.add_option("--ymax", dest = "ymax", default = None, type ="float",
-                         help = "Maximum of the y axis for ROC/DET curve.")
-    optparser.add_option("--images_path", dest = "img_path", default = None,
-                         type = "str",
-                         help = "Path to the images if 'disp' mode.")
-    (options, args) = optparser.parse_args()
+    op.add_option("--grid_major", dest = "grid_major",
+                  action = "store_true", default = False,
+                  help = "Display major grid")
+    op.add_option("--grid_minor", dest = "grid_minor",
+                  action = "store_true", default = False,
+                  help = "Display minor grid")
+    op.add_option("--xmin", dest = "xmin", default = None, type ="float",
+                  help = "Minimum of the x axis for ROC/DET curve.")
+    op.add_option("--xmax", dest = "xmax", default = None, type ="float",
+                  help = "Maximum of the x axis for ROC/DET curve.")
+    op.add_option("--ymin", dest = "ymin", default = None, type ="float",
+                  help = "Minimum of the y axis for ROC/DET curve.")
+    op.add_option("--ymax", dest = "ymax", default = None, type ="float",
+                  help = "Maximum of the y axis for ROC/DET curve.")
+    op.add_option("--images_path", dest = "img_path", default = None,
+                  type = "str",
+                  help = "Path to the images if 'disp' mode.")
+    op.add_option("--gt_whratio", dest = "gt_whratio", default = None,
+                  type ="float",
+                  help = "Force groundtruth's bboxes width to be this \
+ratio * the height.")
+    op.add_option("--whratio", dest = "whratio", default = None,
+                  type ="float",
+                  help = "Force input curve's bboxes width to be this \
+ratio * the height.")
+    (options, args) = op.parse_args()
     
     modes = [("roc", "ROC"), ("det", "DET"), ("display", "display")]
     mode = None
@@ -111,13 +119,13 @@ The curve is not saved if no file is specified.")
         mode = "input_file"
 
     if options.input == None and mode != "display":
-        optparser.print_usage()
+        op.print_usage()
         sys.stderr.write("input missing.\n")
         sys.exit(0)
     toscore_filename = options.input
 
     if options.groundtruth == None:
-        optparser.print_usage()
+        op.print_usage()
         sys.stderr.write("groundtruth missing.\n")
         sys.exit(0)
     groundtruth_filename = options.groundtruth
@@ -130,7 +138,7 @@ The curve is not saved if no file is specified.")
 
     if options.input_parser == None:
         if toscore_filename != None:
-            optparser.print_usage()
+            op.print_usage()
             sys.stderr.write("input parser is missing.\n")
             sys.exit(0)
         else:
@@ -138,16 +146,19 @@ The curve is not saved if no file is specified.")
     else:
         #TODO : check existence
         toscore_parser = parsers.get_module(options.input_parser)
+        toscore_parser.whratio = options.whratio
+        print "Input parser: " + options.input_parser
 
     if options.groundtruth_parser == None:
-        optparser.print_usage()
+        op.print_usage()
         sys.stderr.write("groundtruth parser is missing.\n")
         sys.exit(0)
     groundtruth_parser = parsers.get_module(options.groundtruth_parser) #TODO same
+    groundtruth_parser.whratio = options.gt_whratio
 
     if mode != "display":
         if options.comparator == None:
-            optparser.print_usage()
+            op.print_usage()
             sys.stderr.write("comparator missing.\n")
             sys.exit(0)
         comparator = comparators.get_module(options.comparator)
@@ -167,7 +178,8 @@ The curve is not saved if no file is specified.")
                      groundtruth_filename, groundtruth_parser, options.img_path,
                      None, None, comparator)
     elif mode == "ROC" or mode == "DET":
-        (multi_result, ts) = core.multi_scoring(toscore_filename, toscore_parser,
+        (multi_result, ts) = core.multi_scoring(toscore_filename,
+                                                toscore_parser,
                                                 groundtruth_filename,
                                                 groundtruth_parser, comparator,
                                                 options.crawl, options.sampling,

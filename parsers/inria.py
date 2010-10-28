@@ -25,10 +25,9 @@ import os.path
 import sys
 
 data_type = "images"
-
 name = "INRIA_Parser"
-
 path_is_folder = True
+whratio = None # force bbox width to be height * whratio
 
 def describe():
     return "Parser for the INRIA pedestrian dataset."
@@ -44,7 +43,8 @@ def get_object(data, i):
         end_line = begin_line+1 + data[begin_line+1:].find("\n")
         line = data[begin_line:end_line]
         if line.find("Bounding box") != -1:
-            # if this happens, there are other objects than pedestrians in the annotation :
+            # if this happens, there are other objects than pedestrians
+            # in the annotation :
             assert(line.find("PASperson") != -1)
             box_begin = line.rfind(":") + 1
             box_str = line[box_begin:]
@@ -57,9 +57,16 @@ def get_object(data, i):
             box_str = box_str[box_str.find(",")+1:].strip()
             ymax = int(box_str[:box_str.find(")")].strip().rstrip())
             break
-        object_char = object_char+1 + data[object_char+1:].find("object %d"%(i,))
+        object_char = object_char+1 \
+            + data[object_char+1:].find("object %d"%(i,))
     if xmin == None:
         return None
+    if whratio != None:
+        height = ymax - ymin
+        width = xmax - xmin
+        width2 = height * whratio
+        xmin += (width - width2) / 2.0
+        xmax = xmin + width2
     return BoundingBox(xmin, ymin, xmax, ymax, 1.0)
 
 def parse_file(file):
