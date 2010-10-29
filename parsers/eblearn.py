@@ -28,6 +28,11 @@ name = "eblearnParser"
 data_type = "images"
 path_is_folder = False
 whratio = None # force bbox width to be height * whratio
+hratio = None # force bbox height to be height * hratio
+min_area = None
+max_area = None
+min_area_ratio = None
+max_area_ratio = None
 
 drop_neg = False
 negs = "/home/myrhev/visiongrader/visiongrader/data/inria/INRIAPerson/Test/neg"
@@ -35,8 +40,9 @@ if not os.path.exists(negs):
     print "Please specify the negs path in parsers/eblearn (TODO)"
 parse_confidence_min = 1
 
-def desctibe():
-    return "Parser for eblearn result files"
+def describe():
+    return "Eblearn bounding boxes parser, min_area: " + str(min_area) \
+        + " max_area: " + str(max_area)
 
 def recognize(file):
     return False
@@ -53,18 +59,26 @@ def parse(filen, crawl = False):
         class_id = int(splited[1])
         (confidence, x, y, x2, y2) = tuple([float(a) for a in splited[2:]])
         #if confidence > parse_confidence_min: #TODO
+        if hratio != None:
+            height = y2 - y
+            height2 = height * hratio
+            y += (height - height2) / 2.0
+            y2 = y + height2
         if whratio != None:
-            print "Using ratio"
             height = y2 - y
             width = x2 - x
             width2 = height * whratio
             x += (width - width2) / 2.0
             x2 = x + width2
-        ret.add_obj(filename, BoundingBox(x, y, x2, y2))
+        bb = BoundingBox(x, y, x2, y2)
+        area = bb.area()
+        if (min_area == None or area >= min_area) and \
+                (max_area == None or area <= max_area):
+            ret.add_obj(filename, bb)
     file.close()
     return ret
 
-def parse_multi_file(filen, ret = None):
+def parse_multi_file(filen, ret = None, groundtruth = None):
     file = open(filen, "r")
     if ret == None:
         ret = DataSetMulti()
@@ -82,27 +96,43 @@ def parse_multi_file(filen, ret = None):
                 continue
         class_id = int(splited[1])
         (confidence, x, y, x2, y2) = tuple([float(a) for a in splited[2:]])
+        if hratio != None:
+            height = y2 - y
+            height2 = height * hratio
+            y += (height - height2) / 2.0
+            y2 = y + height2
         if whratio != None:
             height = y2 - y
             width = x2 - x
             width2 = height * whratio
             x += (width - width2) / 2.0
             x2 = x + width2
-        ret.add_obj(confidence, filename, BoundingBox(x, y, x2, y2, confidence))
-        i = i + 1
+        bb = BoundingBox(x, y, x2, y2, confidence)
+        if groundtruth != None:
+            img = groundtruth[filename]
+            r = bb.area() / (img.height * img.width)
+            if (min_area_ratio != None and r < min_area_ratio) or \
+                (max_area_ratio != None and r > max_area_ratio):
+                print "not adding ratio " + str(r)
+                continue            
+        area = bb.area()
+        if (min_area == None or area >= min_area) and \
+                (max_area == None or area <= max_area):
+            ret.add_obj(confidence, filename, bb)
+            i = i + 1
     file.close()
     return ret
 
 # Find all 'bbox.txt' files within a directory (recursively??)
-def parse_multi(filen, crawl = False):
+def parse_multi(filen, crawl = False, groundtruth = None):
     if not crawl:
-        return parse_multi_file(filen)
+        return parse_multi_file(filen, None, groundtruth)
     else:
         ret = DataSetMulti()
         for (root, dirs, files) in os.walk(filen):
             for file in [os.path.join(root, file)
                          for file in files if file == "bbox.txt"]:
-                parse_multi_file(file, ret)
+                parse_multi_file(file, ret, groundtruth)
         return ret
 
 def get_img_from_name(name, annotations_path, images_path):

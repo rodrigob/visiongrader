@@ -22,11 +22,10 @@ from comparator_helpers import compare_images_default, \
     compare_datasets_default, compare_images_gprims
 
 name = "Overlap50PercentComparator"
+p_overlap = 0.5
 
 def describe():
-    return "The boxes match iff they overlap more than 50%."
-
-p_overlap = 0.5
+    return "The boxes match iff intersection/union > " + str(p_overlap)
 
 def match_objs(obj, gndtruth, p):
     '''p is the maximum ratio allowed between the intersection and the union.

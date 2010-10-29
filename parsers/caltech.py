@@ -24,13 +24,11 @@ import os
 import os.path
 
 data_type = "images"
-
 name = "CaltechParser"
-
 path_is_folder = True
 
 def describe():
-    return "Parser for the Caltech results."
+    return "Caltech bounding boxes parser"
 
 def recognize(file):
     return False
@@ -43,15 +41,18 @@ try:
     pos.sort()
 
     corresp = {}
-    for i in xrange(len(pos)):
-        corresp["I%05d"%(i)] = pos[i][:pos[i].rfind(".")]
+    for i in xrange(len(pos) - 1):
+        corresp["I%05d"%(i)] = pos[i+1][:pos[i+1].rfind(".")]
+#        print "I%05d: "%(i) + corresp["I%05d"%(i)]
 except OSError:
     print "Warning : caltech parser won't be available. Please set pos_path to the path to INRIAPerson positives, such as inria/INRIAPerson/Test/pos"
 
 def parse_file_multi(file, filename, dataset):
     for line in file:
-        (x, y, w, h, score) = tuple([float(a) for a in line.strip().rstrip().split(",")])
-        dataset.add_obj(score, corresp[filename], BoundingBox(x, y, x+w, y+h, score))
+        (x, y, w, h, score) = \
+            tuple([float(a) for a in line.strip().rstrip().split(",")])
+        dataset.add_obj(score, corresp[filename], \
+                            BoundingBox(x, y, x+w, y+h, score))
 
 def parse_multi(path, crawl = False):
     if crawl == True:

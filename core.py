@@ -89,10 +89,11 @@ def display(ts_filename, ts_parser, gt_filename, gt_parser, img_path,
         v.start()
 
 ################################################################################
+        
 def multi_scoring(ts_filename, ts_parser, gt_filename, gt_parser, comparator,
                   crawl, sampling, confidence_min):
-    ts = ts_parser.parse_multi(ts_filename, crawl)
     gt = gt_parser.parse(gt_filename)
+    ts = ts_parser.parse_multi(ts_filename, crawl, gt)
     multi_result = result.MultiResult()
     print "Input contains %d confidences" % ts.n_confidences()
     print "Confidence min: %f max: %f" % (ts.confidence_min(),
@@ -110,11 +111,12 @@ def multi_scoring(ts_filename, ts_parser, gt_filename, gt_parser, comparator,
         n = int(sampling) #int(ts.n_confidences() / sampling)
         print "Sampling confidences to " + str(n) + " steps"
     ts.sort_confidences() # sort confs for an evenly distributed sampling
-    for i in xrange(0, n):
+    for i in xrange(0, n + 1):
         # get only n confidences out of all existing ones, to get an
         # approximation of the curve.
         # if n == n_confidences, then we output the exact curve
-        confidence = ts.get_confidences()[ts.n_confidences() / n * i]
+        index=int(((ts.n_confidences() - 1) / float(n)) * float(i))
+        confidence = ts.get_confidences()[index]
         # ignore confidences lower than confidence_min
         if confidence_min != None:
             if confidence < confidence_min:
@@ -125,11 +127,14 @@ def multi_scoring(ts_filename, ts_parser, gt_filename, gt_parser, comparator,
         res = comparator.compare_datasets(dataset, gt)
         # add result to results
         multi_result.add_result(res)
-        print "i=%d confidence=%f (min %f max %f)" % (i, confidence, dataset.confidence_min(), dataset.confidence_max()) \
-            + " Subset size: " + str(len(dataset)) + " " + str(res)
+        print "i=%d confidence=%f (min %f max %f)" \
+            % (i, confidence, dataset.confidence_min(), \
+                   dataset.confidence_max()) \
+                   + " Subset size: " + str(len(dataset)) + " " + str(res)
     return (multi_result, ts)
 
 ################################################################################
+
 def plot_ROC(gt_parser, n_imgs, multi_result, saving_file, show_curve,
              xmin, ymin, xmax, ymax, grid_major, grid_minor):
     if gt_parser.data_type == "images":
@@ -143,6 +148,7 @@ def plot_ROC(gt_parser, n_imgs, multi_result, saving_file, show_curve,
 recognized"%(gt_parser.name, gt_parser.data_type))
 
 ################################################################################
+    
 def plot_DET(gt_parser, n_imgs, multi_result, saving_file, show_curve,
              xmin, ymin, xmax, ymax, grid_major, grid_minor):
     if gt_parser.data_type == "images":

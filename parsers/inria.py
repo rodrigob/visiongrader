@@ -28,12 +28,28 @@ data_type = "images"
 name = "INRIA_Parser"
 path_is_folder = True
 whratio = None # force bbox width to be height * whratio
+min_area = None
+max_area = None
+min_area_ratio = None
+max_area_ratio = None
 
 def describe():
-    return "Parser for the INRIA pedestrian dataset."
+    return "INRIA pedestrian dataset parser, forcing width to height * " \
+        + str(whratio) + ", min area: " + str(min_area) + " max area: " \
+        + str(max_area)
 
 def recognize(file):
     return False
+
+def get_image_dimensions(data, dims):
+    height, width = None, None
+    object_char = data.find("Image size (X x Y x C) : ")
+    line = data[object_char + data[object_char:].find(": ") + 2:]
+    width = int(line[:line.find(" ")])
+    line = line[line.find(" x ") + 3:]
+    height = int(line[:line.find(" ")])
+    dims.append(width)
+    dims.append(height)
 
 def get_object(data, i):
     xmin, xmax, ymin, ymax = None, None, None, None
@@ -69,10 +85,12 @@ def get_object(data, i):
         xmax = xmin + width2
     return BoundingBox(xmin, ymin, xmax, ymax, 1.0)
 
-def parse_file(file):
+def parse_file(file, dims):
     ret = []
     i = 1
     data = file.read()
+    get_image_dimensions(data, dims)
+    height = dims[1]
     bbox = get_object(data, i)
     while bbox != None:
         ret.append(bbox)
@@ -88,12 +106,50 @@ def parse(path, crawl = False):
     for filename in filenames:
         #TODO : check validity
         file = open(os.path.join(path, filename), "r")
-        bboxes = parse_file(file)
+        dims = []
+        bboxes = parse_file(file, dims)
         file.close()
         filename = filename[:filename.rfind(".")]
         for bbox in bboxes:
-            ret.add_obj(filename, bbox)
+            ret.add_obj(filename, bbox, dims[1], dims[0])
     return ret
+
+def find_minmax_areas(path, crawl = False):
+    min_area = None
+    max_area = None
+    min_area_ratio = None
+    max_area_ratio = None
+    if crawl == True:
+        raise StandardError()
+    ret = DataSet()
+    filenames = os.listdir(path)
+    for filename in filenames:
+        #TODO : check validity
+        file = open(os.path.join(path, filename), "r")
+        dims = []
+        bboxes = parse_file(file, dims)
+        file.close()
+        filename = filename[:filename.rfind(".")]
+        for bbox in bboxes:
+            area = bbox.area()
+            area_ratio = bbox.area() / (dims[0] * dims[1])
+            if min_area == None or area < min_area:
+                min_area = area
+            if max_area == None or area > max_area:
+                max_area = area
+            if min_area_ratio == None or area_ratio < min_area_ratio:
+                min_area_ratio = area_ratio
+            if max_area_ratio == None or area_ratio > max_area_ratio:
+                max_area_ratio = area_ratio
+    print "min area: " + str(min_area) + " max_area: " + str(max_area) \
+        + " min_area_ratio: " + str(min_area_ratio) + " max_area_ratio: " \
+        + str(max_area_ratio)
+    areas = []
+    areas.append(min_area)
+    areas.append(max_area)
+    areas.append(min_area_ratio)
+    areas.append(max_area_ratio)
+    return areas
 
 def get_img_from_name(name, annotations_path, images_path):
     possible_paths = []

@@ -74,8 +74,10 @@ def plot(arg, main = False):
         y1 = -a[1]
         if (x1 > 1 and x2 <= 1): # interpolate
             y = y2 + (y1 - y2) * (val - x2) / (x1 - x2)
+    if (x1 <= 1 and x2 <= 1):
+        y = y1
     y = y * 100 # use percentage
-    label = label + " (%.1f%%)"%y
+    label = label + " (%.2f%%)"%y
     toplot.append([y, index, [a[0] for a in points], [- a[1] for a in points],
                    style, color, label, width])
 
@@ -122,6 +124,7 @@ eg. "lower_right".')
     for p in toplot:
         pylab.loglog(p[2], p[3], p[4], color = p[5], label = p[6],
                      linewidth = p[7])
+        print p[6]
 
     if options.legend_position == "best":
         pylab.legend(loc=0)

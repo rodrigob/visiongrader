@@ -103,7 +103,11 @@ ratio * the height.")
     op.add_option("--whratio", dest = "whratio", default = None,
                   type ="float",
                   help = "Force input curve's bboxes width to be this \
-ratio * the height.")
+ratio * height.")
+    op.add_option("--hratio", dest = "hratio", default = None,
+                  type ="float",
+                  help = "Force input curve's bboxes height to be this \
+ratio * height.")
     (options, args) = op.parse_args()
     
     modes = [("roc", "ROC"), ("det", "DET"), ("display", "display")]
@@ -136,6 +140,19 @@ ratio * the height.")
     parsers = ModuleHandler(main_path, parser_dir)
     comparators = ModuleHandler(main_path, comparator_dir)
 
+    if options.groundtruth_parser == None:
+        op.print_usage()
+        sys.stderr.write("groundtruth parser is missing.\n")
+        sys.exit(0)
+    groundtruth_parser = parsers.get_module(options.groundtruth_parser) #TODO same
+    groundtruth_parser.whratio = options.gt_whratio
+    areas = groundtruth_parser.find_minmax_areas(options.groundtruth)
+    groundtruth_parser.min_area = areas[0]
+    groundtruth_parser.max_area = areas[1]
+    groundtruth_parser.min_area_ratio = areas[2]
+    groundtruth_parser.max_area_ratio = areas[3]
+    print "Groundtruth parser: " + groundtruth_parser.describe()
+    
     if options.input_parser == None:
         if toscore_filename != None:
             op.print_usage()
@@ -147,14 +164,17 @@ ratio * the height.")
         #TODO : check existence
         toscore_parser = parsers.get_module(options.input_parser)
         toscore_parser.whratio = options.whratio
-        print "Input parser: " + options.input_parser
+        toscore_parser.hratio = options.hratio
+        # toscore_parser.min_area = groundtruth_parser.min_area
+        # toscore_parser.max_area = groundtruth_parser.max_area
+        # toscore_parser.min_area_ratio = groundtruth_parser.min_area_ratio
+        # toscore_parser.max_area_ratio = groundtruth_parser.max_area_ratio
+        # toscore_parser.min_area_ratio = 0.0037559298603
+        # toscore_parser.min_area_ratio = 0.0015
+        # toscore_parser.max_area_ratio = 0.53286546224
+        # toscore_parser.max_area_ratio = 0.7
+        print "Input parser: " + toscore_parser.describe()
 
-    if options.groundtruth_parser == None:
-        op.print_usage()
-        sys.stderr.write("groundtruth parser is missing.\n")
-        sys.exit(0)
-    groundtruth_parser = parsers.get_module(options.groundtruth_parser) #TODO same
-    groundtruth_parser.whratio = options.gt_whratio
 
     if mode != "display":
         if options.comparator == None:
@@ -163,6 +183,7 @@ ratio * the height.")
             sys.exit(0)
         comparator = comparators.get_module(options.comparator)
         comparator.set_param(options.comp_param)
+        print "Comparator: " + comparator.describe()
     
     if mode == "input_file":
         print core.single_scoring(toscore_filename, toscore_parser,

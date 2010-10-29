@@ -21,17 +21,26 @@
 import copy
 from slist import slist
 
+# A set of multiple objects found in 1 image.
+# This set can contain the bounding boxes in the image,
+# the image name and its dimensions.
 class ImageDataSet(object):
     def __init__(self):
         self.objs = []
+        self.height = 0
+        self.width = 0
         #self.xmins = slist()
         #self.xmaxs = slist()
         #self.xmin_dict = {}
         #self.xmax_dict = {}
 
-    def add_obj(self, obj):
+    def add_obj(self, obj, height = 0, width = 0):
         #box = obj.bounding_box()
         self.objs.append(obj)
+        if (height != 0):
+            self.height = height
+        if (width != 0):
+            self.width = width
         #self.xmins.insert(box.x1)
         #self.xmaxs.insert(box.x2)
         #if box.x1 not in self.xmin_dict:
@@ -109,10 +118,10 @@ class DataSet(object):
         else:
             print "Warning : DataSet.add_empty_image : image already exists."
 
-    def add_obj(self, image, obj):
+    def add_obj(self, image, obj, height = 0, width = 0):
         if image not in self.images:
             self.add_empty_image(image)
-        self.images[image].add_obj(obj)
+        self.images[image].add_obj(obj, height, width)
 
     def get_gprims(self, key):
         if key in self.images:
@@ -180,8 +189,8 @@ class DataSetMulti(DataSet):
         DataSet.__init__(self, label)
         self.confidences = []
 
-    def add_obj(self, confidence, filename, obj):
-        DataSet.add_obj(self, filename, obj)
+    def add_obj(self, confidence, filename, obj, height = 0, width = 0):
+        DataSet.add_obj(self, filename, obj, height, width)
         self.confidences.append(float(confidence))
         # while confidence in self.confidences:
         #     confidence += 0.000000000001 #TODO
