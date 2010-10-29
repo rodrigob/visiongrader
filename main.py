@@ -108,6 +108,10 @@ ratio * height.")
                   type ="float",
                   help = "Force input curve's bboxes height to be this \
 ratio * height.")
+    op.add_option("--wratio", dest = "wratio", default = None,
+                  type ="float",
+                  help = "Force input curve's bboxes width to be this \
+ratio * width.")
     (options, args) = op.parse_args()
     
     modes = [("roc", "ROC"), ("det", "DET"), ("display", "display")]
@@ -165,6 +169,7 @@ ratio * height.")
         toscore_parser = parsers.get_module(options.input_parser)
         toscore_parser.whratio = options.whratio
         toscore_parser.hratio = options.hratio
+        toscore_parser.wratio = options.wratio
         # toscore_parser.min_area = groundtruth_parser.min_area
         # toscore_parser.max_area = groundtruth_parser.max_area
         # toscore_parser.min_area_ratio = groundtruth_parser.min_area_ratio
