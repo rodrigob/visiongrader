@@ -57,8 +57,10 @@ def parse(filen, crawl = False):
         filename = splited[0]
         filename = filename[filename.rfind("/")+1:]
         filename = filename[:filename.rfind(".")]
-        class_id = int(splited[1])
-        (confidence, x, y, x2, y2) = tuple([float(a) for a in splited[2:]])
+        height = int(splited[1])
+        width = int(splited[2])
+        class_id = int(splited[3])
+        (confidence, x, y, x2, y2) = tuple([float(a) for a in splited[4:]])
         #if confidence > parse_confidence_min: #TODO
         if hratio != None:
             height = y2 - y
@@ -100,8 +102,10 @@ def parse_multi_file(filen, ret = None, groundtruth = None):
         if drop_neg:
             if filename in negs_files:
                 continue
-        class_id = int(splited[1])
-        (confidence, x, y, x2, y2) = tuple([float(a) for a in splited[2:]])
+        height = int(splited[1])
+        width = int(splited[2])
+        class_id = int(splited[3])
+        (confidence, x, y, x2, y2) = tuple([float(a) for a in splited[4:]])
         if hratio != None:
             height = y2 - y
             height2 = height * hratio

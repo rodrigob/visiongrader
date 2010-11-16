@@ -18,7 +18,7 @@
 # Authors :
 #  Michael Mathieu <michael.mathieu@ens.fr>
 
-import viewer
+#import viewer
 import result
 import plot
 import dataset

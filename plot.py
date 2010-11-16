@@ -18,6 +18,8 @@
 # Authors :
 #  Michael Mathieu <michael.mathieu@ens.fr>
 
+import sys
+sys.path.insert(0, '/home/sermanet/installed/matplotlib/matplotlib-1.0.0/build/lib.linux-x86_64-2.4/')
 import pylab
 #import matplotlib
 import cPickle
@@ -75,6 +77,26 @@ def print_DET(multi_result, n_imgs, save_filename = None, show_curve = True,
         #     + " fn=" + str(result.n_false_negatives()) \
         #     + " nimgs=" + str(n_imgs)
     points.sort()
+    # print score at 1 FPPI
+    # find y for x=val
+    val = 1
+    y = 0
+    x1 = 0
+    x2 = 0
+    y1 = 0
+    y2 = 0
+    for a in points:
+        x2 = x1
+        y2 = y1
+        x1 = a[0]
+        y1 = -a[1]
+        if (x1 > 1 and x2 <= 1): # interpolate
+            y = y2 + (y1 - y2) * (val - x2) / (x1 - x2)
+    if (x1 <= 1 and x2 <= 1):
+        y = y1
+    y = y * 100 # use percentage
+    print "miss rate at " + str(val) + "FPPI=" + "%.2f%%"%y
+    # save curve
     if save_filename != None:
         f = open(save_filename, "w")
         cPickle.dump(points, f)
