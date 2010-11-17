@@ -18,7 +18,7 @@
 # Authors :
 #  Michael Mathieu <michael.mathieu@ens.fr>
 
-#import viewer
+import viewer
 import result
 import plot
 import dataset
@@ -58,11 +58,12 @@ def display(ts_filename, ts_parser, gt_filename, gt_parser, img_path,
                     break
         filename = gt_parser.get_img_from_name(img_name, gt_filename, img_path)
         v.set_title(img_name)
+        v.set_slider_params(0, 1, 6)
         confidence = v.get_slider_position()
         ts2 = ts[confidence]
         matched_gt = None
         matched_ts = None
-        if comparator != None:
+        if comparator != None and ts2[img_name] != []:
             (matched_gt, matched_ts) = \
                 comparator.get_matched_gprims(ts2[img_name],
                                               gt[img_name])

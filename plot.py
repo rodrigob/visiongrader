@@ -19,7 +19,7 @@
 #  Michael Mathieu <michael.mathieu@ens.fr>
 
 import sys
-sys.path.insert(0, '/home/sermanet/installed/matplotlib/matplotlib-1.0.0/build/lib.linux-x86_64-2.4/')
+#sys.path.insert(0, '/home/sermanet/installed/matplotlib/matplotlib-1.0.0/build/lib.linux-x86_64-2.4/')
 import pylab
 #import matplotlib
 import cPickle

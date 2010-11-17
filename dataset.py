@@ -104,7 +104,9 @@ class DataSet(object):
         return len(self.images)
     
     def __getitem__(self, i):
-        return self.images[i]
+        if i in self.images:
+            return self.images[i]
+        return []
 
     def __iter__(self):
         return self.images.__iter__()
