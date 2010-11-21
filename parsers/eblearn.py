@@ -125,6 +125,9 @@ def parse_multi_file(filen, ret = None, groundtruth = None):
         bb = BoundingBox(x, y, x2, y2, confidence)
         if groundtruth != None:
             img = groundtruth[filename]
+            if img == []:
+                print "warning: " + filename + " not found in groundtruth."
+                continue ;
             r = bb.area() / (img.height * img.width)
             if (min_area_ratio != None and r < min_area_ratio) or \
                 (max_area_ratio != None and r > max_area_ratio):
