@@ -36,3 +36,7 @@ class Rectangle(object):
     def draw(self, context):
         context.rectangle(self.x1, self.y1, self.w, self.h)
         context.stroke()
+
+    def __str__(self):
+        return 'h0: ' + str(self.y1) + ' w0: ' + str(self.x1) + ' h: ' \
+            + str(self.h) + ' w: ' + str(self.w)

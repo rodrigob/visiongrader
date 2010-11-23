@@ -1,0 +1,9 @@
+# PASCAL Annotation Version 1.00
+
+Image filename : "Test/pos/crop001512.png"
+Image size (X x Y x C) : 1280 x 960 x 3
+Database : "INRIA pedestrians to ignore"
+Objects with ground truth : 2 { "PASperson" "PASperson" }
+
+Bounding box for object 1 "PASperson" (Xmin, Ymin) - (Xmax, Ymax) : (521, 269) - (567, 386)
+Bounding box for object 2 "PASperson" (Xmin, Ymin) - (Xmax, Ymax) : (940, 208) - (1060, 638)

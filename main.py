@@ -39,7 +39,10 @@ if __name__=="__main__":
                   help = "Input file to score (if not specified, a generator \
 must be specified)")
     op.add_option("-t", "--groundtruth", dest = "groundtruth", default = None,
-                  type = "str", help = "Ground truth file (required)")
+                  type = "str", help = "Ground truth file(s) (required)")
+    op.add_option("--ignore", dest = "gtignore", default = None,
+                  type = "str",
+                  help = "Ignored ground truth file(s) (optional)")
     op.add_option("--input_parser", dest = "input_parser", default = None,
                   type = "str", help = "Parser to use for the file to score")
     op.add_option("--groundtruth_parser", dest = "groundtruth_parser",
@@ -148,7 +151,7 @@ ratio * width.")
         op.print_usage()
         sys.stderr.write("groundtruth parser is missing.\n")
         sys.exit(0)
-    groundtruth_parser = parsers.get_module(options.groundtruth_parser) #TODO same
+    groundtruth_parser = parsers.get_module(options.groundtruth_parser)
     groundtruth_parser.whratio = options.gt_whratio
     areas = groundtruth_parser.find_minmax_areas(options.groundtruth)
     groundtruth_parser.min_area = areas[0]
@@ -156,6 +159,15 @@ ratio * width.")
     groundtruth_parser.min_area_ratio = areas[2]
     groundtruth_parser.max_area_ratio = areas[3]
     print "Groundtruth parser: " + groundtruth_parser.describe()
+
+    # groundtruth ignore parser
+    gti = None
+    if options.gtignore:
+        gti_parser = parsers.get_module(options.groundtruth_parser)
+        gti_parser.whratio = options.gt_whratio
+        gti = gti_parser.parse(options.gtignore)
+        print 'Found ignore dataset in ' + options.gtignore + ' with ' \
+            + str(len(gti)) + ' images' #: ' + str(gti)
     
     if options.input_parser == None:
         if toscore_filename != None:
@@ -193,7 +205,7 @@ ratio * width.")
     if mode == "input_file":
         print core.single_scoring(toscore_filename, toscore_parser,
                                   groundtruth_filename, groundtruth_parser,
-                                  comparator)
+                                  comparator, gti)
     elif mode == "display":
         comparator = None
         if options.comparator != None:
@@ -202,14 +214,15 @@ ratio * width.")
 
         core.display(toscore_filename, toscore_parser,
                      groundtruth_filename, groundtruth_parser, options.img_path,
-                     None, None, comparator)
+                     gti, None, None, comparator)
     elif mode == "ROC" or mode == "DET":
         (multi_result, ts) = core.multi_scoring(toscore_filename,
                                                 toscore_parser,
                                                 groundtruth_filename,
                                                 groundtruth_parser, comparator,
                                                 options.crawl, options.sampling,
-                                                options.confidence_min)
+                                                options.confidence_min,
+                                                gti)
         if mode == "ROC":
             core.plot_ROC(groundtruth_parser, len(ts), multi_result,
                           options.saving_file, options.show_curve,

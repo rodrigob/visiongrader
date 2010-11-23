@@ -80,7 +80,7 @@ class BoundingBoxError(StandardError):
         super(BoundingBoxError, self).__init__()
 
 class BoundingBox(ObjectInfos):
-    def __init__(self, x, y, x2, y2, conf):
+    def __init__(self, x, y, x2, y2, conf = None):
         super(BoundingBox, self).__init__()
         self.confidence = conf
         self._x = x
@@ -111,6 +111,12 @@ class BoundingBox(ObjectInfos):
 
     def getHeight(self):
         return self._y2 - self._y
+
+    def getHeightCenter(self):
+        return (self._y2 - self._y) / 2
+
+    def getWidthCenter(self):
+        return (self._x2 - self._x) / 2
 
     def getConfidence(self):
         return self.confidence
@@ -143,9 +149,15 @@ class BoundingBox(ObjectInfos):
                                      self.getWidth(), self.getHeight())
 
     def __str__(self):
-        return "Bounding box : x1 = %f, y1 = %f, x2 = %f, y2 = %f"%(self.x1, self.y1,
-                                                                    self.x2, self.y2)
+        return "Bounding box : x1 = %f, y1 = %f, x2 = %f, y2 = %f" \
+            %(self.x1, self.y1, self.x2, self.y2)
 
+    def draw(self, context):
+        context.rectangle(self.x1, self.y1, self.x2 - self.x1,
+                          self.y2 - self.y1)
+        context.stroke()
+
+    
 class PointsOnObject(ObjectInfos):
     def __init__(self):
         super(PointsOnObject, self).__init__()

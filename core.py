@@ -22,29 +22,38 @@ import viewer
 import result
 import plot
 import dataset
+import os
 from dataset import DataSetMulti
 
 ################################################################################
-def single_scoring(ts_filename, ts_parser, gt_filename, gt_parser, comparator):
+def single_scoring(ts_filename, ts_parser, gt_filename, gt_parser, comparator,
+                   gti):
     ts = ts_parser.parse(ts_filename)
     gt = gt_parser.parse(gt_filename)
-    return comparator.compare_datasets(ts, gt)
+    return comparator.compare_datasets(ts, gt, gti)
 
 ################################################################################
 def display(ts_filename, ts_parser, gt_filename, gt_parser, img_path,
-            parent_window = None, set_legend = None, comparator = None):
+            gti = None, parent_window = None, set_legend = None,
+            comparator = None):
     if ts_filename != None and ts_parser != None:
         ts = ts_parser.parse_multi(ts_filename)
     else:
         ts = dataset.DataSetMulti()
-    gt = gt_parser.parse(gt_filename)
     v = viewer.GUI(parent_window)
+    v.gt = gt_parser.parse(gt_filename)
     if set_legend != None:
         v.set_legend = set_legend
     keys = ts.images_keys()
-    for key in gt.keys():
-        if key not in keys:
-            keys.append(key)
+    gtkeys = v.gt.keys()
+    for key in keys[:]: # remove images that are not found in groundtruth
+        if key not in gtkeys:
+            keys.remove(key)
+    if len(keys) != len(gtkeys):
+        print 'warning: ' + str(len(ts.images_keys())) \
+            + ' images to test but only '\
+            + str(len(gtkeys)) + ' images found in groundtruth.'
+    print 'Testing ' + str(len(keys)) + ' images...'
     global i
     i = 0
     def on_refresh(ts = ts, v = v, img_name = None):
@@ -56,6 +65,7 @@ def display(ts_filename, ts_parser, gt_filename, gt_parser, img_path,
                 if (keys[j] == img_name):
                     i = j
                     break
+        v.img_name = img_name
         filename = gt_parser.get_img_from_name(img_name, gt_filename, img_path)
         v.set_title(img_name)
         v.set_slider_params(0, 1, 6)
@@ -63,27 +73,44 @@ def display(ts_filename, ts_parser, gt_filename, gt_parser, img_path,
         ts2 = ts[confidence]
         matched_gt = None
         matched_ts = None
+        matched_gti = None
+        matched_tsi = None
+        img_gti = None
+        if gti: img_gti = gti[img_name]
         if comparator != None and ts2[img_name] != []:
-            (matched_gt, matched_ts) = \
+            (matched_gt, matched_ts, matched_gti, matched_tsi) = \
                 comparator.get_matched_gprims(ts2[img_name],
-                                              gt[img_name])
-        v.display(filename, gt.get_gprims(img_name), ts2.get_gprims(img_name),
-                  matched_gt, matched_ts)
+                                              v.gt[img_name], img_gti)
+        gti_prims = None
+        if gti:
+            gti_prims = gti.get_gprims(img_name)
+        v.display(filename, v.gt.get_gprims(img_name), ts2.get_gprims(img_name),
+                  matched_gt, matched_ts, gti_prims, matched_gti, matched_tsi)
     def on_next():
         global i
         i = (i + 1) % len(keys)
+        v.boxes = [] # clear added boxes for this frame
         on_refresh()
     def on_activate(text):
         print "opening image %s"%text
         on_refresh(ts, v, text)
+    def on_save(text):
+        fname = os.path.join(text, v.img_name) + '.txt'
+        annotation = os.path.join(img_path, v.img_name) + '.txt'
+        (fn, width, height, chans, boxes) = gt_parser.parse_file(annotation)
+        gt_parser.save_bboxes(fname, fn, (width, height, chans), v.boxes);
+        print 'saving to ' + fname
     def on_prev():
         global i
         i = (i - 1) % len(keys)
+        v.boxes = [] # clear added boxes for this frame
         on_refresh()
     v.on_activate = on_activate
+    v.on_save = on_save
     v.on_next = on_next
     v.on_prev = on_prev
     v.on_slider_moved = on_refresh
+    v.input_save.set_text(img_path)
     v.set_slider_params(ts.confidence_min(), ts.confidence_max(), 2)
     on_refresh()
     if parent_window == None:
@@ -92,7 +119,7 @@ def display(ts_filename, ts_parser, gt_filename, gt_parser, img_path,
 ################################################################################
         
 def multi_scoring(ts_filename, ts_parser, gt_filename, gt_parser, comparator,
-                  crawl, sampling, confidence_min):
+                  crawl, sampling, confidence_min, gti = None):
     gt = gt_parser.parse(gt_filename)
     ts = ts_parser.parse_multi(ts_filename, crawl, gt)
     multi_result = result.MultiResult()
@@ -102,7 +129,7 @@ def multi_scoring(ts_filename, ts_parser, gt_filename, gt_parser, comparator,
 
     # add empty dataset result to make sure we get a point at (1,1)
     dataset = DataSetMulti()
-    multi_result.add_result(comparator.compare_datasets(dataset, gt))
+    multi_result.add_result(comparator.compare_datasets(dataset, gt, gti))
     print "Empty dataset " + str(multi_result)
     
     if sampling == None:
@@ -125,7 +152,7 @@ def multi_scoring(ts_filename, ts_parser, gt_filename, gt_parser, comparator,
         # get a subset of the dataset using that confidence as threshold
         dataset = ts[confidence]
         # compare this subset with grountruth
-        res = comparator.compare_datasets(dataset, gt)
+        res = comparator.compare_datasets(dataset, gt, gti)
         # add result to results
         multi_result.add_result(res)
         print "i=%d confidence=%f (min %f max %f)" \

@@ -41,15 +41,21 @@ def describe():
 def recognize(file):
     return False
 
-def get_image_dimensions(data, dims):
-    height, width = None, None
+def parse_header(data):
+    # get filename
+    object_char = data.find("Image filename : \"")
+    filename = data[object_char + data[object_char:].find("\"") + 1:]
+    filename = filename[ : filename.find("\"") ]
+    # get image sizes
     object_char = data.find("Image size (X x Y x C) : ")
     line = data[object_char + data[object_char:].find(": ") + 2:]
     width = int(line[:line.find(" ")])
     line = line[line.find(" x ") + 3:]
     height = int(line[:line.find(" ")])
-    dims.append(width)
-    dims.append(height)
+    line = line[line.find(" x ") + 3:]
+    chans = int(line[:line.find("\n")])
+    # return all info
+    return (filename, width, height, chans)
 
 def get_object(data, i):
     xmin, xmax, ymin, ymax = None, None, None, None
@@ -85,18 +91,21 @@ def get_object(data, i):
         xmax = xmin + width2
     return BoundingBox(xmin, ymin, xmax, ymax, 1.0)
 
-def parse_file(file, dims):
-    ret = []
-    i = 1
+def parse_file(fname):
+    file = open(fname, "r")
+    # parse header
     data = file.read()
-    get_image_dimensions(data, dims)
-    height = dims[1]
+    (fn, width, height, chans) = parse_header(data)
+    # parse boxes
+    boxes = []
+    i = 1
     bbox = get_object(data, i)
     while bbox != None:
-        ret.append(bbox)
+        boxes.append(bbox)
         i += 1
-        bbox = get_object(data, i)
-    return ret
+        bbox = get_object(data, i)    
+    file.close()
+    return (fn, width, height, chans, boxes)
 
 def parse(path, crawl = False):
     if crawl == True:
@@ -105,13 +114,11 @@ def parse(path, crawl = False):
     filenames = os.listdir(path)
     for filename in filenames:
         #TODO : check validity
-        file = open(os.path.join(path, filename), "r")
-        dims = []
-        bboxes = parse_file(file, dims)
-        file.close()
+        (fname, width, height, chans, bboxes) \
+            = parse_file(os.path.join(path, filename))
         filename = filename[:filename.rfind(".")]
         for bbox in bboxes:
-            ret.add_obj(filename, bbox, dims[1], dims[0])
+            ret.add_obj(filename, bbox, height, width)
     return ret
 
 def find_minmax_areas(path, crawl = False):
@@ -125,14 +132,11 @@ def find_minmax_areas(path, crawl = False):
     filenames = os.listdir(path)
     for filename in filenames:
         #TODO : check validity
-        file = open(os.path.join(path, filename), "r")
-        dims = []
-        bboxes = parse_file(file, dims)
-        file.close()
+        (fn, w, h, chans, bboxes) = parse_file(os.path.join(path, filename))
         filename = filename[:filename.rfind(".")]
         for bbox in bboxes:
             area = bbox.area()
-            area_ratio = bbox.area() / (dims[0] * dims[1])
+            area_ratio = bbox.area() / (w * h)
             if min_area == None or area < min_area:
                 min_area = area
             if max_area == None or area > max_area:
@@ -169,3 +173,29 @@ def get_img_from_name(name, annotations_path, images_path):
             return path
     sys.stderr.write("%s : image not found.\n"%(name,))
     raise StandardError()
+
+def save_bboxes(target_fname, imfname, imsize, boxes):
+    print 'Saving reference to ' + imfname + ' (' + str(imsize[0]) + 'x' \
+        + str(imsize[1]) + 'x' + str(imsize[2]) + ') to ' + target_fname \
+        + ' with ' + str(len(boxes)) + ' bboxes: ' + str(boxes)
+    s = '# PASCAL Annotation Version 1.00\n\nImage filename : \"' \
+        + imfname + '\"\nImage size (X x Y x C) : ' + str(imsize[0]) + ' x ' \
+        + str(imsize[1]) + ' x ' + str(imsize[2]) \
+        + '\nDatabase : \"INRIA pedestrians to ignore\"\n' \
+        + 'Objects with ground truth : ' + str(len(boxes)) + ' { '
+    objname = '\"PASperson\"'
+    for b in boxes:
+        s += objname + ' '
+    s += '}\n\n'
+    i = 1
+    for b in boxes:
+        s += 'Bounding box for object ' + str(i) + ' ' + objname \
+            + ' (Xmin, Ymin) - (Xmax, Ymax) : (' \
+            + str(int(b.getX1())) + ', ' + str(int(b.getY1())) + ') - (' \
+            + str(int(b.getX2())) + ', ' + str(int(b.getY2())) + ')\n'
+        print 'Saving box: ' + str(b)
+        i += 1
+    # write file
+    file = open(target_fname, "w")
+    file.write(s)
+    file.close()

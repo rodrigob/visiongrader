@@ -36,16 +36,28 @@ def match_objs(obj, gndtruth, p):
     union = b1.area() + b2.area() - inter
     return inter / union > p
 
-def compare_images(toscore, groundtruth):
+def match_score(obj, gndtruth):
+    b1 = obj.bounding_box()
+    b2 = gndtruth.bounding_box()
+    inter = b1.overlapping_area(b2)
+    union = b1.area() + b2.area() - inter
+    return inter / union
+
+def compare_images(toscore, groundtruth, gtignore = None):
     return compare_images_default(toscore, groundtruth,
-                                  lambda a, b: match_objs(a, b, p_overlap))
+                                  lambda a, b: match_objs(a, b, p_overlap),
+                                  lambda a, b: match_score(a, b),
+                                  gtignore)
 
-def compare_datasets(toscore, groundtruth):
-    return compare_datasets_default(toscore, groundtruth, compare_images)
+def compare_datasets(toscore, groundtruth, gtignore = None):
+    return compare_datasets_default(toscore, groundtruth, compare_images,
+                                    gtignore)
 
-def get_matched_gprims(img_toscore, img_groundtruth):
+def get_matched_gprims(img_toscore, img_groundtruth, gtignore = None):
     return compare_images_gprims(img_toscore, img_groundtruth,
-                                 lambda a, b: match_objs(a, b, p_overlap))
+                                 lambda a, b: match_objs(a, b, p_overlap),
+                                 lambda a, b: match_score(a, b),
+                                 gtignore)
 
 def set_param(param):
     if param != None:
