@@ -26,9 +26,19 @@ import os.path
 data_type = "images"
 name = "CaltechParser"
 path_is_folder = True
+hratio = None # force bbox height to be height * hratio
+wratio = None # force bbox width to be width * wratio
+whratio = None # force bbox width to be height * whratio
 
 def describe():
-    return "Caltech bounding boxes parser"
+    s = "Caltech bounding boxes parser"
+    if hratio:
+        s += ', resizing height to be ' + str(hratio) + ' * height'
+    if wratio:
+        s += ', resizing width to be ' + str(wratio) + ' * width'
+    if whratio:
+        s += ', resizing width to be ' + str(whratio) + ' * height'
+    return s
 
 def recognize(file):
     return False
@@ -59,6 +69,18 @@ def parse_file_multi(file, filename, dataset):
         if filename not in corresp:
             print 'warning: image ' + filename + ' not found in groundtruth'
         else:
+            if hratio != None:
+                h2 = h * hratio
+                y += (h - h2) / 2.0
+                h = h2
+            if wratio != None:
+                w2 = w * wratio
+                x += (w - w2) / 2.0
+                w = w2
+            if whratio != None:
+                w2 = h * whratio
+                x += (w - w2) / 2.0
+                w = w2
             dataset.add_obj(score, corresp[filename], \
                                 BoundingBox(x, y, x+w, y+h, score))
 
