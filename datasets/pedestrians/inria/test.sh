@@ -4,11 +4,11 @@
 newcurve=$1 # the eblearn bbox output file
 dir=$2 # the directory containing other curves (pickle files)
 
-vgdir=~/visiongrader/
+vgdir=${HOME}/visiongrader/src/
 #inria=/data/pedestrians/inria/INRIAPerson/Train/annotations/
 inria=/data/pedestrians/inria/INRIAPerson/Test/annotations/
 #inria=/data/pedestrians/inria/INRIAPerson/Test/tmpann/
-inria_ignore=${vgdir}/data/inria/ignore/
+inria_ignore=${vgdir}/../datasets/pedestrians/inria/ignore/
 #inria=/data/pedestrians/INRIAPerson/Test/annotations/
 #inria=${hostname}adata/pedestrians/test/inria/
 #inria=/data/pedestrians/inria_caltech/annotations/set01/V000.vbb
