@@ -6,9 +6,11 @@ import os
 # uber parameters
 inria = '/data/pedestrians/inria/INRIAPerson'
 inria_type = 'Test'
-extract_caltech = False #True
+extract_caltech = True
 show_caltech_db = False
 show_caltech_db1 = '' #'HOG' # show 1 caltech db
+show_all_curves = True
+show_newcurve_db = False
 
 # check number of input arguments
 if len(sys.argv) !=  2:
@@ -16,6 +18,7 @@ if len(sys.argv) !=  2:
     raise
 # expected arguments:
 newcurve = sys.argv[1] # the eblearn bbox output file
+newcurve_name = os.path.basename(sys.argv[1])
 outdir = os.path.dirname(newcurve) # directory where to look for existing curves
 vgsrc = os.path.dirname(os.path.abspath(__file__)) + '/../../../src/'
 inria_vg = os.path.dirname(os.path.abspath(__file__))
@@ -33,7 +36,7 @@ print 'inria annotations: ' + annotations
 gt_parser = '--groundtruth_parser inria --gt_whratio .43'
 sampling = "--sampling 50" # curve approx to avoid computing all possible thresh
 format = '--xmin 0.003 --xmax 102 --ymin 0.03 --ymax 1.1'
-ignore = '--ignore ' + inria_ignore
+ignore = '' #'--ignore ' + inria_ignore
 compare = '--comparator overlap50percent --comparator_param .5'
 caltech_input_parser = '--input_parser caltech'
 eblearn_input_parser = '--input_parser eblearn'
@@ -46,7 +49,8 @@ grid = '--grid_major --grid_minor'
 caltech_resize = ('HOG', 'FtrMine', 'Shapelet-orig', 'PoseInv', 'PoseInvSvm',
     'HikSvm')
 caltech_hresize = '--hratio ' + str(100.0 / 128.0)
-caltech_wresize = '--whratio .43'
+caltech_wresize = '--wratio ' + str(43.0 / 64.0)
+#caltech_wresize = '--whratio .43'
 
 ################################################################################
 # show database for 1 specific algo
@@ -116,23 +120,25 @@ cmd = os.path.join(vgsrc, 'main.py') \
     + ' --groundtruth ' + annotations \
     + ' ' + compare + ' ' + ignore + ' ' \
     + ' ' + sampling + ' ' + format \
-    + ' --saving-file ' + os.path.join(outdir, newcurve) + '.pickle' \
+    + ' --saving-file ' + os.path.join(outdir, newcurve_name) + '.pickle' \
     + ' --show-no-curve'
 os.system(cmd)
 
 # plot
-cmd = os.path.join(vgsrc, 'plotpickle.py') \
-    + ' --main_curve ' + newcurve + '.pickle' \
-    + ' ' + format + ' ' + legend + ' ' + grid + ' ' + outdir + '/*.pickle'
-os.system(cmd)
+if show_all_curves:
+    cmd = os.path.join(vgsrc, 'plotpickle.py') \
+        + ' --main_curve ' + newcurve + '.pickle' \
+        + ' ' + format + ' ' + legend + ' ' + grid + ' ' + outdir + '/*.pickle'
+    os.system(cmd)
 
 # show db
-cmd = os.path.join(vgsrc, 'main.py') \
-    + ' --input ' + newcurve \
-    + ' ' + eblearn_input_parser + ' ' + gt_parser + ' --disp' \
-    + ' --images_path ' + annotations \
-    + ' --groundtruth ' + annotations \
-    + ' ' + compare + ' ' + ignore + ' '
-os.system(cmd)
+if show_newcurve_db:
+    cmd = os.path.join(vgsrc, 'main.py') \
+        + ' --input ' + newcurve \
+        + ' ' + eblearn_input_parser + ' ' + gt_parser + ' --disp' \
+        + ' --images_path ' + annotations \
+        + ' --groundtruth ' + annotations \
+        + ' ' + compare + ' ' + ignore + ' '
+    os.system(cmd)
 
 ################################################################################

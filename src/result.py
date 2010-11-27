@@ -49,11 +49,13 @@ class ImageResult(object):
 
 
 class DataSetResult(object):
-    def __init__(self):
+    def __init__(self, nimages, npositives):
         self.images_results = []
         self._n_true_positives = 0
         self._n_false_positives = 0
         self._n_false_negatives = 0
+        self.nimages = nimages
+        self.npositives = npositives
 
     def add_image_result(self, result):
         self.images_results.append(result)
@@ -70,11 +72,16 @@ class DataSetResult(object):
     def n_false_negatives(self):
         return self._n_false_negatives
 
+    def fppi(self):
+        return self.n_false_positives() / float(self.nimages)
+    
     def __str__(self):
-        return "DataSetResult: " + str(self.n_true_positives()) \
-            + " true positives, " + str(self.n_false_positives()) \
-            + " false positive, " + str(self.n_false_negatives()) \
-            + " false negatives"
+        return "DataSetResult: tp=" + str(self.n_true_positives()) \
+            + ", fp=" + str(self.n_false_positives()) \
+            + ", fn=" + str(self.n_false_negatives()) \
+            + ", fppi=" + str(self.fppi()) \
+            + ", miss_rate=%f"%(self.n_false_negatives()
+                                / float(self.npositives))
 
 class MultiResult(object):
     def __init__(self):

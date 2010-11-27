@@ -139,12 +139,17 @@ def multi_scoring(ts_filename, ts_parser, gt_filename, gt_parser, comparator,
         n = int(sampling) #int(ts.n_confidences() / sampling)
         print "Sampling confidences to " + str(n) + " steps"
     ts.sort_confidences() # sort confs for an evenly distributed sampling
-    for i in xrange(0, n + 1):
+    last_fppi = 0
+    target_fppi = 1
+    indices = range(0, n + 1)
+    for i in indices:
         # get only n confidences out of all existing ones, to get an
         # approximation of the curve.
         # if n == n_confidences, then we output the exact curve
-        index=int(((ts.n_confidences() - 1) / float(n)) * float(i))
-        confidence = ts.get_confidences()[index]
+        indices[i] = int(((ts.n_confidences() - 1) / float(n)) * float(i))
+    iindices = range(0, len(indices))
+    for i in iindices:
+        confidence = ts.get_confidences()[indices[i]]
         # ignore confidences lower than confidence_min
         if confidence_min != None:
             if confidence < confidence_min:
@@ -153,6 +158,19 @@ def multi_scoring(ts_filename, ts_parser, gt_filename, gt_parser, comparator,
         dataset = ts[confidence]
         # compare this subset with grountruth
         res = comparator.compare_datasets(dataset, gt, gti)
+        # increase precision around target fppi
+        if last_fppi > target_fppi and res.fppi() <= target_fppi \
+                and indices[i] != indices[max(0, i-1)] + 1:
+            new_indices = range(indices[max(0, i-1)], indices[i])
+            new_indices.reverse()
+            for j in new_indices:
+                indices.insert(i, j)
+                iindices.append(len(iindices))
+            print 'Adding full curve resolution around ' + str(target_fppi) \
+                + ' FPPI target'
+            i = i - 1
+            continue
+        last_fppi = res.fppi()
         # add result to results
         multi_result.add_result(res)
         print "i=%d confidence=%f (min %f max %f)" \
