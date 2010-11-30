@@ -5,7 +5,7 @@ import os
 
 # uber parameters
 inria = '/data/pedestrians/inria/INRIAPerson'
-inria_type = 'Train'
+inria_type = 'Test'
 extract_newcurve = False
 extract_caltech = False
 show_caltech_db = False

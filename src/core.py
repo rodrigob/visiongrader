@@ -53,9 +53,9 @@ def display(ts_filename, ts_parser, gt_filename, gt_parser, img_path,
         print 'warning: ' + str(len(ts.images_keys())) \
             + ' images to test but found '\
             + str(len(gtkeys)) + ' images in groundtruth.'
-    print 'Displaying ' + str(len(tskeys)) + ' images...'
     keys = tskeys
     if len(keys) == 0: keys = gtkeys # use groundtruth keys if empty
+    print 'Displaying ' + str(len(keys)) + ' images...'
     global i
     i = 0
     def on_refresh(ts = ts, v = v, img_name = None):
