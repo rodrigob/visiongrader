@@ -214,7 +214,7 @@ ratio * width.")
 
         core.display(toscore_filename, toscore_parser,
                      groundtruth_filename, groundtruth_parser, options.img_path,
-                     gti, None, None, comparator)
+                     options.gtignore, gti, None, None, comparator)
     elif mode == "ROC" or mode == "DET":
         (multi_result, ts) = core.multi_scoring(toscore_filename,
                                                 toscore_parser,

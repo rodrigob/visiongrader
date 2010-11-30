@@ -34,8 +34,8 @@ def single_scoring(ts_filename, ts_parser, gt_filename, gt_parser, comparator,
 
 ################################################################################
 def display(ts_filename, ts_parser, gt_filename, gt_parser, img_path,
-            gti = None, parent_window = None, set_legend = None,
-            comparator = None):
+            ignore_path = None, gti = None, parent_window = None,
+            set_legend = None, comparator = None):
     if ts_filename != None and ts_parser != None:
         ts = ts_parser.parse_multi(ts_filename)
     else:
@@ -44,16 +44,18 @@ def display(ts_filename, ts_parser, gt_filename, gt_parser, img_path,
     v.gt = gt_parser.parse(gt_filename)
     if set_legend != None:
         v.set_legend = set_legend
-    keys = ts.images_keys()
+    tskeys = ts.images_keys()
     gtkeys = v.gt.keys()
-    for key in keys[:]: # remove images that are not found in groundtruth
+    for key in tskeys[:]: # remove images that are not found in groundtruth
         if key not in gtkeys:
-            keys.remove(key)
-    if len(keys) != len(gtkeys):
+            tskeys.remove(key)
+    if len(tskeys) != len(gtkeys):
         print 'warning: ' + str(len(ts.images_keys())) \
-            + ' images to test but only '\
-            + str(len(gtkeys)) + ' images found in groundtruth.'
-    print 'Testing ' + str(len(keys)) + ' images...'
+            + ' images to test but found '\
+            + str(len(gtkeys)) + ' images in groundtruth.'
+    print 'Displaying ' + str(len(tskeys)) + ' images...'
+    keys = tskeys
+    if len(keys) == 0: keys = gtkeys # use groundtruth keys if empty
     global i
     i = 0
     def on_refresh(ts = ts, v = v, img_name = None):
@@ -68,6 +70,7 @@ def display(ts_filename, ts_parser, gt_filename, gt_parser, img_path,
         v.img_name = img_name
         filename = gt_parser.get_img_from_name(img_name, gt_filename, img_path)
         v.set_title(img_name)
+        v.input.set_text(img_name)
         v.set_slider_params(0, 1, 6)
         confidence = v.get_slider_position()
         ts2 = ts[confidence]
@@ -110,7 +113,7 @@ def display(ts_filename, ts_parser, gt_filename, gt_parser, img_path,
     v.on_next = on_next
     v.on_prev = on_prev
     v.on_slider_moved = on_refresh
-    v.input_save.set_text(img_path)
+    v.input_save.set_text(ignore_path)
     v.set_slider_params(ts.confidence_min(), ts.confidence_max(), 2)
     on_refresh()
     if parent_window == None:
@@ -128,9 +131,9 @@ def multi_scoring(ts_filename, ts_parser, gt_filename, gt_parser, comparator,
                                           ts.confidence_max())
 
     # add empty dataset result to make sure we get a point at (1,1)
-    dataset = DataSetMulti()
-    multi_result.add_result(comparator.compare_datasets(dataset, gt, gti))
-    print "Empty dataset " + str(multi_result)
+    # dataset = DataSetMulti()
+    # multi_result.add_result(comparator.compare_datasets(dataset, gt, gti))
+    # print "Empty dataset " + str(multi_result)
     
     if sampling == None:
         n = ts.n_confidences()

@@ -5,12 +5,13 @@ import os
 
 # uber parameters
 inria = '/data/pedestrians/inria/INRIAPerson'
-inria_type = 'Test'
-extract_caltech = True
+inria_type = 'Train'
+extract_newcurve = False
+extract_caltech = False
 show_caltech_db = False
 show_caltech_db1 = '' #'HOG' # show 1 caltech db
-show_all_curves = True
-show_newcurve_db = False
+show_all_curves = False
+show_newcurve_db = True
 
 # check number of input arguments
 if len(sys.argv) !=  2:
@@ -22,7 +23,7 @@ newcurve_name = os.path.basename(sys.argv[1])
 outdir = os.path.dirname(newcurve) # directory where to look for existing curves
 vgsrc = os.path.dirname(os.path.abspath(__file__)) + '/../../../src/'
 inria_vg = os.path.dirname(os.path.abspath(__file__))
-inria_ignore = os.path.join(inria_vg, 'ignore/')
+inria_ignore = os.path.join(os.path.join(inria_vg, 'ignore'), inria_type)
 inria_caltech = os.path.join(inria_vg, 'caltech')
 inria_dir = os.path.join(inria, inria_type)
 annotations = os.path.join(inria_dir, 'annotations')
@@ -36,7 +37,7 @@ print 'inria annotations: ' + annotations
 gt_parser = '--groundtruth_parser inria --gt_whratio .43'
 sampling = "--sampling 50" # curve approx to avoid computing all possible thresh
 format = '--xmin 0.003 --xmax 102 --ymin 0.03 --ymax 1.1'
-ignore = '' #'--ignore ' + inria_ignore
+ignore = '--ignore ' + inria_ignore
 compare = '--comparator overlap50percent --comparator_param .5'
 caltech_input_parser = '--input_parser caltech'
 eblearn_input_parser = '--input_parser eblearn'
@@ -113,16 +114,17 @@ if extract_caltech:
 ################################################################################
 
 # generate curve for input bbox
-cmd = os.path.join(vgsrc, 'main.py') \
-    + ' --input ' + newcurve \
-    + ' ' + eblearn_input_parser + ' ' + gt_parser + ' --det' \
-    + ' --images_path ' + annotations \
-    + ' --groundtruth ' + annotations \
-    + ' ' + compare + ' ' + ignore + ' ' \
-    + ' ' + sampling + ' ' + format \
-    + ' --saving-file ' + os.path.join(outdir, newcurve_name) + '.pickle' \
-    + ' --show-no-curve'
-os.system(cmd)
+if extract_newcurve:
+    cmd = os.path.join(vgsrc, 'main.py') \
+        + ' --input ' + newcurve \
+        + ' ' + eblearn_input_parser + ' ' + gt_parser + ' --det' \
+        + ' --images_path ' + annotations \
+        + ' --groundtruth ' + annotations \
+        + ' ' + compare + ' ' + ignore + ' ' \
+        + ' ' + sampling + ' ' + format \
+        + ' --saving-file ' + os.path.join(outdir, newcurve_name) + '.pickle' \
+        + ' --show-no-curve'
+    os.system(cmd)
 
 # plot
 if show_all_curves:

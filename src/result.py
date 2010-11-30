@@ -79,7 +79,7 @@ class DataSetResult(object):
         return "DataSetResult: tp=" + str(self.n_true_positives()) \
             + ", fp=" + str(self.n_false_positives()) \
             + ", fn=" + str(self.n_false_negatives()) \
-            + ", fppi=" + str(self.fppi()) \
+            + ", fppi=%.4f"%(self.fppi()) \
             + ", miss_rate=%f"%(self.n_false_negatives()
                                 / float(self.npositives))
 

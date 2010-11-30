@@ -119,46 +119,60 @@ class GUI(object):
         else:
             self.main_window = gtk.Window(gtk.WINDOW_TOPLEVEL)
             self.main_window.connect("destroy", self.on_destroy)
+            self.main_window.connect("key_press_event", self.on_key_press)
+            self.main_window.connect("key_release_event", self.on_key_release)
 
         self.vbox1 = gtk.VBox(3)
         self.vbox1.set_homogeneous(False)
         self.main_window.add(self.vbox1)
 
+        # image bar
+        self.label_image = gtk.Label("Image: ")
         self.input = gtk.Entry()
         self.input.connect("activate", self._on_activate)
-        self.input_save = gtk.Entry()
         self.next_button = gtk.Button(label = "next")
         self.next_button.connect("clicked", self._on_next)
         self.prev_button = gtk.Button(label = "prev")
         self.prev_button.connect("clicked", self._on_prev)
-        self.hbox1 = gtk.HBox(2)
+        self.hbox1 = gtk.HBox(False)
+        self.hbox1.pack_start(self.label_image, False, False)
         self.hbox1.pack_start(self.input, False, True)
-        self.hbox1.pack_start(self.prev_button, False, True)
-        self.hbox1.pack_start(self.next_button, False, True)
+        self.hbox1.pack_start(self.prev_button, True, True)
+        self.hbox1.pack_start(self.next_button, True, True)
         self.vbox1.pack_start(self.hbox1, False, False)
 
-        self.hbox2 = gtk.HBox(2)
+        # confidence bar
+        self.hbox2 = gtk.HBox(True)
         self.hbox2.set_homogeneous(False)
         self.vbox1.pack_start(self.hbox2, False, False)
         self.label_slider = gtk.Label("Confidence: ")
         self.hbox2.pack_start(self.label_slider, False, False)
+        self.confidence_input = gtk.Entry()
+        self.confidence_input.connect("activate", self._on_conf_activate)
+        self.hbox2.pack_start(self.confidence_input, False, True)
         self.hscale1 = gtk.HScale()
         self.hscale1.set_range(0, 1)
         self.hscale1.connect("value-changed", self._on_slider_moved)
         self.hbox2.pack_start(self.hscale1, True, True)
 
-        self.vbox1.pack_start(self.input_save, False, False)
+        # bbox save bar
+        self.hbox3 = gtk.HBox(False)
+        self.vbox1.pack_start(self.hbox3, False, False)
+        self.label_bbox = gtk.Label("Bbox saving directory: ")
+        self.input_save = gtk.Entry()
+        self.hbox3.pack_start(self.label_bbox, False, False)
+        self.hbox3.pack_start(self.input_save, True, True)
 
         self.displayer = Displayer(self.main_window)
         self.displayer.connect("button_press_event", self.on_button_press)
         self.displayer.connect("button_release_event", self.on_button_release)
         self.displayer.connect("motion_notify_event", self.on_motion_notify)
         self.displayer.set_events(gtk.gdk.EXPOSURE_MASK
-                                | gtk.gdk.LEAVE_NOTIFY_MASK
-                                | gtk.gdk.BUTTON_PRESS_MASK
-                                | gtk.gdk.BUTTON_RELEASE_MASK
-                                | gtk.gdk.POINTER_MOTION_MASK
-                                | gtk.gdk.POINTER_MOTION_HINT_MASK)
+                                  | gtk.gdk.LEAVE_NOTIFY_MASK
+                                  | gtk.gdk.BUTTON_PRESS_MASK
+                                  | gtk.gdk.BUTTON_RELEASE_MASK
+                                  | gtk.gdk.POINTER_MOTION_MASK
+                                  | gtk.gdk.POINTER_MOTION_HINT_MASK)
         # right hand buttons
         self.vbox4 = gtk.VButtonBox()
         self.ignore_button = gtk.Button(label = 'ignore')
@@ -180,6 +194,7 @@ class GUI(object):
         self.button1 = False # button 1 is pressed or not
         self.button1_origin = []
         self.boxes = []
+        self.control_key = False
 
     def on_destroy(self, *args):
         gtk.main_quit()
@@ -220,8 +235,29 @@ class GUI(object):
                 self.displayer.add_gprim(mgt, .5, .5, 0)
         self.displayer.draw()
 
+    def on_key_press(self, widget, event):
+        keyname = gtk.gdk.keyval_name(event.keyval)
+        if keyname == 'Right':
+            self._on_next()
+        if keyname == 'Left':
+            self._on_prev()
+        if keyname[:7] == 'Control':
+            self.control_key = True
+        if keyname == 's' and self.control_key == True:
+            self._on_save()
+        
+    def on_key_release(self, widget, event):
+        keyname = gtk.gdk.keyval_name(event.keyval)
+        if keyname[:7] == 'Control':
+            self.control_key = False
+        
     def _on_activate(self, entry):
         self.on_activate(entry.get_text())
+        return False
+
+    def _on_conf_activate(self, entry):
+        self.hscale1.set_value(float(entry.get_text()))
+        self.on_slider_moved()
         return False
 
     def on_activate(self, text):
@@ -281,6 +317,7 @@ class GUI(object):
         pass
 
     def _on_slider_moved(self, *args):
+        self.confidence_input.set_text(str(self.get_slider_position()))
         self.on_slider_moved()
         return False
 
