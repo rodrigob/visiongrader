@@ -56,6 +56,30 @@ def print_ROC(multi_result, n_imgs, save_filename = None, show_curve = True,
         pylab.show()
 
 ################################################################################
+
+# Interpolate and return the y value at xtarget, given the initial
+# values at x0 and x1 which must be on each side of xtarget.
+# Then find the closest points on each side of xtarget in matrix points,
+# and interpolate.
+def interpolate(xtarget, x0, y0, x1, y1, points):
+    if x0 > xtarget or x1 < xtarget:
+        raise Exception('expected x0 < xtarget and x1 > xtarget')
+    for a in points:
+        x = a[0]
+        y = -a[1]
+        if (x > x0 and x <= xtarget):
+          x0 = x
+          y0 = y
+        if (x < x1 and x >= xtarget):
+          x1 = x
+          y1 = y
+    if (x0 == xtarget):
+        return y0
+    if (x1 == xtarget):
+        return y1
+    # we found closest points around target, interpolate
+    return y0 + (y1 - y0) * (xtarget - x0) / (x1 - x0)
+        
 def print_DET(multi_result, n_imgs, save_filename = None, show_curve = True,
               xmin = None, ymin = None, xmax = None, ymax = None,
               grid_major = False, grid_minor = False):
@@ -71,31 +95,13 @@ def print_DET(multi_result, n_imgs, save_filename = None, show_curve = True,
         #n_imgs = float(len(result.images))
         #the "-" is a trick for sorting
         points.append((max(xmin, fp / n_imgs), - fn / (tp + fn)))
-        # print "appending " + str(max(xmin, fp / n_imgs)) + ", " \
-        #     + str(fn / (tp + fn)) + " tp=" + str(result.n_true_positives()) \
-        #     + " fp=" + str(result.n_false_positives()) \
-        #     + " fn=" + str(result.n_false_negatives()) \
-        #     + " nimgs=" + str(n_imgs)
     points.sort()
-    # print score at 1 FPPI
-    # find y for x=val
-    val = 1
-    y = 0
-    x1 = 0
-    x2 = 0
-    y1 = 0
-    y2 = 0
-    for a in points:
-        x2 = x1
-        y2 = y1
-        x1 = a[0]
-        y1 = -a[1]
-        if (x1 > 1 and x2 <= 1): # interpolate
-            y = y2 + (y1 - y2) * (val - x2) / (x1 - x2)
-    if (x1 <= 1 and x2 <= 1):
-        y = y1
-    y = y * 100 # use percentage
-    print "miss rate at " + str(val) + "FPPI=" + "%.2f%%"%y
+    # interpolate value at .001FPPI
+    y = 100 * interpolate(.01, 0, 1, 100, 10000, points)
+    print "miss rate at .01FPPI=" + "%.2f%%"%y
+    # interpolate value at 1FPPI
+    y = 100 * interpolate(1.0, 0, 1, 100, 10000, points)
+    print "miss rate at 1FPPI=" + "%.2f%%"%y
     # save curve
     if save_filename != None:
         f = open(save_filename, "w")
