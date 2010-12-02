@@ -3,6 +3,7 @@
 Image filename : "Test/pos/person_136.png"
 Image size (X x Y x C) : 640 x 480 x 3
 Database : "INRIA pedestrians to ignore"
-Objects with ground truth : 1 { "PASperson" }
+Objects with ground truth : 2 { "PASperson" "PASperson" }
 
-Bounding box for object 1 "PASperson" (Xmin, Ymin) - (Xmax, Ymax) : (457, 154) - (481, 216)
+Bounding box for object 1 "PASperson" (Xmin, Ymin) - (Xmax, Ymax) : (370, 150) - (398, 223)
+Bounding box for object 2 "PASperson" (Xmin, Ymin) - (Xmax, Ymax) : (456, 155) - (484, 222)

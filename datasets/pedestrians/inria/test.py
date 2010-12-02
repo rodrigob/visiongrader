@@ -6,11 +6,11 @@ import os
 # uber parameters
 inria = '/data/pedestrians/inria/INRIAPerson'
 inria_type = 'Test'
-extract_newcurve = False
+extract_newcurve = True
 extract_caltech = False
 show_caltech_db = False
 show_caltech_db1 = '' #'HOG' # show 1 caltech db
-show_all_curves = False
+show_all_curves = True
 show_newcurve_db = True
 
 # check number of input arguments
