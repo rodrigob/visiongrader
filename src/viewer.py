@@ -182,13 +182,28 @@ class GUI(object):
         self.save_button.connect("clicked", self._on_save)
         self.clear_button = gtk.Button(label = 'clear')
         self.clear_button.connect("clicked", self.on_clear)
-        self.gt_button = gtk.CheckButton("Groundtruth")
-        self.fp_button = gtk.CheckButton("False positives")
-        self.gti_button = gtk.CheckButton("Ignored groundtruth")
-        self.matchedgti_button = gtk.CheckButton("Matched ignored groundtruth")
-        self.matchedtsi_button = gtk.CheckButton("Matched ignored input")
-        self.matchedgt_button = gtk.CheckButton("Matched groundtruth")
-        self.matchedts_button = gtk.CheckButton("Matched input")
+        self.gt_button = gtk.CheckButton()
+        self.gt_button.add(gtk.CheckButton("Groundtruth"))
+        self.gt_button.child.set_active(False)
+        self.fp_button = gtk.CheckButton()
+        self.fp_button.add(gtk.CheckButton("False positives"))
+        self.fp_button.child.set_active(False)
+        self.gti_button = gtk.CheckButton()
+        self.gti_button.add(gtk.CheckButton("Ignored groundtruth"))
+        self.gti_button.child.set_active(False)
+        self.matchedgti_button = gtk.CheckButton()
+        self.matchedgti_button\
+            .add(gtk.CheckButton("Matched ignored groundtruth"))
+        self.matchedgti_button.child.set_active(False)
+        self.matchedtsi_button = gtk.CheckButton()
+        self.matchedtsi_button.add(gtk.CheckButton("Matched ignored input"))
+        self.matchedtsi_button.child.set_active(False)
+        self.matchedgt_button = gtk.CheckButton()
+        self.matchedgt_button.add(gtk.CheckButton("Matched groundtruth"))
+        self.matchedgt_button.child.set_active(False)
+        self.matchedts_button = gtk.CheckButton()
+        self.matchedts_button.add(gtk.CheckButton("Matched input"))
+        self.matchedts_button.child.set_active(False)
         self.gt_button.connect("clicked", self.on_gt)
         self.fp_button.connect("clicked", self.on_fp)
         self.gti_button.connect("clicked", self.on_gti)
@@ -225,13 +240,15 @@ class GUI(object):
         self.color_matchedts = gtk.gdk.Color(0, 65535, 65535)
 
         # text colors
-        self.set_check_color(self.gt_button, self.color_gt)
-        self.set_check_color(self.fp_button, self.color_fp)
-        self.set_check_color(self.gti_button, self.color_gti)
-        self.set_check_color(self.matchedgti_button, self.color_matchedgti)
-        self.set_check_color(self.matchedgt_button, self.color_matchedgt)
-        self.set_check_color(self.matchedtsi_button, self.color_matchedtsi)
-        self.set_check_color(self.matchedts_button, self.color_matchedts)
+        self.set_check_color(self.gt_button.child, self.color_gt)
+        self.set_check_color(self.fp_button.child, self.color_fp)
+        self.set_check_color(self.gti_button.child, self.color_gti)
+        self.set_check_color(self.matchedgti_button.child,
+                             self.color_matchedgti)
+        self.set_check_color(self.matchedgt_button.child, self.color_matchedgt)
+        self.set_check_color(self.matchedtsi_button.child,
+                             self.color_matchedtsi)
+        self.set_check_color(self.matchedts_button.child, self.color_matchedts)
         
         # initializations
         self.button1 = False # button 1 is pressed or not
@@ -258,13 +275,13 @@ class GUI(object):
         gtk.main_quit()
 
     def set_check_color(self, but, color):
-        # but.modify_base(gtk.STATE_NORMAL, color)
-        # but.modify_base(gtk.STATE_SELECTED, color)
-        # but.modify_base(gtk.STATE_ACTIVE, color)
-        # but.modify_base(gtk.STATE_PRELIGHT, color)
-        # but.modify_base(gtk.STATE_INSENSITIVE, color)
-        # but.child.modify_base(gtk.STATE_NORMAL, color)
-        # but.modify_fg(gtk.STATE_NORMAL, color)
+        but.modify_base(gtk.STATE_NORMAL, color)
+        but.modify_base(gtk.STATE_SELECTED, color)
+        but.modify_base(gtk.STATE_ACTIVE, color)
+        but.modify_base(gtk.STATE_PRELIGHT, color)
+        but.modify_base(gtk.STATE_INSENSITIVE, color)
+
+    def set_text_color(self, but, color):
         but.child.modify_fg(gtk.STATE_NORMAL, color)
         but.child.modify_fg(gtk.STATE_SELECTED, color)
         but.child.modify_fg(gtk.STATE_ACTIVE, color)
@@ -362,7 +379,7 @@ class GUI(object):
         self.boxes = []
         self.displayer.draw(self.boxes)
 
-    def on_refresh():
+    def on_refresh(self):
         pass
 
     ############################################################################
