@@ -98,16 +98,20 @@ def display(ts_filename, ts_parser, gt_filename, gt_parser, img_path,
         print "opening image %s"%text
         on_refresh(ts, v, text)
     def on_save(text):
-        fname = os.path.join(text, v.img_name) + '.txt'
-        annotation = os.path.join(img_path, v.img_name) + '.txt'
-        (fn, width, height, chans, boxes) = gt_parser.parse_file(annotation)
-        gt_parser.save_bboxes(fname, fn, (width, height, chans), v.boxes);
-        print 'saving to ' + fname
+        if len(v.boxes) == 0:
+            print 'Error: nothing bboxes to save in current frame'
+        else:
+            fname = os.path.join(text, v.img_name) + '.txt'
+            annotation = os.path.join(img_path, v.img_name) + '.txt'
+            (fn, width, height, chans, boxes) = gt_parser.parse_file(annotation)
+            gt_parser.save_bboxes(fname, fn, (width, height, chans), v.boxes);
+            print 'saving to ' + fname
     def on_prev():
         global i
         i = (i - 1) % len(keys)
         v.boxes = [] # clear added boxes for this frame
         on_refresh()
+    v.on_refresh = on_refresh
     v.on_activate = on_activate
     v.on_save = on_save
     v.on_next = on_next

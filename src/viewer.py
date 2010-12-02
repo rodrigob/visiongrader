@@ -76,8 +76,8 @@ class Displayer(gtk.DrawingArea):
         self.set_window_size(pixbuf.get_width(), pixbuf.get_height())
         self.draw()
 
-    def add_gprim(self, gprim, r, g, b):
-        self.gprims.append((gprim, (r, g, b)))
+    def add_gprim(self, gprim, color):
+        self.gprims.append((gprim, color))
 
     def clear_gprims(self):
         self.gprims = []
@@ -102,7 +102,9 @@ class Displayer(gtk.DrawingArea):
             context.paint()
             context.set_operator(cairo.OPERATOR_OVER)
             for (gprim, color) in self.gprims:
-                context.set_source_rgb(*color)
+                context.set_source_rgb(color.red / float(65535),
+                                       color.green / float(65535),
+                                       color.blue / float(65535))
                 gprim.draw(context)
             if boxes:
                 context.set_source_rgb(.5, 0, .5)
@@ -180,8 +182,30 @@ class GUI(object):
         self.save_button.connect("clicked", self._on_save)
         self.clear_button = gtk.Button(label = 'clear')
         self.clear_button.connect("clicked", self.on_clear)
+        self.gt_button = gtk.CheckButton("Groundtruth")
+        self.fp_button = gtk.CheckButton("False positives")
+        self.gti_button = gtk.CheckButton("Ignored groundtruth")
+        self.matchedgti_button = gtk.CheckButton("Matched ignored groundtruth")
+        self.matchedtsi_button = gtk.CheckButton("Matched ignored input")
+        self.matchedgt_button = gtk.CheckButton("Matched groundtruth")
+        self.matchedts_button = gtk.CheckButton("Matched input")
+        self.gt_button.connect("clicked", self.on_gt)
+        self.fp_button.connect("clicked", self.on_fp)
+        self.gti_button.connect("clicked", self.on_gti)
+        self.matchedgti_button.connect("clicked", self.on_matchedgti)
+        self.matchedtsi_button.connect("clicked", self.on_matchedtsi)
+        self.matchedgt_button.connect("clicked", self.on_matchedgt)
+        self.matchedts_button.connect("clicked", self.on_matchedts)
+        # buttons colors
         self.vbox4.add(self.clear_button)
         self.vbox4.add(self.save_button)
+        self.vbox4.add(self.gt_button)
+        self.vbox4.add(self.fp_button)
+        self.vbox4.add(self.gti_button)
+        self.vbox4.add(self.matchedgti_button)
+        self.vbox4.add(self.matchedtsi_button)
+        self.vbox4.add(self.matchedgt_button)
+        self.vbox4.add(self.matchedts_button)
         self.vbox4.set_layout(gtk.BUTTONBOX_START)
         # separate display and right hand buttons
         self.hbox3 = gtk.HBox(False)
@@ -191,14 +215,62 @@ class GUI(object):
         self.vbox1.pack_start(self.hbox3, False, False)
         self.main_window.show_all()
 
+        # colors
+        self.color_gt = gtk.gdk.Color(65535,0,0)
+        self.color_fp = gtk.gdk.Color(0,65535,0)
+        self.color_gti = gtk.gdk.Color(0,32765,32765)
+        self.color_matchedgti = gtk.gdk.Color(32765,0,32765)
+        self.color_matchedtsi = gtk.gdk.Color(32765,32765,0)
+        self.color_matchedgt = gtk.gdk.Color(0, 0, 65535)
+        self.color_matchedts = gtk.gdk.Color(0, 65535, 65535)
+
+        # text colors
+        self.set_check_color(self.gt_button, self.color_gt)
+        self.set_check_color(self.fp_button, self.color_fp)
+        self.set_check_color(self.gti_button, self.color_gti)
+        self.set_check_color(self.matchedgti_button, self.color_matchedgti)
+        self.set_check_color(self.matchedgt_button, self.color_matchedgt)
+        self.set_check_color(self.matchedtsi_button, self.color_matchedtsi)
+        self.set_check_color(self.matchedts_button, self.color_matchedts)
+        
+        # initializations
         self.button1 = False # button 1 is pressed or not
         self.button1_origin = []
         self.boxes = []
         self.control_key = False
+        # display initializations
+        self.display_gt = True
+        self.display_fp = True
+        self.display_gti = True
+        self.display_matchedgti = True
+        self.display_matchedtsi = True
+        self.display_matchedgt = True
+        self.display_matchedts = True
+        self.gt_button.set_active(self.display_gt)
+        self.fp_button.set_active(self.display_fp)
+        self.gti_button.set_active(self.display_gti)
+        self.matchedgti_button.set_active(self.display_matchedgti)
+        self.matchedtsi_button.set_active(self.display_matchedtsi)
+        self.matchedgt_button.set_active(self.display_matchedgt)
+        self.matchedts_button.set_active(self.display_matchedts)
 
     def on_destroy(self, *args):
         gtk.main_quit()
 
+    def set_check_color(self, but, color):
+        # but.modify_base(gtk.STATE_NORMAL, color)
+        # but.modify_base(gtk.STATE_SELECTED, color)
+        # but.modify_base(gtk.STATE_ACTIVE, color)
+        # but.modify_base(gtk.STATE_PRELIGHT, color)
+        # but.modify_base(gtk.STATE_INSENSITIVE, color)
+        # but.child.modify_base(gtk.STATE_NORMAL, color)
+        # but.modify_fg(gtk.STATE_NORMAL, color)
+        but.child.modify_fg(gtk.STATE_NORMAL, color)
+        but.child.modify_fg(gtk.STATE_SELECTED, color)
+        but.child.modify_fg(gtk.STATE_ACTIVE, color)
+        but.child.modify_fg(gtk.STATE_PRELIGHT, color)
+
+        
     def set_title(self, title):
         self.main_window.set_title(title)
 
@@ -214,25 +286,35 @@ class GUI(object):
                 matched_gti = None, matched_tsi = None):
         self.displayer.set_image(img_filename)
         self.displayer.clear_gprims()
-        for gt in gts:
-            self.displayer.add_gprim(gt, 1, 0, 0)
-        for pos in positives:
-            self.displayer.add_gprim(pos, 0, 1, 0)
-        if gti_prims:
-            for prim in gti_prims:
-                self.displayer.add_gprim(prim, 0, .5, .5)
-        if matched_gt:
-            for mgt in matched_gt:
-                self.displayer.add_gprim(mgt, 0, 1, 1)
-        if matched_ts:
-            for mts in matched_ts:
-                self.displayer.add_gprim(mts, 0, 0, 1)
-        if matched_gti:
+        # display groundtruth
+        if self.display_gt:
+            for gt in gts: 
+                self.displayer.add_gprim(gt, self.color_gt)
+        # display false positives
+        if self.display_fp:
+            for pos in positives:
+                self.displayer.add_gprim(pos, self.color_fp)
+        # display ignored groundtruth
+        if self.display_gti:
+            if gti_prims:
+                for prim in gti_prims:
+                    self.displayer.add_gprim(prim, self.color_gti)
+        # display matched ignored groundtruth
+        if self.display_matchedgti and matched_gti:
             for mgt in matched_gti:
-                self.displayer.add_gprim(mgt, .5, 0, .5)
-        if matched_tsi:
+                self.displayer.add_gprim(mgt, self.color_matchedgti)
+        # display matched ignored input
+        if self.display_matchedtsi and matched_tsi:
             for mgt in matched_tsi:
-                self.displayer.add_gprim(mgt, .5, .5, 0)
+                self.displayer.add_gprim(mgt, self.color_matchedtsi)
+        # display matched groundtruth        
+        if self.display_matchedgt and matched_gt:
+            for mgt in matched_gt:
+                self.displayer.add_gprim(mgt, self.color_matchedgt)
+        # display matched input
+        if self.display_matchedts and matched_ts:
+            for mts in matched_ts:
+                self.displayer.add_gprim(mts, self.color_matchedts)
         self.displayer.draw()
 
     def on_key_press(self, widget, event):
@@ -278,8 +360,45 @@ class GUI(object):
 
     def on_clear(self, *args):
         self.boxes = []
-        self.displayer.draw(self.boxes)        
+        self.displayer.draw(self.boxes)
 
+    def on_refresh():
+        pass
+
+    ############################################################################
+    # check box actions
+    
+    def on_gt(self, *args):
+        self.display_gt = self.gt_button.get_active()
+        self.on_refresh()
+
+    def on_fp(self, *args):
+        self.display_fp = self.fp_button.get_active()
+        self.on_refresh()
+
+    def on_gti(self, *args):
+        self.display_gti = self.gti_button.get_active()
+        self.on_refresh()
+
+    def on_matchedgti(self, *args):
+        self.display_matchedgti = self.matchedgti_button.get_active()
+        self.on_refresh()
+
+    def on_matchedtsi(self, *args):
+        self.display_matchedtsi = self.matchedtsi_button.get_active()
+        self.on_refresh()
+
+    def on_matchedgt(self, *args):
+        self.display_matchedgt = self.matchedgt_button.get_active()
+        self.on_refresh()
+
+    def on_matchedts(self, *args):
+        self.display_matchedts = self.matchedts_button.get_active()
+        self.on_refresh()
+
+    ############################################################################
+    # keyboard actions
+    
     def on_button_press(self, widget, event):
         if event.button == 1:
             self.button1 = True

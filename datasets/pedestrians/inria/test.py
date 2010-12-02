@@ -44,7 +44,8 @@ eblearn_input_parser = '--input_parser eblearn'
 caltech_subdir = 'set01/V000'
 legend = '--xlegend \"False positives per image\" --ylegend \"Miss rate\"'
 grid = '--grid_major --grid_minor'
-
+newcurve_hresize = ''#'--hratio .75'
+newcurve_wresize = ''#'--wratio .5'
 
 # list of algorithms to resize
 caltech_resize = ('HOG', 'FtrMine', 'Shapelet-orig', 'PoseInv', 'PoseInvSvm',
@@ -123,7 +124,7 @@ if extract_newcurve:
         + ' ' + compare + ' ' + ignore + ' ' \
         + ' ' + sampling + ' ' + format \
         + ' --saving-file ' + os.path.join(outdir, newcurve_name) + '.pickle' \
-        + ' --show-no-curve'
+        + ' --show-no-curve ' + newcurve_hresize + ' ' + newcurve_wresize
     os.system(cmd)
 
 # plot
@@ -140,7 +141,8 @@ if show_newcurve_db:
         + ' ' + eblearn_input_parser + ' ' + gt_parser + ' --disp' \
         + ' --images_path ' + annotations \
         + ' --groundtruth ' + annotations \
-        + ' ' + compare + ' ' + ignore + ' '
+        + ' ' + compare + ' ' + ignore \
+        + ' ' + newcurve_hresize + ' ' + newcurve_wresize
     os.system(cmd)
 
 ################################################################################
