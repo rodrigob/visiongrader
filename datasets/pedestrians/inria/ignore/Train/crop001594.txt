@@ -1,0 +1,19 @@
+# PASCAL Annotation Version 1.00
+
+Image filename : "Train/pos/crop001594.png"
+Image size (X x Y x C) : 762 x 673 x 3
+Database : "INRIA pedestrians to ignore"
+Objects with ground truth : 12 { "PASperson" "PASperson" "PASperson" "PASperson" "PASperson" "PASperson" "PASperson" "PASperson" "PASperson" "PASperson" "PASperson" "PASperson" }
+
+Bounding box for object 1 "PASperson" (Xmin, Ymin) - (Xmax, Ymax) : (54, 201) - (91, 298)
+Bounding box for object 2 "PASperson" (Xmin, Ymin) - (Xmax, Ymax) : (0, 195) - (31, 309)
+Bounding box for object 3 "PASperson" (Xmin, Ymin) - (Xmax, Ymax) : (80, 188) - (126, 350)
+Bounding box for object 4 "PASperson" (Xmin, Ymin) - (Xmax, Ymax) : (151, 207) - (180, 303)
+Bounding box for object 5 "PASperson" (Xmin, Ymin) - (Xmax, Ymax) : (184, 200) - (226, 317)
+Bounding box for object 6 "PASperson" (Xmin, Ymin) - (Xmax, Ymax) : (214, 183) - (292, 367)
+Bounding box for object 7 "PASperson" (Xmin, Ymin) - (Xmax, Ymax) : (305, 193) - (351, 336)
+Bounding box for object 8 "PASperson" (Xmin, Ymin) - (Xmax, Ymax) : (326, 188) - (376, 376)
+Bounding box for object 9 "PASperson" (Xmin, Ymin) - (Xmax, Ymax) : (463, 194) - (538, 422)
+Bounding box for object 10 "PASperson" (Xmin, Ymin) - (Xmax, Ymax) : (544, 203) - (604, 449)
+Bounding box for object 11 "PASperson" (Xmin, Ymin) - (Xmax, Ymax) : (586, 201) - (674, 464)
+Bounding box for object 12 "PASperson" (Xmin, Ymin) - (Xmax, Ymax) : (630, 249) - (717, 471)

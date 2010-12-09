@@ -1,0 +1,25 @@
+# PASCAL Annotation Version 1.00
+
+Image filename : "Train/pos/crop001050.png"
+Image size (X x Y x C) : 843 x 976 x 3
+Database : "INRIA pedestrians to ignore"
+Objects with ground truth : 18 { "PASperson" "PASperson" "PASperson" "PASperson" "PASperson" "PASperson" "PASperson" "PASperson" "PASperson" "PASperson" "PASperson" "PASperson" "PASperson" "PASperson" "PASperson" "PASperson" "PASperson" "PASperson" }
+
+Bounding box for object 1 "PASperson" (Xmin, Ymin) - (Xmax, Ymax) : (69, 293) - (144, 523)
+Bounding box for object 2 "PASperson" (Xmin, Ymin) - (Xmax, Ymax) : (131, 303) - (168, 436)
+Bounding box for object 3 "PASperson" (Xmin, Ymin) - (Xmax, Ymax) : (224, 295) - (253, 385)
+Bounding box for object 4 "PASperson" (Xmin, Ymin) - (Xmax, Ymax) : (254, 255) - (324, 396)
+Bounding box for object 5 "PASperson" (Xmin, Ymin) - (Xmax, Ymax) : (315, 305) - (382, 482)
+Bounding box for object 6 "PASperson" (Xmin, Ymin) - (Xmax, Ymax) : (315, 296) - (357, 438)
+Bounding box for object 7 "PASperson" (Xmin, Ymin) - (Xmax, Ymax) : (409, 305) - (439, 415)
+Bounding box for object 8 "PASperson" (Xmin, Ymin) - (Xmax, Ymax) : (385, 301) - (419, 406)
+Bounding box for object 9 "PASperson" (Xmin, Ymin) - (Xmax, Ymax) : (436, 309) - (465, 388)
+Bounding box for object 10 "PASperson" (Xmin, Ymin) - (Xmax, Ymax) : (543, 309) - (571, 395)
+Bounding box for object 11 "PASperson" (Xmin, Ymin) - (Xmax, Ymax) : (575, 325) - (629, 447)
+Bounding box for object 12 "PASperson" (Xmin, Ymin) - (Xmax, Ymax) : (567, 306) - (591, 382)
+Bounding box for object 13 "PASperson" (Xmin, Ymin) - (Xmax, Ymax) : (542, 299) - (565, 355)
+Bounding box for object 14 "PASperson" (Xmin, Ymin) - (Xmax, Ymax) : (580, 306) - (610, 392)
+Bounding box for object 15 "PASperson" (Xmin, Ymin) - (Xmax, Ymax) : (600, 304) - (634, 399)
+Bounding box for object 16 "PASperson" (Xmin, Ymin) - (Xmax, Ymax) : (636, 320) - (701, 569)
+Bounding box for object 17 "PASperson" (Xmin, Ymin) - (Xmax, Ymax) : (690, 336) - (734, 462)
+Bounding box for object 18 "PASperson" (Xmin, Ymin) - (Xmax, Ymax) : (738, 308) - (823, 598)

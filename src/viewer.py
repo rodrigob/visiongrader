@@ -255,6 +255,7 @@ class GUI(object):
         self.button1_origin = []
         self.boxes = []
         self.control_key = False
+        self.shift_key = False
         # display initializations
         self.display_gt = True
         self.display_fp = True
@@ -294,9 +295,12 @@ class GUI(object):
     def set_slider_params(self, xmin, xmax, digits):
         self.hscale1.set_range(xmin, xmax)
         self.hscale1.set_digits(digits)
-
+  
     def get_slider_position(self):
         return self.hscale1.get_value()
+
+    def set_slider_position(self, val):
+        return self.hscale1.set_value(val)
 
     def display(self, img_filename, gts, positives,
                 matched_gt = None, matched_ts = None, gti_prims = None,
@@ -337,11 +341,25 @@ class GUI(object):
     def on_key_press(self, widget, event):
         keyname = gtk.gdk.keyval_name(event.keyval)
         if keyname == 'Right':
-            self._on_next()
+            if self.control_key == True:
+                self.move_slider(.01)
+            else:
+                if self.shift_key == True:
+                    self.move_slider(.0001)
+                else:
+                    self._on_next()
         if keyname == 'Left':
-            self._on_prev()
+            if self.control_key == True:
+                self.move_slider(-.01)
+            else:
+                if self.shift_key == True:
+                    self.move_slider(-.0001)
+                else:
+                    self._on_prev()
         if keyname[:7] == 'Control':
             self.control_key = True
+        if keyname[:5] == 'Shift':
+            self.shift_key = True
         if keyname == 's' and self.control_key == True:
             self._on_save()
         
@@ -349,6 +367,8 @@ class GUI(object):
         keyname = gtk.gdk.keyval_name(event.keyval)
         if keyname[:7] == 'Control':
             self.control_key = False
+        if keyname[:5] == 'Shift':
+            self.shift_key = False
         
     def _on_activate(self, entry):
         self.on_activate(entry.get_text())
@@ -452,6 +472,13 @@ class GUI(object):
     def on_prev(self):
         pass
 
+    ############################################################################
+    # threshold slider
+
+    def move_slider(self, move):
+        self.set_slider_position(self.get_slider_position() + move)
+        self.on_slider_moved()
+    
     def _on_slider_moved(self, *args):
         self.confidence_input.set_text(str(self.get_slider_position()))
         self.on_slider_moved()
