@@ -1,0 +1,13 @@
+# PASCAL Annotation Version 1.00
+
+Image filename : "Train/pos/person_202.png"
+Image size (X x Y x C) : 640 x 480 x 3
+Database : "INRIA pedestrians to ignore"
+Objects with ground truth : 6 { "PASperson" "PASperson" "PASperson" "PASperson" "PASperson" "PASperson" }
+
+Bounding box for object 1 "PASperson" (Xmin, Ymin) - (Xmax, Ymax) : (468, 119) - (513, 238)
+Bounding box for object 2 "PASperson" (Xmin, Ymin) - (Xmax, Ymax) : (327, 112) - (351, 186)
+Bounding box for object 3 "PASperson" (Xmin, Ymin) - (Xmax, Ymax) : (305, 121) - (326, 186)
+Bounding box for object 4 "PASperson" (Xmin, Ymin) - (Xmax, Ymax) : (94, 127) - (113, 185)
+Bounding box for object 5 "PASperson" (Xmin, Ymin) - (Xmax, Ymax) : (68, 127) - (86, 193)
+Bounding box for object 6 "PASperson" (Xmin, Ymin) - (Xmax, Ymax) : (269, 123) - (288, 181)
