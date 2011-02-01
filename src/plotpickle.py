@@ -26,12 +26,15 @@ import sys
 import optparse
 import os
 import os.path
+from matplotlib.pyplot import *
 
 n_colors = 6
 colors = ['b', 'g', 'c', 'm', 'y', 'k']
 i = 0
 
-toplot = []
+curves = []
+curves_auc = []
+auc_title = ""
 
 def plot(arg, main = False):
     global i
@@ -59,30 +62,68 @@ def plot(arg, main = False):
     else:
         style = "-."
     i += 1
-    index = i
+    index = i # index of this curve
 
     ############################################################################
-    # compute this curve's score
+    # compute this curve's AUC score
 
     # score: area under curve between x0 and x1
     # find minimum and maximum x in points
     x0 = 0
     y0 = 1
-    x1 = 1 
-    
+    x1 = 1
+    # compute maximum possible AUC
+    max_auc = (x1 - x0) * y0    
     # we assume that points are ordered in increasing x order
     minx = points[0][0]
     minxy = -points[0][1]
     maxx = points[len(points) - 1][0]
     maxxy = -points[len(points) - 1][1]
-    print label + ": min x: " + str(minx) + " (y: " + str(minxy) + ") max x: " \
-        + str(maxx) + " (y: " + str(maxxy) + ")"
-    print str(points)
+#    print label + ": min x: " + str(minx) + " (y: " + str(minxy) \
+#        + ") max x: " + str(maxx) + " (y: " + str(maxxy) + ")"
     auc = 0
+    # build integral of curve
+    # special cases: integral's limits
+    # TODO: we assume x0 is always 0 and points don't go below 0 for now,
+    # handle when many points can be below whatever x0's value
+    if minx > x0: # fill integral gap between x0 and minx with y0
+        auc += y0 * (minx - x0)
+    # loop on all points
+    p0x = minx
+    p0y = minxy
+    for p in points:
+        p1x = p[0]
+        p1y = -p[1]
+        # stop if p1x is beyond x1
+        if p1x >= x1:
+            # interpolate point to the x limit
+            y1 = p0y + (p1y - p0y) * (x1 - p0x)
+            auc += ((x1 - p0x) / 2) * (y1 + p0y)
+            # stop loop
+            break
+        # update auc with trapezoid
+        auc += ((p1x - p0x) / 2) * (p1y + p0y)
+        # shift p1 to p0
+        p0x = p1x
+        p0y = p1y
+    # special case: end limit
+    if p1x < x1: # fill integral gap between maxx and x1 with maxxy
+        auc += p1y * (x1 - p1x)
+    # convert AUC to percentage of maximum AUC
+    auc = (auc / max_auc) * 100
+    score = auc
+    print "area under curve for x between " + str(x0) + " and " + str(x1) \
+        + " AUC" + str(x0) + "_" + str(x1) + "=" + str(auc) + "%"
+        
+    curves_auc.append([score, index, [a[0] for a in points],
+                       [- a[1] for a in points],
+                       style, color, label + " (%.2f%%)"%score, width])
+    global auc_title
+    auc_title = "Area Under Curve [" + str(x0) + ', ' + str(x1) + '] FPPI'
     
-    
-    
-    # score: y for a particular x
+    ############################################################################
+    # compute this curve's score, with y for a particular x
+
     # find y for x=val
     val = 1
     y = 0
@@ -100,10 +141,13 @@ def plot(arg, main = False):
     if (x1 <= 1 and x2 <= 1):
         y = y1
     y = y * 100 # use percentage
-    label = label + " (%.2f%%)"%y
-    toplot.append([y, index, [a[0] for a in points], [- a[1] for a in points],
-                   style, color, label, width])
+    score = y
+    
+    curves.append([score, index, [a[0] for a in points],
+                   [- a[1] for a in points],
+                   style, color, label + " (%.2f%%)"%score, width])
 
+    ############################################################################
 if __name__=="__main__":
     usage = "usage: %prog [-m main_curve] [OPTIONS] [--help]\n       %prog --help"
     optp = optparse.OptionParser(add_help_option = True, usage = usage, prog = "./plotpickle.py")
@@ -144,9 +188,27 @@ eg. "lower_right".')
         print "Warning: no main curve specified"
 
     # sort legend elements by their score
-    toplot.sort() # sort by score (1st element)
-    toplot.reverse() # lower score down
-    for p in toplot:
+    curves.sort() # sort by score (1st element)
+    curves.reverse() # lower score down
+    curves_auc.sort() # sort by score (1st element)
+    curves_auc.reverse() # lower score down
+
+    for p in curves_auc:
+        pylab.loglog(p[2], p[3], p[4], color = p[5], label = p[6],
+                     linewidth = p[7])
+        print p[6]
+    cauc = []
+    indices = []
+    for p in curves_auc:
+        cauc.append(p[6])
+        indices.append(p[1])
+    print str(cauc)
+    print str(indices)
+    l1 = legend(cauc, loc = 3, title = auc_title, fancybox = True)
+    pylab.clf()
+    gca().add_artist(l1)
+
+    for p in curves:
         pylab.loglog(p[2], p[3], p[4], color = p[5], label = p[6],
                      linewidth = p[7])
         print p[6]
@@ -162,6 +224,9 @@ eg. "lower_right".')
             sys.stderr.write("legend_position : invalid string.\n")
             sys.exit(0)
         pylab.legend(loc=loc1 + " " + loc2)
+
+    legend(loc = 4, title = "1.0 FPPI", fancybox = True)
+        
     if options.x_legend != None:
         pylab.xlabel(options.x_legend)
     if options.y_legend != None:
@@ -177,6 +242,7 @@ eg. "lower_right".')
     if options.grid_major:
         pylab.grid(True, which='major')
     if options.grid_minor:
-        pylab.grid(True, which='minor')    
-    pylab.axvline(1.0)
+        pylab.grid(True, which='minor')
+    # draw vertical bar at FPPI threshold
+    pylab.axvline(1.0, color = 'black')
     pylab.show()

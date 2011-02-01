@@ -51,7 +51,7 @@ def print_ROC(multi_result, n_imgs, save_filename = None, show_curve = True,
             pylab.axis(ymin = ymin)
         if ymax != None:
             pylab.axis(ymax = ymax)
-        pylab.xlabel("False positives per image")
+        pylab.xlabel("False positives per image (FPPI)")
         pylab.ylabel("Detection rate")
         pylab.show()
 
@@ -119,12 +119,12 @@ def print_DET(multi_result, n_imgs, save_filename = None, show_curve = True,
             pylab.axis(ymin = ymin)
         if ymax != None:
             pylab.axis(ymax = ymax)
-        pylab.xlabel("False positives per image")
+        pylab.xlabel("False positives per image (FPPI)")
         pylab.ylabel("Miss rate")
         if grid_major:
             pylab.grid(True, which='major')
         if grid_minor:
-            pylab.grid(True, which='minor')    
+            pylab.grid(True, which='minor')
         pylab.show()
 
 
