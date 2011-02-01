@@ -11,7 +11,7 @@ extract_caltech = False
 show_caltech_db = False
 show_caltech_db1 = '' #'HOG' # show 1 caltech db
 show_all_curves = True
-show_newcurve_db = True
+show_newcurve_db = False
 
 # check number of input arguments
 if len(sys.argv) !=  2:

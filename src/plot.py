@@ -56,7 +56,8 @@ def print_ROC(multi_result, n_imgs, save_filename = None, show_curve = True,
         pylab.show()
 
 ################################################################################
-
+# DET
+        
 # Interpolate and return the y value at xtarget, given the initial
 # values at x0 and x1 which must be on each side of xtarget.
 # Then find the closest points on each side of xtarget in matrix points,

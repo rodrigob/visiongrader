@@ -60,6 +60,29 @@ def plot(arg, main = False):
         style = "-."
     i += 1
     index = i
+
+    ############################################################################
+    # compute this curve's score
+
+    # score: area under curve between x0 and x1
+    # find minimum and maximum x in points
+    x0 = 0
+    y0 = 1
+    x1 = 1 
+    
+    # we assume that points are ordered in increasing x order
+    minx = points[0][0]
+    minxy = -points[0][1]
+    maxx = points[len(points) - 1][0]
+    maxxy = -points[len(points) - 1][1]
+    print label + ": min x: " + str(minx) + " (y: " + str(minxy) + ") max x: " \
+        + str(maxx) + " (y: " + str(maxxy) + ")"
+    print str(points)
+    auc = 0
+    
+    
+    
+    # score: y for a particular x
     # find y for x=val
     val = 1
     y = 0
@@ -119,6 +142,8 @@ eg. "lower_right".')
             print "Warning: %s does not exixts."%(options.main_curve,)
     else:
         print "Warning: no main curve specified"
+
+    # sort legend elements by their score
     toplot.sort() # sort by score (1st element)
     toplot.reverse() # lower score down
     for p in toplot:
