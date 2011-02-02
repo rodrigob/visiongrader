@@ -26,6 +26,7 @@ import sys
 import optparse
 import os
 import os.path
+import measures
 from matplotlib.pyplot import *
 
 n_colors = 6
@@ -72,54 +73,16 @@ def plot(arg, main = False):
     x0 = 0
     y0 = 1
     x1 = 1
-    # compute maximum possible AUC
-    max_auc = (x1 - x0) * y0    
-    # we assume that points are ordered in increasing x order
-    minx = points[0][0]
-    minxy = -points[0][1]
-    maxx = points[len(points) - 1][0]
-    maxxy = -points[len(points) - 1][1]
-#    print label + ": min x: " + str(minx) + " (y: " + str(minxy) \
-#        + ") max x: " + str(maxx) + " (y: " + str(maxxy) + ")"
-    auc = 0
-    # build integral of curve
-    # special cases: integral's limits
-    # TODO: we assume x0 is always 0 and points don't go below 0 for now,
-    # handle when many points can be below whatever x0's value
-    if minx > x0: # fill integral gap between x0 and minx with y0
-        auc += y0 * (minx - x0)
-    # loop on all points
-    p0x = minx
-    p0y = minxy
-    for p in points:
-        p1x = p[0]
-        p1y = -p[1]
-        # stop if p1x is beyond x1
-        if p1x >= x1:
-            # interpolate point to the x limit
-            y1 = p0y + (p1y - p0y) * (x1 - p0x)
-            auc += ((x1 - p0x) / 2) * (y1 + p0y)
-            # stop loop
-            break
-        # update auc with trapezoid
-        auc += ((p1x - p0x) / 2) * (p1y + p0y)
-        # shift p1 to p0
-        p0x = p1x
-        p0y = p1y
-    # special case: end limit
-    if p1x < x1: # fill integral gap between maxx and x1 with maxxy
-        auc += p1y * (x1 - p1x)
-    # convert AUC to percentage of maximum AUC
-    auc = (auc / max_auc) * 100
-    score = auc
+    score = measures.auc_percent(points, x0, y0, x1)
     print "area under curve for x between " + str(x0) + " and " + str(x1) \
-        + " AUC" + str(x0) + "_" + str(x1) + "=" + str(auc) + "%"
+        + " AUC" + str(x0) + "_" + str(x1) + "=" + str(score) + "%"
         
     curves_auc.append([score, index, [a[0] for a in points],
                        [- a[1] for a in points],
                        style, color, label + " (%.2f%%)"%score, width])
     global auc_title
     auc_title = "Area Under Curve [" + str(x0) + ', ' + str(x1) + '] FPPI'
+
     
     ############################################################################
     # compute this curve's score, with y for a particular x
