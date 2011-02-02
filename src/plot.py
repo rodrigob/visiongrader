@@ -23,6 +23,7 @@ import sys
 import pylab
 #import matplotlib
 import cPickle
+import measures
 
 ################################################################################
 def print_ROC(multi_result, n_imgs, save_filename = None, show_curve = True,
@@ -103,6 +104,13 @@ def print_DET(multi_result, n_imgs, save_filename = None, show_curve = True,
     # interpolate value at 1FPPI
     y = 100 * interpolate(1.0, 0, 1, 100, 10000, points)
     print "miss rate at 1FPPI=" + "%.2f%%"%y
+    # get area under curve
+    x0 = 0
+    y0 = 1
+    x1 = 1
+    auc = measures.auc_percent(points, x0, y0, x1);
+    print "area under curve in range [" + str(x0) + ", " + str(x1) + "]: " \
+        + " AUC" + str(x0) + "-" + str(x1) + "=" + str(auc)
     # save curve
     if save_filename != None:
         f = open(save_filename, "w")
