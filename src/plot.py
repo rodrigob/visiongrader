@@ -110,7 +110,7 @@ def print_DET(multi_result, n_imgs, save_filename = None, show_curve = True,
     x1 = 1
     auc = measures.auc_percent(points, x0, y0, x1);
     print "area under curve in range [" + str(x0) + ", " + str(x1) + "]: " \
-        + " AUC" + str(x0) + "-" + str(x1) + "=" + str(auc)
+        + "AUC" + str(x0) + "-" + str(x1) + "=" + str(auc) + "%"
     # save curve
     if save_filename != None:
         f = open(save_filename, "w")
