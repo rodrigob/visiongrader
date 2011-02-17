@@ -5,13 +5,13 @@ import os
 
 # uber parameters
 inria = '/data/pedestrians/inria/INRIAPerson'
-inria_type = 'Train'
-extract_newcurve = False
+inria_type = 'Test'
+extract_newcurve = True
 extract_caltech = False
 show_caltech_db = False
 show_caltech_db1 = '' #'HOG' # show 1 caltech db
-show_all_curves = False
-show_newcurve_db = True
+show_all_curves = True
+show_newcurve_db = False
 
 # check number of input arguments
 if len(sys.argv) !=  2:
@@ -36,7 +36,7 @@ print 'inria annotations: ' + annotations
 # parameters
 gt_parser = '--groundtruth_parser inria --gt_whratio .43'
 sampling = "--sampling 50" # curve approx to avoid computing all possible thresh
-format = '--xmin 0.003 --xmax 102 --ymin 0.01 --ymax 1.1'
+format = '--xmin 0.003 --xmax 10 --ymin 0.01 --ymax 1'
 ignore = '--ignore ' + inria_ignore
 compare = '--comparator overlap50percent --comparator_param .5'
 caltech_input_parser = '--input_parser caltech'
