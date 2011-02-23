@@ -10,7 +10,7 @@ extract_newcurve = False
 extract_caltech = False
 show_caltech_db = False
 show_caltech_db1 = '' #'HOG' # show 1 caltech db
-show_all_curves = False
+show_all_curves = False 
 show_newcurve_db = True
 
 # check number of input arguments
