@@ -48,11 +48,17 @@ def plot(arg, main = False):
     if label.find("/") != -1:
         label = label[label.rfind("/")+1:]
     color = colors[i%6]
-    width = 1
-    if main == True:
+    width = 2
+#    if main == True:
+    if label == "EBLearnU+U+":
         style = "-"
         color = "r"
-        width = 2
+        width = 3
+        i -= 1
+    elif label == "EBLearnR+R+":
+        style = "--"
+        color = "r"
+        width = 3
         i -= 1
     elif i < n_colors:
         style = "-"
@@ -167,7 +173,7 @@ eg. "lower_right".')
         indices.append(p[1])
     print str(cauc)
     print str(indices)
-    l1 = legend(cauc, loc = (-.1,-.025), title = auc_title, fancybox = True)
+    l1 = legend(cauc, loc = (-.09,-.025), title = auc_title, fancybox = True)
     pylab.clf()
     gca().add_artist(l1)
 
@@ -206,7 +212,7 @@ eg. "lower_right".')
         pylab.grid(True, which='major')
     if options.grid_minor:
         pylab.grid(True, which='minor')
-    pylab.subplots_adjust(left=0.04)
+    pylab.subplots_adjust(left=0.05)
     pylab.subplots_adjust(bottom=0.07)
     pylab.subplots_adjust(right=0.98)
     pylab.subplots_adjust(top=0.98)
