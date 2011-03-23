@@ -55,8 +55,8 @@ def parse(filen, crawl = False):
         line = line.strip().rstrip()
         splited = line.split()
         filename = splited[0]
-        filename = filename[filename.rfind("/")+1:]
-        filename = filename[:filename.rfind(".")]
+        # filename = filename[filename.rfind("/")+1:]
+        # filename = filename[:filename.rfind(".")]
         height = int(splited[1])
         width = int(splited[2])
         class_id = int(splited[3])
@@ -97,8 +97,8 @@ def parse_multi_file(filen, ret = None, groundtruth = None):
         line = line.strip().rstrip()
         splited = line.split()
         filename = splited[0]
-        filename = filename[filename.rfind("/")+1:]
-        filename = filename[:filename.rfind(".")]
+        # filename = filename[filename.rfind("/")+1:]
+        # filename = filename[:filename.rfind(".")]
         if drop_neg:
             if filename in negs_files:
                 continue
@@ -128,11 +128,11 @@ def parse_multi_file(filen, ret = None, groundtruth = None):
             if img == []:
                 print "warning: " + filename + " not found in groundtruth."
                 continue ;
-            r = bb.area() / (img.height * img.width)
-            if (min_area_ratio != None and r < min_area_ratio) or \
-                (max_area_ratio != None and r > max_area_ratio):
-                print "not adding ratio " + str(r)
-                continue            
+            # r = bb.area() / (img.height * img.width)
+            # if (min_area_ratio != None and r < min_area_ratio) or \
+            #     (max_area_ratio != None and r > max_area_ratio):
+            #     print "not adding ratio " + str(r)
+            #     continue            
         area = bb.area()
         if (min_area == None or area >= min_area) and \
                 (max_area == None or area <= max_area):
@@ -156,6 +156,7 @@ def parse_multi(filen, crawl = False, groundtruth = None):
 def get_img_from_name(name, annotations_path, images_path):
     possible_paths = []
     if images_path != None:
+        possible_paths.append(os.path.join(images_path, name))
         possible_paths.append(os.path.join(images_path, name + ".png"))
         possible_paths.append(os.path.join(images_path, name + ".pgm"))
         possible_paths.append(os.path.join(images_path, name + ".jpg"))

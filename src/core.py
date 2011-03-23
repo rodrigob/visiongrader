@@ -34,7 +34,7 @@ def single_scoring(ts_filename, ts_parser, gt_filename, gt_parser, comparator,
 
 ################################################################################
 def display(ts_filename, ts_parser, gt_filename, gt_parser, img_path,
-            ignore_path = None, gti = None, parent_window = None,
+            ignore_path = "", gti = None, parent_window = None,
             set_legend = None, comparator = None):
     if ts_filename != None and ts_parser != None:
         ts = ts_parser.parse_multi(ts_filename)
@@ -117,7 +117,8 @@ def display(ts_filename, ts_parser, gt_filename, gt_parser, img_path,
     v.on_next = on_next
     v.on_prev = on_prev
     v.on_slider_moved = on_refresh
-    v.input_save.set_text(ignore_path)
+    if ignore_path:
+        v.input_save.set_text(ignore_path)
     v.set_slider_params(ts.confidence_min(), ts.confidence_max(), 2)
     on_refresh()
     if parent_window == None:

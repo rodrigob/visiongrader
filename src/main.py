@@ -153,12 +153,12 @@ ratio * width.")
         sys.exit(0)
     groundtruth_parser = parsers.get_module(options.groundtruth_parser)
     groundtruth_parser.whratio = options.gt_whratio
-    areas = groundtruth_parser.find_minmax_areas(options.groundtruth)
-    groundtruth_parser.min_area = areas[0]
-    groundtruth_parser.max_area = areas[1]
-    groundtruth_parser.min_area_ratio = areas[2]
-    groundtruth_parser.max_area_ratio = areas[3]
-    print "Groundtruth parser: " + groundtruth_parser.describe()
+    # areas = groundtruth_parser.find_minmax_areas(options.groundtruth)
+    # groundtruth_parser.min_area = areas[0]
+    # groundtruth_parser.max_area = areas[1]
+    # groundtruth_parser.min_area_ratio = areas[2]
+    # groundtruth_parser.max_area_ratio = areas[3]
+    # print "Groundtruth parser: " + groundtruth_parser.describe()
 
     # groundtruth ignore parser
     gti = None
@@ -192,6 +192,9 @@ ratio * width.")
         # toscore_parser.max_area_ratio = 0.7
         print "Input parser: " + toscore_parser.describe()
 
+    # print some information
+    print 'Input: ' + str(options.input)
+    print 'Groundtruth: ' + str(options.groundtruth)
 
     if mode != "display":
         if options.comparator == None:
