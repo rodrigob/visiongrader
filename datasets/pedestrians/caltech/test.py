@@ -17,7 +17,7 @@ grid = '--grid_major --grid_minor'
 newcurve_hresize = ''#'--hratio .75'
 newcurve_wresize = ''#'--wratio .5'
 
-ds = '/home/pierre/projects/ped/caltech/samples/med'
+ds = os.environ['HOME'] + '/projects/ped/caltech/samples/med'
 annotations = os.path.join(ds, 'set05_select.txt')
 input = os.path.join(ds, 'selected/bbox.txt')
 newcurve_name = os.path.basename(input)

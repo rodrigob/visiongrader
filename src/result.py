@@ -76,11 +76,11 @@ class DataSetResult(object):
         return self.n_false_positives() / float(self.nimages)
     
     def __str__(self):
-        return "DataSetResult: tp=" + str(self.n_true_positives()) \
-            + ", fp=" + str(self.n_false_positives()) \
-            + ", fn=" + str(self.n_false_negatives()) \
-            + ", fppi=%.4f"%(self.fppi()) \
-            + ", miss_rate=%f"%(self.n_false_negatives()
+        return "DataSetResult: tp:" + str(self.n_true_positives()) \
+            + ", fp:" + str(self.n_false_positives()) \
+            + ", fn:" + str(self.n_false_negatives()) \
+            + ", fppi:%.4f"%(self.fppi()) \
+            + ", miss_rate:%f"%(self.n_false_negatives()
                                 / float(self.npositives))
 
 class MultiResult(object):

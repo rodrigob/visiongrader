@@ -181,7 +181,7 @@ def multi_scoring(ts_filename, ts_parser, gt_filename, gt_parser, comparator,
         last_fppi = res.fppi()
         # add result to results
         multi_result.add_result(res)
-        print "i=%d confidence=%f (min %f max %f)" \
+        print "i:%d confidence:%f (min %f max %f)" \
             % (i, confidence, dataset.confidence_min(), \
                    dataset.confidence_max()) \
                    + " Subset size: " + str(len(dataset)) + " " + str(res)
