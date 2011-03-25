@@ -84,6 +84,9 @@ def parse(filen, crawl = False):
                 (max_area == None or area <= max_area):
             ret.add_obj(filename, bb)
     file.close()
+    # print summary
+    print 'Dataset ' + str(filen) + ' has ' + str(len(ret)) + ' images and ' \
+          + str(ret.get_nobjs()) + ' positive objects.'
     return ret
 
 def parse_multi_file(filen, ret = None, groundtruth = None):

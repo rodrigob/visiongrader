@@ -21,6 +21,7 @@
 import copy
 from slist import slist
 
+################################################################################
 # A set of multiple objects found in 1 image.
 # This set can contain the bounding boxes in the image,
 # the image name and its dimensions.
@@ -95,6 +96,9 @@ class ImageDataSet(object):
     def __iter__(self):
         return self.objs.__iter__()
 
+################################################################################
+# A set of ImageDataset, i.e. each ImageDataset is a set of objects contained
+# in 1 image.
 class DataSet(object):
     def __init__(self, label = ""):
         self.images = {}
@@ -137,6 +141,12 @@ class DataSet(object):
         else:
             return []
 
+    def get_nobjs(self):
+        n = 0
+        for i in self.images:
+            n += len(self.images[i])
+        return n
+
     def __str__(self):
         ret = "(DataSet %s : "%(self.label,)
         for img in self.images:
@@ -166,6 +176,7 @@ class DataSet(object):
                         m = obj.confidence
             return m
 
+################################################################################
 class DataSetFromMulti(object):
     def __init__(self, parent, i_conf_min, label = ""):
         self.parent = parent
@@ -186,6 +197,7 @@ class DataSetFromMulti(object):
         if type(i) == int:
             return self.parent[i+self.i_conf_min]
 
+################################################################################
 class DataSetMulti(DataSet):
     def __init__(self, label = ""):
         DataSet.__init__(self, label)

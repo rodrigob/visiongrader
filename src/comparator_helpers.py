@@ -178,7 +178,7 @@ def compare_images_gprims(toscore, groundtruth, match_objs, match_score,
 # compare a set of groundtruth images against a set of new images
 def compare_datasets_default(toscore, groundtruth, compare_images,
                              gtignore = None):
-    result = DataSetResult(288, 589)
+    result = DataSetResult(len(groundtruth), groundtruth.get_nobjs())
     # for each image in the groundtruth, compare with image to score if exists
     for img in groundtruth:
         gti = None

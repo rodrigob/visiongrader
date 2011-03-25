@@ -19,7 +19,7 @@ newcurve_wresize = ''#'--wratio .5'
 
 ds = os.environ['HOME'] + '/projects/ped/caltech/samples/med'
 annotations = os.path.join(ds, 'set05_select.txt')
-input = os.path.join(ds, 'selected/bbox.txt')
+input = sys.argv[1] #os.path.join(ds, 'selected/bbox.txt')
 newcurve_name = os.path.basename(input)
 outdir = os.path.dirname(input) # directory where to look for existing curves
 
@@ -32,7 +32,7 @@ cmd = os.path.join(vgsrc, 'main.py') \
     + ' ' + compare + ' ' + ' ' \
     + ' ' + sampling + ' ' + format \
     + ' --saving-file ' + os.path.join(outdir, newcurve_name) + '.pickle' \
-    + ' --show-no-curve ' + newcurve_hresize + ' ' + newcurve_wresize
+    + ' ' + newcurve_hresize + ' ' + newcurve_wresize
 os.system(cmd)
 exit(1)
 

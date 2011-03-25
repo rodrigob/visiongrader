@@ -98,26 +98,43 @@ def print_DET(multi_result, n_imgs, save_filename = None, show_curve = True,
         #the "-" is a trick for sorting
         points.append((max(xmin, fp / n_imgs), - fn / (tp + fn)))
     points.sort()
-    # interpolate value at .001FPPI
-    y = 100 * interpolate(.01, 0, 1, 100, 10000, points)
-    print "miss rate at .01FPPI=" + "%.2f%%"%y
+    # interpolate value at 100FPPI
+    y = 100 * interpolate(100.0, 0, 1, 1000, 10000, points)
+    print "miss rate at 100FPPI=" + "%.2f%%"%y
+    # interpolate value at 10FPPI
+    y = 100 * interpolate(10.0, 0, 1, 1000, 10000, points)
+    print "miss rate at 10FPPI=" + "%.2f%%"%y
     # interpolate value at 1FPPI
-    y = 100 * interpolate(1.0, 0, 1, 100, 10000, points)
+    y = 100 * interpolate(1.0, 0, 1, 1000, 10000, points)
     print "miss rate at 1FPPI=" + "%.2f%%"%y
-    # get area under curve 0-100
+    # interpolate value at .001FPPI
+    y = 100 * interpolate(.01, 0, 1, 1000, 10000, points)
+    print "miss rate at .01FPPI=" + "%.2f%%"%y
+    # get area under curve percentage in 0-100
+    x0 = 0
+    y0 = 1
+    x1 = 100
+    auc = measures.auc_percent(points, x0, y0, x1);
+    print "area under curve in range [" + str(x0) + ", " + str(x1) + "]: " \
+        + "AUC" + str(x0) + "-" + str(x1) + "=" + str(auc) + "%"
+    # get area under curve percentage in 0-10
     x0 = 0
     y0 = 1
     x1 = 10
     auc = measures.auc_percent(points, x0, y0, x1);
     print "area under curve in range [" + str(x0) + ", " + str(x1) + "]: " \
         + "AUC" + str(x0) + "-" + str(x1) + "=" + str(auc) + "%"
-    # get area under curve 0-1
+    # get area under curve percentage in 0-1
     x0 = 0
     y0 = 1
     x1 = 1
     auc = measures.auc_percent(points, x0, y0, x1);
     print "area under curve in range [" + str(x0) + ", " + str(x1) + "]: " \
         + "AUC" + str(x0) + "-" + str(x1) + "=" + str(auc) + "%"
+#     # get total area under curve
+#     auc = measures.auc_percent(points, x0, y0, x1);
+#     print "area under curve in range [" + str(x0) + ", " + str(x1) + "]: " \
+#         + "AUC" + str(x0) + "-" + str(x1) + "=" + str(auc) + "%"    
     # save curve
     if save_filename != None:
         f = open(save_filename, "w")
