@@ -116,9 +116,9 @@ def parse(path, crawl = False):
         #TODO : check validity
         (fname, width, height, chans, bboxes) \
             = parse_file(os.path.join(path, filename))
-        filename = filename[:filename.rfind(".")]
+        fname = os.path.basename(fname)
         for bbox in bboxes:
-            ret.add_obj(filename, bbox, height, width)
+            ret.add_obj(fname, bbox, height, width)
     return ret
 
 def find_minmax_areas(path, crawl = False):
@@ -133,7 +133,7 @@ def find_minmax_areas(path, crawl = False):
     for filename in filenames:
         #TODO : check validity
         (fn, w, h, chans, bboxes) = parse_file(os.path.join(path, filename))
-        filename = filename[:filename.rfind(".")]
+        filename = fn #filename[:filename.rfind(".")]
         for bbox in bboxes:
             area = bbox.area()
             area_ratio = bbox.area() / (w * h)
@@ -160,8 +160,7 @@ def get_img_from_name(name, annotations_path, images_path):
     if images_path != None:
         possible_paths.append(os.path.join(images_path, name + ".png"))
         possible_paths.append(os.path.join(images_path, name + ".jpg"))
-    possible_paths.append(os.path.join(os.path.join(annotations_path, ".."),
-                                       os.path.join("pos", name + ".png")))
+    possible_paths.append(os.path.join(images_path, name))
     possible_paths.append(os.path.join(os.path.join(annotations_path, ".."),
                                        os.path.join("neg", name + ".png")))
     possible_paths.append(os.path.join(os.path.join(annotations_path, ".."),

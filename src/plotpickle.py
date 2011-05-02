@@ -30,7 +30,7 @@ import measures
 from matplotlib.pyplot import *
 
 n_colors = 6
-colors = ['b', 'g', 'c', 'm', 'y', 'k']
+colors = ['#0000FF', 'g', 'c', 'm', 'y', 'k']
 i = 0
 
 curves = []
@@ -50,14 +50,24 @@ def plot(arg, main = False):
     color = colors[i%6]
     width = 2
 #    if main == True:
-    if label == "EBLearnU+U+":
+    if label == "ConvNet-MRC-Unsup":
         style = "-"
         color = "r"
         width = 3
         i -= 1
-    elif label == "EBLearnR+R+":
+    elif label == "ConvNet-MRC-Random":
         style = "--"
         color = "r"
+        width = 3
+        i -= 1
+    elif label == "ConvNet-Unsup":
+        style = "-"
+        color = '#00FF00'
+        width = 3
+        i -= 1
+    elif label == "ConvNet-Random":
+        style = "--"
+        color = '#00FF00'
         width = 3
         i -= 1
     elif i < n_colors:

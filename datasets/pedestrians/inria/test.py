@@ -5,13 +5,13 @@ import os
 
 # uber parameters
 inria = '/data/pedestrians/inria/INRIAPerson'
-inria_type = 'Test'
-extract_newcurve = True
+inria_type = 'Train'
+extract_newcurve = False
 extract_caltech = False
 show_caltech_db = False
 show_caltech_db1 = '' #'HOG' # show 1 caltech db
 show_all_curves = True
-show_newcurve_db = False
+show_newcurve_db = True
 
 # check number of input arguments
 if len(sys.argv) !=  2:
@@ -26,6 +26,7 @@ inria_vg = os.path.dirname(os.path.abspath(__file__))
 inria_ignore = os.path.join(os.path.join(inria_vg, 'ignore'), inria_type)
 inria_caltech = os.path.join(inria_vg, 'caltech')
 inria_dir = os.path.join(inria, inria_type)
+inria_images = os.path.join(inria_dir, 'pos')
 annotations = os.path.join(inria_dir, 'annotations')
 
 # print configuration
@@ -139,7 +140,7 @@ if show_newcurve_db:
     cmd = os.path.join(vgsrc, 'main.py') \
         + ' --input ' + newcurve \
         + ' ' + eblearn_input_parser + ' ' + gt_parser + ' --disp' \
-        + ' --images_path ' + annotations \
+        + ' --images_path ' + inria_images \
         + ' --groundtruth ' + annotations \
         + ' ' + compare + ' ' + ignore \
         + ' ' + newcurve_hresize + ' ' + newcurve_wresize

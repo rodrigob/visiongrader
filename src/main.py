@@ -195,6 +195,7 @@ ratio * width.")
     # print some information
     print 'Input: ' + str(options.input)
     print 'Groundtruth: ' + str(options.groundtruth)
+    print 'Images path: ' + str(options.img_path)
 
     if mode != "display":
         if options.comparator == None:
