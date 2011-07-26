@@ -16,8 +16,8 @@ How to use it ?
 
 To get help, please visit one of the two following pages:
 
-http://visiongrader.sourceforge.net/help.html
-doc/web/help.html
+ * http://visiongrader.sourceforge.net/help.html
+ * doc/web/help.html
 
 Authors
 -------
